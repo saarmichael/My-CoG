@@ -6,7 +6,7 @@ export const BasicHeatMap = () => {
 
 
     // create a matrix 100 X 100 with random values between 0 and 100 
-    const matrix = Array.from({ length: 100 }, () => Array.from({ length: 1000 }, () => Math.floor(Math.random() * 100)));
+    const matrix = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => Math.floor(Math.random() * 100)));
 
     // use the matrix to create 100 series of 100 data points
     const series = matrix.map((row, i) => ({

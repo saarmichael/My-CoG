@@ -80,7 +80,7 @@ const BasicSpectogram = () => {
     // call the generateChart function when the component is mounted (created)
     useEffect(() => {
         generateChart()
-    }, [])
+    }, [generateChart])
 
 
     return (
