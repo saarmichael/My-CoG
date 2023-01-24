@@ -8,7 +8,7 @@ import BasicNetGraph from './components/BasicNetGraph';
 function App() {
   return (
     <div className="App">
-      <BasicNetGraph />
+      <BasicSpectogram />
     </div>
   );
 }

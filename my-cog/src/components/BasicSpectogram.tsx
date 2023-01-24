@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { lightningChart, PalettedFill, LUT, ColorRGBA, emptyLine, Themes } from '@arction/lcjs';
 import { createWaterDropDataGenerator } from "@arction/xydata";
+import Basic3DSpectogram from './Basic3DSpectogram';
 
 
 const BasicSpectogram = () => {
@@ -18,7 +19,6 @@ const BasicSpectogram = () => {
             data.push(row)
         }
         return data
-
     }
 
     /* funciton that creates the chart and assigns the data to it */
@@ -78,13 +78,15 @@ const BasicSpectogram = () => {
     }
 
     // call the generateChart function when the component is mounted (created)
-    useEffect(() => {
-        generateChart()
-    }, [generateChart])
+    // useEffect(() => {
+    //     generateChart()
+    // }, [generateChart])
 
 
     return (
-        <div id="chart" style={{ width: '100%', height: '100%' }}></div>
+        <div id="chart" style={{ width: '100%', height: '100%' }}>
+            <Basic3DSpectogram />
+        </div>
     )
 
 }
