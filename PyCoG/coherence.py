@@ -12,20 +12,33 @@ bp_data = finger_bp['data']
 elec1 = bp_data[:, 0] # first electrode
 elec2 = bp_data[:, 1] # second electrode
 
+# save the current working directory
+cwd = os.getcwd()
 # move back one directory
 os.chdir('..')
+os.chdir('my-cog\src\ecog_data')
+# delete the old files if they exist
+if os.path.exists('elec1.json'):
+    os.remove('elec1.json')
+if os.path.exists('elec2.json'):
+    os.remove('elec2.json')
+
+
 # write the first 10000 samples to a json file as an array
-with open('Shared_Data\elec1.json', 'w') as f:
+with open('elec1.json', 'w') as f:
     f.write(str(elec1.tolist()))
 
 # close the file
 f.close()
 # do the same for the second electrode
-with open('Shared_Data\elec2.json', 'w') as f:
+with open('elec2.json', 'w') as f:
     f.write(str(elec2.tolist()))
 
 # close the file
 f.close()
+
+# move back to the original working directory
+os.chdir(cwd)
 
 
 
