@@ -4,14 +4,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 # matlab loader
 from scipy.io import loadmat
+import os
 
 # load the data
 finger_bp = loadmat('bp_fingerflex.mat')
-finger_cc = loadmat('cc_fingerflex.mat')
-finger_ht = loadmat('ht_fingerflex.mat')
-finger_jc = loadmat('jc_fingerflex.mat')
-# x = finger1['data'][:, 0]
-# y = finger1['data'][:, 1]
+bp_data = finger_bp['data']
+elec1 = bp_data[:, 0] # first electrode
+elec2 = bp_data[:, 1] # second electrode
+
+# move back one directory
+os.chdir('..')
+# write the first 10000 samples to a json file as an array
+with open('Shared_Data\elec1.json', 'w') as f:
+    f.write(str(elec1.tolist()))
+
+# close the file
+f.close()
+# do the same for the second electrode
+with open('Shared_Data\elec2.json', 'w') as f:
+    f.write(str(elec2.tolist()))
+
+# close the file
+f.close()
+
 
 
 rng = np.random.default_rng()
@@ -41,31 +56,31 @@ y += rng.normal(scale=0.1*np.sqrt(noise_power), size=time.shape)
 # calculate the normalized cross-correlation
 # corr = signal.correlate(x, y, mode='same') / np.sqrt(signal.correlate(x, x, mode='same')[500] * signal.correlate(y, y, mode='same')[500])
 # timer for the correlation
-from timeit import default_timer as timer
-start = timer()
+# from timeit import default_timer as timer
+# start = timer()
 
-# corr = signal.correlate(x, y, mode='same')
-# calculate the normalized cross-correlation
-corr = signal.correlate(x, y, mode='full')
-end = timer()
+# # corr = signal.correlate(x, y, mode='same')
+# # calculate the normalized cross-correlation
+# corr = signal.correlate(x, y, mode='full')
+# end = timer()
 
-f, Cxy = signal.coherence(x, y, 10e3, nperseg=1024)
+# f, Cxy = signal.coherence(x, y, 10e3, nperseg=1024)
 
 
 
-print(end - start)
-plt.subplot(2, 1, 1)
-plt.plot(f, Cxy)
-plt.xlabel('frequency [Hz]')
-plt.ylabel('Coherence')
-plt.subplot(2, 1, 2)
-plt.plot(x)
-plt.plot(y)
+# print(end - start)
+# plt.subplot(2, 1, 1)
+# plt.plot(f, Cxy)
+# plt.xlabel('frequency [Hz]')
+# plt.ylabel('Coherence')
+# plt.subplot(2, 1, 2)
+# plt.plot(x)
+# plt.plot(y)
 
-# add legend
-plt.legend(['x', 'y', 'x2'])
-plt.title('Signals')
+# # add legend
+# plt.legend(['x', 'y', 'x2'])
+# plt.title('Signals')
 
-plt.show()
+# plt.show()
 
 
