@@ -26,7 +26,7 @@ for freq in freqs:
 x = np.sum(sine_waves, axis=0)
 
 # get the spectrogram
-f, t, Sxx = spectrogram(elec1, fs, 1000, 200)
+f, t, Sxx = spectrogram(elec1[:10000], fs, 50, 10)
 write_spectrogram(t, f, Sxx, file_name='elec1_spectrogram')
 # plot the spectrogram
 plt.pcolormesh(t, f, Sxx)

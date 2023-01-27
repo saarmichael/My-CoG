@@ -9,5 +9,5 @@ def spectrogram(x, fs, window_size, overlap):
     # normalize the signal
     x = normalize(x)
     # calculate the spectrogram
-    f, t, Sxx = signal.spectrogram(x, fs, window='hann', nperseg=window_size, noverlap=overlap, scaling='spectrum')
+    f, t, Sxx = signal.spectrogram(x, fs=fs, window='hann', scaling='density')
     return f, t, Sxx
