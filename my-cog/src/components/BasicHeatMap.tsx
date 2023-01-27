@@ -34,7 +34,7 @@ export const BasicHeatMap = () => {
 
     return (
         <div id="chart">
-            <Chart options={options} series={series} type="heatmap" style={{ width: 'auto', height: 'auto' }} />
+            <Chart options={options} series={series} type="heatmap" style={{ width: '100%', height: '100%' }} />
         </div>
     );
 };
