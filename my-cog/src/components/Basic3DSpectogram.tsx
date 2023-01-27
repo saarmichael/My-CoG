@@ -12,31 +12,41 @@ import {
     UIDraggingModes,
     Themes
 } from '@arction/lcjs';
+import * as elec1_spectrogram from '../ecog_data/elec1_spectrogram.json'
 
 interface Basic3DSpectogramProps {
     data: number[][];
 }
 
+type SpectrogramData = {
+    t: number[],
+    f: number[],
+    Sxx: number[][]
+}
+
 
 const Basic3DSpectogram = () => {
-
+    const elec1SpecData = elec1_spectrogram as SpectrogramData
     /* asynchronous function that generate resolutionX over resolutionY matrix of random numbers */
-    const generateData = async (resolutionX: number, resolutionY: number) => {
+    const getData = async (spectroData : SpectrogramData) => {
+        let t = spectroData.t
+        let f = spectroData.f
+        let Sxx = spectroData.Sxx
         // create a new number matrix of 100 over 100
-        const data: number[][] = []
-        // loop over the matrix and fill it with random numbers
-        for (let i = 0; i < resolutionX; i++) {
-            let row = []
-            for (let j = 0; j < resolutionY; j++) {
-                row.push(Math.random() * 100)
-            }
-            data.push(row)
-        }
-        return data
+        // const data: number[][] = []
+        // // loop over the matrix and fill it with random numbers
+        // for (let i = 0; i < t.length; i++) {
+        //     let row = []
+        //     for (let j = 0; j < resolutionY; j++) {
+        //         row.push(Math.random() * 100)
+        //     }
+        //     data.push(row)
+        // }
+        return Sxx
     }
 
     const create3DChart = () => {
-        generateData(100, 100)
+        getData(elec1SpecData)
             .then((data) => {
                 const HEATMAP_COLUMNS = data.length
                 const HEATMAP_ROWS = data.length
