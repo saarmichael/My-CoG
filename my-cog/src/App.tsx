@@ -4,11 +4,13 @@ import './App.css';
 import { BasicHeatMap } from './components/BasicHeatMap';
 import BasicSpectogram from './components/BasicSpectogram';
 import BasicNetGraph from './components/BasicNetGraph';
+import MainGrid from './scenes/main/GridComponents';
 
 function App() {
   return (
     <div className="App">
-      <BasicSpectogram />
+      
+      <MainGrid />
     </div>
   );
 }

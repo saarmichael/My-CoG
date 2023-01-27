@@ -41,7 +41,7 @@ const BasicNetGraph = () => {
     }, [graph])
 
     return (
-        <div id="graph-container" ref={graphContainer} style={{ width: '100%', height: "400px" }}></div>
+        <div id="graph-container" ref={graphContainer} style={{ width: 'auto', height: "100%" }}></div>
     )
 }
 
