@@ -5,6 +5,7 @@ import BasicNetGraph from "../../components/BasicNetGraph";
 import BasicSpectogram from "../../components/BasicSpectogram";
 import { BasicHeatMap } from "../../components/BasicHeatMap";
 import LCChart from "../../components/LCChart";
+import BasicG6Graph from "../../components/BasicG6Graph";
 
 class MainGrid extends React.Component {
 
@@ -27,7 +28,7 @@ class MainGrid extends React.Component {
                 <BasicHeatMap />
             </div>
             <div key="b" className="card">
-                <BasicNetGraph />
+                <BasicG6Graph />
             </div>
         </GridLayout>
         );
