@@ -12,7 +12,7 @@ import {
     UIDraggingModes,
     Themes
 } from '@arction/lcjs';
-import * as elec1_spectrogram from '../ecog_data/elec1_spectrogram.json'
+import * as elec1_spectrogram from '../shared/ecog_data/elec1_spectrogram.json'
 
 interface Basic3DSpectogramProps {
     data: number[][];
