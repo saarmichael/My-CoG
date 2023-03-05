@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Graph from "graphology";
-import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
+import { ControlsContainer, FullScreenControl, SigmaContainer, useLoadGraph, ZoomControl } from "@react-sigma/core";
 import "@react-sigma/core/lib/react-sigma.min.css";
 
 export const LoadGraph = () => {
@@ -17,8 +17,12 @@ export const LoadGraph = () => {
 
 export const BasicNetGraph = () => {
   return (
-    <SigmaContainer style={{ height: "500px", width: "500px" }}>
+    <SigmaContainer style={{ height: "200px", width: "200px" }}>
       <LoadGraph />
+      <ControlsContainer>
+        <FullScreenControl />
+        <ZoomControl />
+      </ControlsContainer>
     </SigmaContainer>
   );
 };

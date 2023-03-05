@@ -4,11 +4,12 @@ import './App.css';
 import { BasicHeatMap } from './components/BasicHeatMap';
 import BasicSpectogram from './components/BasicSpectogram';
 import BasicNetGraph from './components/BasicNetGraph';
+import BasicG6Graph from './components/BasicG6Graph';
 
 function App() {
   return (
     <div className="App">
-      <BasicNetGraph />
+      <BasicG6Graph/>
     </div>
   );
 }
