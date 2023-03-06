@@ -57,6 +57,42 @@ const getEdges = (CM: number[][], nodes: NodeConfig[]): EdgeConfig[] => {
     return edges;
 }
 
+const getEdgeRelativeSizes = (CM : number[][]) : number[] => {
+    // sum the values of all pairs of nodes, meaning the sum of the lower triangle of the matrix
+    let sum = 0;
+    for (let i = 0; i < CM.length; i++) {
+        for (let j = 0; j < CM.length; j++) {
+            if (i < j) {
+                sum += CM[i][j];
+            }
+        }
+    }
+    let relativeValues : number[] = [];
+    for (let i = 0; i < CM.length; i++) {
+        for (let j = 0; j < CM.length; j++) {
+            if (i < j) {
+                relativeValues.push(CM[i][j] / sum);
+            }
+        }
+    }
+    return relativeValues;
+}
+
+export const changeEdgeWidth = (freq:number, edges : any, min: number, max: number) => {
+    const CM = getCoherenceMatrix(freq);
+    let relativeValues = getEdgeRelativeSizes(CM);
+    let newEdges : EdgeConfig[] = [];
+    for (let i = 0; i < edges.length; i++) {
+        newEdges.push({
+            ...edges[i],
+            size: min + (max - min) * relativeValues[i],
+        });
+    }
+    return newEdges;
+}
+
+
+
 
 export const getGraphData = (freq:number, getPositions?: (n: number, radius: number) => number[][]): GraphData => {
     const CM = getCoherenceMatrix(freq);

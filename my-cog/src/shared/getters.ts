@@ -21,6 +21,8 @@ export const getCoherenceMatrix = (freqBand: number): number[][] => {
         return (Math.abs(curr - freqBand) < Math.abs(f[prev] - freqBand) ? curr : prev);
     });
     // return the coherence matrix of the closest frequency band
+    // make index an integer
+    index = Math.round(index);
     return coherence_matrices.Cxy[index];
 };
 
