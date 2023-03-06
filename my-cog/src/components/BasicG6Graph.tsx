@@ -5,7 +5,7 @@ import { getGraphData, circularPositions } from "../shared/GraphService"
 
 
 const BasicG6Graph = () => { 
-    let data = getGraphData("", circularPositions);
+    let data = getGraphData(0, circularPositions);
 
     let graph : any = null;
     useEffect(() => {

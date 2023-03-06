@@ -4,12 +4,14 @@ import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 
 // function that creates circular positions (x, y)[] for the nodes
 export const circularPositions = (n: number, radius: number): number[][] => {
+    // return positions in a circle with radius r and center (250, 250)
     const positions = [];
     for (let i = 0; i < n; i++) {
         const theta = 2 * Math.PI * i / n;
         const x = radius * Math.cos(theta);
         const y = radius * Math.sin(theta);
-        positions.push([x, y]);
+        // consider the center of the circle to be (250, 250)
+        positions.push([x + 250, y + 250]);
     }
     return positions;
 }
@@ -56,16 +58,12 @@ const getEdges = (CM: number[][], nodes: NodeConfig[]): EdgeConfig[] => {
 }
 
 
-export const getGraphData = (freqBand: string, getPositions?: (n: number, radius: number) => number[][]): GraphData => {
-    // get the coherence matrix of the given frequency band
-    const coherence_matrix = getCoherenceMatrix(freqBand);
-    // get the nodes
-    let nodes: NodeConfig[] = getNodes(coherence_matrix, getPositions);
-    // get the edges
-    let edges: EdgeConfig[] = getEdges(coherence_matrix, nodes);
-    // return the graph data
+export const getGraphData = (freq:number, getPositions?: (n: number, radius: number) => number[][]): GraphData => {
+    const CM = getCoherenceMatrix(freq);
+    const nodes = getNodes(CM, getPositions);
+    const edges = getEdges(CM, nodes);
     return {
-        nodes: nodes,
-        edges: edges,
-    };
+        nodes,
+        edges,
+    }
 }
