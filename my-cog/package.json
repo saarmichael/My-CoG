@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@antv/g6": "^4.8.7",
     "@arction/lcjs": "^3.4.0",
     "@arction/xydata": "^1.4.0",
     "@react-sigma/core": "^3.3.0",

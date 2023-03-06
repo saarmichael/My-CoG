@@ -9,11 +9,6 @@ export const getCoherenceMatrices = () => {
 // get the coherence matrix of a specific frequency band
 export const getCoherenceMatrix = (freqBand: string) => {
     // freqBand is the key of the coherence matrix
-   let key = "" ;
-   for(const k in coherence_matrices){
-       if(k === freqBand){
-           return coherence_matrices[k];
-       }
-   }
+   return coherence_matrices["0.0"];
 };
 

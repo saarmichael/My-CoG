@@ -13,25 +13,14 @@ def get_coherence_matrices(data, fs, window, overlap):
     """
     Compute the coherence between all pairs of electrodes in data.
     """
-    # dict to hold the coherence matrices where keys are frequency bands
-    coherence_matrices = {}
-    # get the number of electrodes
-    num_electrodes = data.shape[1]
-    # get the frequencies and coherence values
-    f, Cxy = coherence(data[:, 0], data[:, 1], fs, window, overlap)
-    # get the number of frequency bands
-    num_freq_bands = len(f)
-    # create the coherence matrices
-    for i in range(num_freq_bands):
-        coherence_matrices[f[i]] = np.zeros((num_electrodes, num_electrodes))
-    # fill in the coherence matrices
-    for i in range(num_electrodes):
-        for j in range(i+1, num_electrodes):
+    f, _ = coherence(data[:, 0], data[:, 1], fs, window, overlap)
+    # f is the frequency vector and CM is all the coherence matrices for each pair of electrodes and is number[][][]
+    CM = np.zeros((len(f), data.shape[1], data.shape[1]))
+    for i in range(data.shape[1]):
+        for j in range(data.shape[1]):
             f, Cxy = coherence(data[:, i], data[:, j], fs, window, overlap)
-            for k in range(num_freq_bands):
-                coherence_matrices[f[k]][i, j] = Cxy[k]
-                coherence_matrices[f[k]][j, i] = Cxy[k]
-    return coherence_matrices
+            CM[:, i, j] = Cxy
+    return f, CM
 
 # def write_CM_to_JSON(CM, filename):
 #     """
