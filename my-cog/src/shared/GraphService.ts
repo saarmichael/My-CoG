@@ -116,8 +116,7 @@ export const changeEdgeWidth = (freq: number, edges: any, min: number, max: numb
     return newEdges;
 }
 
-export const changeEdgeWidthGraphin = (freq: number, edges: IUserEdge[], min: number, max: number) => {
-    const CM = getCoherenceMatrix(freq);
+export const changeEdgeWidthGraphin = (edges: IUserEdge[], min: number, max: number) => {
     let edgeSum = getEdgesSum(edges);
     let newEdges: IUserEdge[] = [];
     for (let i = 0; i < edges.length; i++) {
@@ -126,11 +125,11 @@ export const changeEdgeWidthGraphin = (freq: number, edges: IUserEdge[], min: nu
             style: {
                 keyshape: {
                     lineWidth: min + (max - min) * (edges[i].value / edgeSum),
-                    
+
                 },
                 label: {
                     // make the label to be the value of the edge but only two decimal places
-                    value: edges[i].value.toFixed(2),                    
+                    value: edges[i].value.toFixed(2),
                     fontSize: 16,
                 }
             }
@@ -150,9 +149,8 @@ export const getGraphData = (freq: number, getPositions?: (n: number, radius: nu
     }
 }
 
-export const getGraphinData = (freq: number, getPositions?: (n: number, radius: number) => number[][])
+export const getGraphinDataByCM = (CM: number[][], getPositions?: (n: number, radius: number) => number[][])
     : GraphinData => {
-    const CM = getCoherenceMatrix(freq);
     const nodes = getGraphinNodes(CM, getPositions);
     const edges = getGraphinEdges(CM, nodes);
     return {
@@ -160,7 +158,48 @@ export const getGraphinData = (freq: number, getPositions?: (n: number, radius: 
         edges,
     }
 }
+export const getGraphinData = (freq: number, getPositions?: (n: number, radius: number) => number[][])
+    : GraphinData => {
+    const CM = getCoherenceMatrix(freq);
+    return getGraphinDataByCM(CM, getPositions);
+}
+
+
+
 
 export const getFrequencyList = (): number[] => {
     return getFrequencies();
+}
+
+
+/*!! THIS FUNCTION IS BETTER OFF BE WRITTEN IN PYTHON DUE TO MEANINGFUL CALCULATIONS OVER FLOATS !!*/
+const getAverageCM = (minRange: number, maxRange: number): number[][] => {
+    // get the average coherence matrix over the range [minRange, maxRange]
+    const freqList = getFrequencies();
+    let CM = getCoherenceMatrix(freqList[0]);
+    let numOfMatrices = 0;
+    for (let i = 1; i < freqList.length; i++) {
+        if (freqList[i] >= minRange && freqList[i] <= maxRange) {
+            numOfMatrices++;
+            const newCM = getCoherenceMatrix(freqList[i]);
+            for (let j = 0; j < CM.length; j++) {
+                for (let k = 0; k < CM.length; k++) {
+                    CM[j][k] += newCM[j][k];
+                }
+            }
+        }
+    }
+    // divide the sum by the number of matrices in the range
+    for (let j = 0; j < CM.length; j++) {
+        for (let k = 0; k < CM.length; k++) {
+            CM[j][k] /= numOfMatrices;
+        }
+    }
+    return CM;
+}
+
+export const getAverageGraphinData = (minRange: number, maxRange: number,
+    getPositions?: (n: number, radius: number) => number[][]): GraphinData => {
+    const CM = getAverageCM(minRange, maxRange);
+    return getGraphinDataByCM(CM, getPositions);
 }
