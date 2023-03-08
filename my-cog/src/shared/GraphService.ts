@@ -1,4 +1,4 @@
-import { getCoherenceMatrix, getFrequencies } from './getters'
+import { getCoherenceMatrix } from './getters'
 import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
 
@@ -49,6 +49,8 @@ const getGraphinNodes = (CM: number[][], getPositions?: (n: number, radius: numb
     for (let i = 0; i < CM.length; i++) {
         nodes.push({
             id: "node" + i.toString(),
+            x: positions[i][0],
+            y: positions[i][1],
         });
     }
     return nodes;
@@ -72,7 +74,7 @@ const getEdges = (CM: number[][], nodes: NodeConfig[]): EdgeConfig[] => {
 }
 
 const getGraphinEdges = (CM: number[][], nodes: IUserNode[]): IUserEdge[] => {
-    let edges: IUserEdge[] = [];
+    let edges = [];
     for (let i = 0; i < CM.length; i++) {
         for (let j = 0; j < CM.length; j++) {
             if (i < j) {
@@ -80,12 +82,6 @@ const getGraphinEdges = (CM: number[][], nodes: IUserNode[]): IUserEdge[] => {
                     source: "node" + i.toString(),
                     target: "node" + j.toString(),
                     value: CM[i][j],
-                    style: {
-                        label: {
-                            value: CM[i][j].toString(),
-                            fontSize: 10,
-                        }
-                    }
                 });
             }
         }
@@ -93,51 +89,59 @@ const getGraphinEdges = (CM: number[][], nodes: IUserNode[]): IUserEdge[] => {
     return edges;
 }
 
-const getEdgesSum = (edges: IUserEdge[]): number => {
+const getEdgeRelativeSizes = (CM: number[][]): number[] => {
     // sum the values of all pairs of nodes, meaning the sum of the lower triangle of the matrix
     let sum = 0;
-    // sum the values of edges
-    edges.forEach(edge => {
-        sum += edge.value;
-    });
-    return sum;
+    for (let i = 0; i < CM.length; i++) {
+        for (let j = 0; j < CM.length; j++) {
+            if (i < j) {
+                sum += CM[i][j];
+            }
+        }
+    }
+    let relativeValues: number[] = [];
+    for (let i = 0; i < CM.length; i++) {
+        for (let j = 0; j < CM.length; j++) {
+            if (i < j) {
+                relativeValues.push(CM[i][j] / sum);
+            }
+        }
+    }
+    return relativeValues;
 }
 
 export const changeEdgeWidth = (freq: number, edges: any, min: number, max: number) => {
     const CM = getCoherenceMatrix(freq);
-    let edgeSum = getEdgesSum(edges);
+    let relativeValues = getEdgeRelativeSizes(CM);
     let newEdges: EdgeConfig[] = [];
     for (let i = 0; i < edges.length; i++) {
         newEdges.push({
             ...edges[i],
-            size: min + (max - min) * (edges[i].value / edgeSum),
+            size: min + (max - min) * relativeValues[i],
         });
     }
     return newEdges;
 }
 
-export const changeEdgeWidthGraphin = (freq: number, edges: IUserEdge[], min: number, max: number) => {
+export const changeEdgeWidthGraphin = (freq: number, edges: any, min: number, max: number) => {
     const CM = getCoherenceMatrix(freq);
-    let edgeSum = getEdgesSum(edges);
+    let relativeValues = getEdgeRelativeSizes(CM);
     let newEdges: IUserEdge[] = [];
     for (let i = 0; i < edges.length; i++) {
         newEdges.push({
             ...edges[i],
             style: {
                 keyshape: {
-                    lineWidth: min + (max - min) * (edges[i].value / edgeSum),
-                    
-                },
-                label: {
-                    // make the label to be the value of the edge but only two decimal places
-                    value: edges[i].value.toFixed(2),                    
-                    fontSize: 16,
+                    lineWidth: min + (max - min) * relativeValues[i]
                 }
+
             }
         });
     }
     return newEdges;
 }
+
+
 
 
 export const getGraphData = (freq: number, getPositions?: (n: number, radius: number) => number[][]): GraphData => {
@@ -152,15 +156,11 @@ export const getGraphData = (freq: number, getPositions?: (n: number, radius: nu
 
 export const getGraphinData = (freq: number, getPositions?: (n: number, radius: number) => number[][])
     : GraphinData => {
-    const CM = getCoherenceMatrix(freq);
-    const nodes = getGraphinNodes(CM, getPositions);
-    const edges = getGraphinEdges(CM, nodes);
-    return {
-        nodes,
-        edges,
-    }
-}
-
-export const getFrequencyList = (): number[] => {
-    return getFrequencies();
+        const CM = getCoherenceMatrix(freq);
+        const nodes = getGraphinNodes(CM, getPositions);
+        const edges = getGraphinEdges(CM, nodes);
+        return {
+            nodes,
+            edges,
+        }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Graphin, { Behaviors, GraphinData } from '@antv/graphin';
-import { changeEdgeWidthGraphin, getFrequencyList, getGraphinData } from '../shared/GraphService';
+import { changeEdgeWidth, changeEdgeWidthGraphin, getGraphData, getGraphinData } from '../shared/GraphService';
 
 // a component that creates and renders a graphin graph
 // it creates its data
@@ -15,31 +15,40 @@ const BasicGraphinGraph = () => {
     }
     const [state, setState] = React.useState<GraphinData>(createGraphData());
 
-    const freqs: number[] = getFrequencyList();
-    // create a dropdown menu that consists of the frequencies and the user can select one
-    // when the user selects a frequency, the graph is updated accordingly
-    // make sure each child has a unique key
-    const freqDropdown = (
-        <select onChange={(e) => {
-            const freq = parseFloat(e.target.value);
-            let { nodes, edges }: GraphinData = getGraphinData(freq);
-            edges = changeEdgeWidthGraphin(4, edges, 1, 30);
-            setState({ nodes, edges });
-        }}>
-            {freqs.map((freq, index) => {
-                return <option key={index} value={freq}>{freq}</option>
-            })}
-        </select>
+    // a function that adds a node to the graph after the button is clicked
+    const addNode = () => {
+        const expandData = {
+            nodes: [
+                {
+                    id: 'node3',
+                    x: 300,
+                    y: 300,
+                },
+            ],
+            edges: [
+                {
+                    source: 'node2',
+                    target: 'node3',
+                },
+            ],
+        };
 
-    );
+        setState({
+            nodes: [...state.nodes, ...expandData.nodes],
+            edges: [...state.edges, ...expandData.edges],
+
+        });
+    }
 
     createGraphData();
     const data = state;
     return (
         <>
             <div id="mountNode"></div>
-            {freqDropdown}
-            <Graphin data={data} layout={{ type: 'circular' }}>
+            <button onClick={() => {
+                addNode();
+            }}>Change Data</button>
+            <Graphin data={data}>
             </Graphin>
         </>
     );
