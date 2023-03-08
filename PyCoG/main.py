@@ -10,7 +10,7 @@ import os
 # load the data
 finger_bp = loadmat('bp_fingerflex.mat')
 bp_data = finger_bp['data']
-bp_data = bp_data[:, 0:10]
+bp_data = bp_data[:, 0:3]
 elec1 = bp_data[:, 0] # first electrode
 elec2 = bp_data[:, 1] # second electrode
 
