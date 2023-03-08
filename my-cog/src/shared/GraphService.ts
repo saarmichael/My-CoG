@@ -1,5 +1,6 @@
 import { getCoherenceMatrix } from './getters'
 import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
+import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
 
 
 // function that creates circular positions (x, y)[] for the nodes
@@ -41,14 +42,45 @@ const getNodes = (CM: number[][], getPositions?: (n: number, radius: number) => 
 
 }
 
+const getGraphinNodes = (CM: number[][], getPositions?: (n: number, radius: number) => number[][]): IUserNode[] => {
+    let nodes = [];
+    // get the positions of the nodes
+    let positions = getPositions ? getPositions(CM.length, 100) : getRandomPositions(CM.length);
+    for (let i = 0; i < CM.length; i++) {
+        nodes.push({
+            id: "node" + i.toString(),
+            x: positions[i][0],
+            y: positions[i][1],
+        });
+    }
+    return nodes;
+
+}
+
 const getEdges = (CM: number[][], nodes: NodeConfig[]): EdgeConfig[] => {
     let edges = [];
     for (let i = 0; i < CM.length; i++) {
         for (let j = 0; j < CM.length; j++) {
             if (i < j) {
                 edges.push({
-                    source: i.toString(),
-                    target: j.toString(),
+                    source: "node" + i.toString(),
+                    target: "node" + j.toString(),
+                    value: CM[i][j],
+                });
+            }
+        }
+    }
+    return edges;
+}
+
+const getGraphinEdges = (CM: number[][], nodes: IUserNode[]): IUserEdge[] => {
+    let edges = [];
+    for (let i = 0; i < CM.length; i++) {
+        for (let j = 0; j < CM.length; j++) {
+            if (i < j) {
+                edges.push({
+                    source: "node" + i.toString(),
+                    target: "node" + j.toString(),
                     value: CM[i][j],
                 });
             }
@@ -98,6 +130,16 @@ export const getGraphData = (freq:number, getPositions?: (n: number, radius: num
     const CM = getCoherenceMatrix(freq);
     const nodes = getNodes(CM, getPositions);
     const edges = getEdges(CM, nodes);
+    return {
+        nodes,
+        edges,
+    }
+}
+
+export const getGraphinData = (freq:number, getPositions?: (n: number, radius: number) => number[][]): GraphinData => {
+    const CM = getCoherenceMatrix(freq);
+    const nodes = getGraphinNodes(CM, getPositions);
+    const edges = getGraphinEdges(CM, nodes);
     return {
         nodes,
         edges,
