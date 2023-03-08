@@ -55,8 +55,8 @@ const BasicGraphinGraph = () => {
                 if (maxRef.current?.value == "") {
                     maxRef.current.value = freqs[freqs.length - 1].toString();
                 }
-                
-            } 
+
+            }
             // get the values of the input fields
             let min = parseFloat(minRef.current.value);
             let max = parseFloat(maxRef.current.value);
@@ -68,7 +68,7 @@ const BasicGraphinGraph = () => {
             if (min < 0) {
                 minRef.current.value = "0";
             }
-            if(min > freqs[freqs.length - 1]) {
+            if (min > freqs[freqs.length - 1]) {
                 minRef.current.value = "0";
             }
             let { nodes, edges }: GraphinData =
@@ -82,8 +82,8 @@ const BasicGraphinGraph = () => {
     // create the html for the input fields with a submit button
     const minMaxInput = (
         <div>
-            <input type="number" ref={minRef} />
-            <input type="number" ref={maxRef} />
+            Min: <input type="number" ref={minRef} /> &nbsp;
+            Max: <input type="number" ref={maxRef} />
             <button onClick={minMaxUpdate}>Submit</button>
         </div>
     );
@@ -94,7 +94,7 @@ const BasicGraphinGraph = () => {
     return (
         <>
             <div id="mountNode"></div>
-            {freqDropdown}
+            Frequency: {freqDropdown}
             {minMaxInput}
             <Graphin data={data} layout={{ type: 'circular' }}>
             </Graphin>

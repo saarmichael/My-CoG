@@ -125,12 +125,16 @@ export const changeEdgeWidthGraphin = (edges: IUserEdge[], min: number, max: num
             style: {
                 keyshape: {
                     lineWidth: min + (max - min) * (edges[i].value / edgeSum),
-
+                    stroke: '#000000',
+                    strokeOpacity: 0.8,
                 },
                 label: {
                     // make the label to be the value of the edge but only two decimal places
                     value: edges[i].value.toFixed(2),
-                    fontSize: 16,
+                    fontSize: 12,
+                    stroke: '#2A1802',
+                    fill: 'blue',
+                    opacity: 0.6,
                 }
             }
         });
