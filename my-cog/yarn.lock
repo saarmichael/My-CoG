@@ -191,12 +191,35 @@
     "@antv/util" "^2.0.9"
     "insert-css" "^2.0.0"
 
-"@antv/g6@^4.8.7":
+"@antv/g6@^4.7.9", "@antv/g6@^4.8.7":
   "integrity" "sha512-80kk9EHsVynWRROW8VjkjxTTbu23ZLC/06bkar01c5ANQcmpJFPfVrnvYTbk67EAym8zXhHHn68CQ2XMXmkPOQ=="
   "resolved" "https://registry.npmjs.org/@antv/g6/-/g6-4.8.7.tgz"
   "version" "4.8.7"
   dependencies:
     "@antv/g6-pc" "0.8.7"
+
+"@antv/graphin-components@^2.4.0":
+  "integrity" "sha512-ADVcQlwMO9p18qBIxdK+nddzA+73OXxKPSLMeeF5B4f9USvC9b4cB9q4ciYbslRQrpUkUpWBdbY+44jq38f/Yg=="
+  "resolved" "https://registry.npmjs.org/@antv/graphin-components/-/graphin-components-2.4.0.tgz"
+  "version" "2.4.0"
+  dependencies:
+    "@antv/util" "^2.0.10"
+
+"@antv/graphin-icons@^1.0.0":
+  "integrity" "sha512-2nogK6ZrDklnfIOJrqOAgD7iFLjfZIjLbA8pDUbeXN5c9b0Mu84oCfyqg8OmWwvi9Gt80eUzoplo73gKjZECJg=="
+  "resolved" "https://registry.npmjs.org/@antv/graphin-icons/-/graphin-icons-1.0.0.tgz"
+  "version" "1.0.0"
+
+"@antv/graphin@^2.*", "@antv/graphin@^2.7.13":
+  "integrity" "sha512-4ZwL0Q34G7nkji3WawBipaWt3JGNa3ucMjhEtDSU8A0uVfP4k1kpGUl5bTjhD5cEzg7CU3GOQ9itr7/Mco2npA=="
+  "resolved" "https://registry.npmjs.org/@antv/graphin/-/graphin-2.7.13.tgz"
+  "version" "2.7.13"
+  dependencies:
+    "@antv/g6" "^4.7.9"
+    "@antv/util" "^2.0.10"
+    "@types/lodash.clonedeep" "^4.5.6"
+    "d3-quadtree" "^3.0.1"
+    "lodash.clonedeep" "^4.5.0"
 
 "@antv/graphlib@^1.0.0":
   "integrity" "sha512-hhJOMThec51nU4Fe5p/viLlNIL71uDEgYFzKPajWjr2715SFG1HAgiP6AVylIeqBcAZ04u3Lw7usjl/TuI5RuQ=="
@@ -258,7 +281,7 @@
     "fecha" "~4.2.0"
     "tslib" "^2.0.0"
 
-"@antv/util@^2.0.13", "@antv/util@^2.0.7", "@antv/util@^2.0.9", "@antv/util@~2.0.0", "@antv/util@~2.0.13", "@antv/util@~2.0.3", "@antv/util@~2.0.5":
+"@antv/util@^2.0.10", "@antv/util@^2.0.13", "@antv/util@^2.0.7", "@antv/util@^2.0.9", "@antv/util@~2.0.0", "@antv/util@~2.0.13", "@antv/util@~2.0.3", "@antv/util@~2.0.5":
   "integrity" "sha512-o6I9hi5CIUvLGDhth0RxNSFDRwXeywmt6ExR4+RmVAzIi48ps6HUy+svxOCayvrPBN37uE6TAc2KDofRo0nK9Q=="
   "resolved" "https://registry.npmjs.org/@antv/util/-/util-2.0.17.tgz"
   "version" "2.0.17"
@@ -2394,6 +2417,18 @@
   "resolved" "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz"
   "version" "0.0.29"
 
+"@types/lodash.clonedeep@^4.5.6":
+  "integrity" "sha512-ccNqkPptFIXrpVqUECi60/DFxjNKsfoQxSQsgcBJCX/fuX1wgyQieojkcWH/KpE3xzLoWN/2k+ZeGqIN3paSvw=="
+  "resolved" "https://registry.npmjs.org/@types/lodash.clonedeep/-/lodash.clonedeep-4.5.7.tgz"
+  "version" "4.5.7"
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  "integrity" "sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ=="
+  "resolved" "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.191.tgz"
+  "version" "4.14.191"
+
 "@types/mime@*":
   "integrity" "sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA=="
   "resolved" "https://registry.npmjs.org/@types/mime/-/mime-3.0.1.tgz"
@@ -4368,6 +4403,11 @@
   "integrity" "sha512-b0Ed2t1UUalJpc3qXzKi+cPGxeXRr4KU9YSlocN74aTzp6R/Ud43t79yLLqxHRWZfsvWXmbDWPpoENK1K539xw=="
   "resolved" "https://registry.npmjs.org/d3-quadtree/-/d3-quadtree-2.0.0.tgz"
   "version" "2.0.0"
+
+"d3-quadtree@^3.0.1":
+  "integrity" "sha512-04xDrxQTDTCFwP5H6hRhsRcb9xxv2RzkcsygFzmkSIOJy3PeRJP7sNk3VRIbKXcog561P9oU0/rVH6vDROAgUw=="
+  "resolved" "https://registry.npmjs.org/d3-quadtree/-/d3-quadtree-3.0.1.tgz"
+  "version" "3.0.1"
 
 "d3-quadtree@1", "d3-quadtree@1 - 2":
   "integrity" "sha512-RKPAeXnkC59IDGD0Wu5mANy0Q2V28L+fNe65pOCXVdVuTJS3WPKaJlFHer32Rbh9gIo9qMuJXio8ra4+YmIymA=="
@@ -7541,6 +7581,11 @@
   dependencies:
     "p-locate" "^5.0.0"
 
+"lodash.clonedeep@^4.5.0":
+  "integrity" "sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ=="
+  "resolved" "https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz"
+  "version" "4.5.0"
+
 "lodash.debounce@^4.0.8":
   "integrity" "sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow=="
   "resolved" "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
@@ -9245,7 +9290,7 @@
     "strip-ansi" "^6.0.1"
     "text-table" "^0.2.0"
 
-"react-dom@^18.0.0", "react-dom@^18.2.0", "react-dom@>= 16.3.0":
+"react-dom@^18.0.0", "react-dom@^18.2.0", "react-dom@>= 16.3.0", "react-dom@>=16.9.0":
   "integrity" "sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   "version" "18.2.0"
@@ -9367,7 +9412,7 @@
   optionalDependencies:
     "fsevents" "^2.3.2"
 
-"react@^17.0.0 || ^18.0.0", "react@^18.0.0", "react@^18.2.0", "react@>= 16", "react@>= 16.3", "react@>= 16.3.0", "react@>=0.13", "react@>=15.0.0", "react@>0.13.0":
+"react@^17.0.0 || ^18.0.0", "react@^18.0.0", "react@^18.2.0", "react@>= 16", "react@>= 16.3", "react@>= 16.3.0", "react@>=0.13", "react@>=15.0.0", "react@>=16.9.0", "react@>0.13.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"
