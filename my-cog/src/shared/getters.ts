@@ -12,14 +12,20 @@ export const getCoherenceMatrices = () => {
     return coherence_matrices;
 };
 
+export const getFrequencies = () : number[] => {
+    return coherence_matrices.f;
+};
+
 // get the coherence matrix of a specific frequency band
 export const getCoherenceMatrix = (freqBand: number): number[][] => {
     // freqBand is the key of the coherence matrix
     let f = coherence_matrices.f
     // find the index of the closest frequency band
-    let index = f.reduce((prev, curr) => {
-        return (Math.abs(curr - freqBand) < Math.abs(f[prev] - freqBand) ? curr : prev);
-    });
+    let index = f.findIndex((f) => f >= freqBand);
+    // let index = f.reduce((prev, curr) => {
+    //     return (Math.abs(curr - freqBand) < Math.abs(f[prev] - freqBand) ? curr : prev);
+    // });
+
     // return the coherence matrix of the closest frequency band
     // make index an integer
     index = Math.round(index);
