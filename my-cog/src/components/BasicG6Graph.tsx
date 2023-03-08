@@ -1,31 +1,13 @@
 import G6 from "@antv/g6";
-import Graph from "graphology";
 import React, { useEffect } from "react";
+import { getGraphData, circularPositions, changeEdgeWidth } from "../shared/GraphService"
 
 
 
 const BasicG6Graph = () => { 
-    let data = {
-        nodes: [
-            {
-                id: 'node1',
-                x: 100,
-                y: 200,
-            },
-            {
-                id: 'node2',
-                x: 300,
-                y: 200,
-            },
-        ],
-        edges: [
-            {
-                source: 'node1',
-                target: 'node2',
-            },
-        ],
-    };
-
+    let data = getGraphData(4, circularPositions);
+    let edges : any = data.edges;
+    data.edges = changeEdgeWidth(4, edges, 1, 30);
     let graph : any = null;
     useEffect(() => {
         graph = new G6.Graph({
