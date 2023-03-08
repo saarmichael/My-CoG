@@ -1,6 +1,6 @@
 import React from 'react';
 import Graphin, { Behaviors, GraphinData } from '@antv/graphin';
-import { getGraphData, getGraphinData } from '../shared/GraphService';
+import { changeEdgeWidth, changeEdgeWidthGraphin, getGraphData, getGraphinData } from '../shared/GraphService';
 
 // a component that creates and renders a graphin graph
 // it creates its data
@@ -9,11 +9,11 @@ import { getGraphData, getGraphinData } from '../shared/GraphService';
 const BasicGraphinGraph = () => {
     const createGraphData = () => {
         // create the nodes and edges using GraphService module
-        let {nodes, edges} : GraphinData = getGraphinData(0);
+        let { nodes, edges }: GraphinData = getGraphinData(0);
+        edges = changeEdgeWidthGraphin(4, edges, 1, 30);
         return { nodes, edges };
     }
     const [state, setState] = React.useState<GraphinData>(createGraphData());
-
 
     // a function that adds a node to the graph after the button is clicked
     const addNode = () => {
@@ -41,7 +41,7 @@ const BasicGraphinGraph = () => {
     }
 
     createGraphData();
-    const data = state ;
+    const data = state;
     return (
         <>
             <div id="mountNode"></div>

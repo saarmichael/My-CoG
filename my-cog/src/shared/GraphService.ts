@@ -89,7 +89,7 @@ const getGraphinEdges = (CM: number[][], nodes: IUserNode[]): IUserEdge[] => {
     return edges;
 }
 
-const getEdgeRelativeSizes = (CM : number[][]) : number[] => {
+const getEdgeRelativeSizes = (CM: number[][]): number[] => {
     // sum the values of all pairs of nodes, meaning the sum of the lower triangle of the matrix
     let sum = 0;
     for (let i = 0; i < CM.length; i++) {
@@ -99,7 +99,7 @@ const getEdgeRelativeSizes = (CM : number[][]) : number[] => {
             }
         }
     }
-    let relativeValues : number[] = [];
+    let relativeValues: number[] = [];
     for (let i = 0; i < CM.length; i++) {
         for (let j = 0; j < CM.length; j++) {
             if (i < j) {
@@ -110,10 +110,10 @@ const getEdgeRelativeSizes = (CM : number[][]) : number[] => {
     return relativeValues;
 }
 
-export const changeEdgeWidth = (freq:number, edges : any, min: number, max: number) => {
+export const changeEdgeWidth = (freq: number, edges: any, min: number, max: number) => {
     const CM = getCoherenceMatrix(freq);
     let relativeValues = getEdgeRelativeSizes(CM);
-    let newEdges : EdgeConfig[] = [];
+    let newEdges: EdgeConfig[] = [];
     for (let i = 0; i < edges.length; i++) {
         newEdges.push({
             ...edges[i],
@@ -123,10 +123,28 @@ export const changeEdgeWidth = (freq:number, edges : any, min: number, max: numb
     return newEdges;
 }
 
+export const changeEdgeWidthGraphin = (freq: number, edges: any, min: number, max: number) => {
+    const CM = getCoherenceMatrix(freq);
+    let relativeValues = getEdgeRelativeSizes(CM);
+    let newEdges: IUserEdge[] = [];
+    for (let i = 0; i < edges.length; i++) {
+        newEdges.push({
+            ...edges[i],
+            style: {
+                keyshape: {
+                    lineWidth: min + (max - min) * relativeValues[i]
+                }
+
+            }
+        });
+    }
+    return newEdges;
+}
 
 
 
-export const getGraphData = (freq:number, getPositions?: (n: number, radius: number) => number[][]): GraphData => {
+
+export const getGraphData = (freq: number, getPositions?: (n: number, radius: number) => number[][]): GraphData => {
     const CM = getCoherenceMatrix(freq);
     const nodes = getNodes(CM, getPositions);
     const edges = getEdges(CM, nodes);
@@ -136,12 +154,13 @@ export const getGraphData = (freq:number, getPositions?: (n: number, radius: num
     }
 }
 
-export const getGraphinData = (freq:number, getPositions?: (n: number, radius: number) => number[][]): GraphinData => {
-    const CM = getCoherenceMatrix(freq);
-    const nodes = getGraphinNodes(CM, getPositions);
-    const edges = getGraphinEdges(CM, nodes);
-    return {
-        nodes,
-        edges,
-    }
+export const getGraphinData = (freq: number, getPositions?: (n: number, radius: number) => number[][])
+    : GraphinData => {
+        const CM = getCoherenceMatrix(freq);
+        const nodes = getGraphinNodes(CM, getPositions);
+        const edges = getGraphinEdges(CM, nodes);
+        return {
+            nodes,
+            edges,
+        }
 }
