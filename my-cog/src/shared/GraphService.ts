@@ -33,9 +33,10 @@ const getNodes = (CM: number[][], getPositions?: (n: number, radius: number) => 
     let positions = getPositions ? getPositions(CM.length, 100) : getRandomPositions(CM.length);
     for (let i = 0; i < CM.length; i++) {
         nodes.push({
-            id: i.toString(),
+            id: "electrode" + i.toString(),
             x: positions[i][0],
             y: positions[i][1],
+
         });
     }
     return nodes;
@@ -43,12 +44,18 @@ const getNodes = (CM: number[][], getPositions?: (n: number, radius: number) => 
 }
 
 const getGraphinNodes = (CM: number[][], getPositions?: (n: number, radius: number) => number[][]): IUserNode[] => {
-    let nodes = [];
+    let nodes: IUserNode[] = [];
     // get the positions of the nodes
     let positions = getPositions ? getPositions(CM.length, 100) : getRandomPositions(CM.length);
     for (let i = 0; i < CM.length; i++) {
         nodes.push({
-            id: "node" + i.toString(),
+            id: "electrode" + i.toString(),
+            style: {
+                label: {
+                    value: "electrode" + i.toString(),
+                    fontSize: 12,
+                }
+            },
         });
     }
     return nodes;
@@ -61,8 +68,8 @@ const getEdges = (CM: number[][], nodes: NodeConfig[]): EdgeConfig[] => {
         for (let j = 0; j < CM.length; j++) {
             if (i < j) {
                 edges.push({
-                    source: "node" + i.toString(),
-                    target: "node" + j.toString(),
+                    source: "electrode" + i.toString(),
+                    target: "electrode" + j.toString(),
                     value: CM[i][j],
                 });
             }
@@ -77,8 +84,8 @@ const getGraphinEdges = (CM: number[][], nodes: IUserNode[]): IUserEdge[] => {
         for (let j = 0; j < CM.length; j++) {
             if (i < j) {
                 edges.push({
-                    source: "node" + i.toString(),
-                    target: "node" + j.toString(),
+                    source: "electrode" + i.toString(),
+                    target: "electrode" + j.toString(),
                     value: CM[i][j],
                     style: {
                         label: {
