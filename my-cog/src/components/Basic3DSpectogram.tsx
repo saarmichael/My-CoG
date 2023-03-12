@@ -51,6 +51,7 @@ const Basic3DSpectogram = () => {
                 const HEATMAP_COLUMNS = data.length
                 const HEATMAP_ROWS = data.length
                 const dashboard = lightningChart().Dashboard({
+                    container:"chart3D",
                     numberOfColumns: 2,
                     numberOfRows: 1,
                     theme: Themes.darkGold,
@@ -120,10 +121,10 @@ const Basic3DSpectogram = () => {
 
     useEffect(() => {
         create3DChart()
-    }, [create3DChart])
+    }, [])
 
     return (
-        <div id="chart3D" style={{ width: '100%', height: '100%' }}></div>
+        <div id="chart3D" style={{ width: '500px', height: '500px' }}></div>
     )
 
 }

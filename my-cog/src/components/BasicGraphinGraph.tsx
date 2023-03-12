@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import Graphin, { Behaviors, GraphinContext, GraphinContextType, GraphinData, IG6GraphEvent} from '@antv/graphin';
+import Graphin, { Behaviors, GraphinContext, GraphinContextType, GraphinData, IG6GraphEvent } from '@antv/graphin';
 import { changeEdgeWidthGraphin, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
@@ -7,28 +7,29 @@ import { INode, NodeConfig } from '@antv/g6';
 
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
-   
-  
+
+
     useEffect(() => {
-      // 初始化聚焦到`node-1`
-  
-      apis.focusNodeById('electrode1');
-  
-      const handleClick = (evt: IG6GraphEvent) => {
-        const node = evt.item as INode;
-        const model = node.getModel() as NodeConfig;
-        apis.focusNodeById(model.id);
-        // set the context
+        // 初始化聚焦到`node-1`
+        // change the height of the graph
         
-      };
-      // 每次点击聚焦到点击节点上
-      graph.on('node:click', handleClick);
-      return () => {
-        graph.off('node:click', handleClick);
-      };
+        graph.changeSize(2000, 600);
+
+        const handleClick = (evt: IG6GraphEvent) => {
+            const node = evt.item as INode;
+            const model = node.getModel() as NodeConfig;
+            apis.focusNodeById(model.id);
+            // set the context
+
+        };
+        // 每次点击聚焦到点击节点上
+        graph.on('node:click', handleClick);
+        return () => {
+            graph.off('node:click', handleClick);
+        };
     }, []);
     return null;
-  };
+};
 
 // a component that creates and renders a graphin graph
 // it creates its data
@@ -48,7 +49,7 @@ const BasicGraphinGraph = () => {
     }
     const [state, setState] = React.useState<GraphinData>(createGraphData());
 
-    
+
 
     const freqs: number[] = getFrequencyList();
     // create a dropdown menu that consists of the frequencies and the user can select one
@@ -122,16 +123,23 @@ const BasicGraphinGraph = () => {
     const data = state;
     return (
         <>
-            <div id="mountNode"></div>
-            Frequency: {freqDropdown}
-            {minMaxInput}
-            <Graphin data={data} layout={{ type: 'circular' }}>
-                <ActivateRelations trigger="click" />
-                <SampleBehavior />
-            </Graphin>
+            <div id="mountNode" style={{
+                position: "relative",
+                overflow: "hidden", touchAction: "pan-y", userSelect: "none", width: "100%", height: "100%"
+            }}>
+                Frequency: {freqDropdown}
+                {minMaxInput}
+                <Graphin data={data} layout={{ type: 'circular' }} containerId={"mountNode"}
+                    style={{
+                        position: "relative", touchAction: "none",
+                        userSelect: "none", width: "100%", height: "100%", cursor: "default"
+                    }} >
+                    <ActivateRelations trigger="click" />
+                    <SampleBehavior />
+                </Graphin>
+            </div>
         </>
     );
 }
-
 
 export default BasicGraphinGraph;
