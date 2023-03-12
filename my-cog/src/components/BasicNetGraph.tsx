@@ -1,48 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { DirectedGraph, UndirectedGraph } from 'graphology'
-import { Sigma } from 'sigma'
+import { useEffect } from "react";
+import Graph from "graphology";
+import { ControlsContainer, FullScreenControl, SigmaContainer, useLoadGraph, ZoomControl } from "@react-sigma/core";
+import "@react-sigma/core/lib/react-sigma.min.css";
 
+export const LoadGraph = () => {
+  const loadGraph = useLoadGraph();
 
-const createGraph = () => {
-    const graph = new UndirectedGraph()
-    graph.addNode("John", { x: 15, y: 10, size: 5, label: "John", color: "blue" });
-    graph.addNode("Mary", { x: 10, y: 0, size: 3, label: "Mary", color: "red" });
-    graph.addNode("Bob", { x: 0, y: 0, size: 2, label: "Bob", color: "green" });
-    graph.addNode("Alice", { x: 0, y: 10, size: 7, label: "Alice", color: "yellow" });
-    graph.addNode("Mark", { x: 5, y: 5, size: 5, label: "Mark", color: "purple" });
-    graph.addNode("Kate", { x: 5, y: 5, size: 4, label: "Kate", color: "orange" });
+  useEffect(() => {
+    const graph = new Graph();
+    graph.addNode("first", { x: 0, y: 0, size: 15, label: "My first node", color: "#FA4F40" });
+    loadGraph(graph);
+  }, [loadGraph]);
 
+  return null;
+};
 
-    graph.addEdge("John", "Mary");
-    graph.addEdge("John", "Bob");
-    graph.addEdge("John", "Alice");
-    graph.addEdge("John", "Mark");
-    graph.addEdge("Alice", "Bob");
-    graph.addEdge("Alice", "Kate");
-    graph.addEdge("Bob", "Kate");
-
-
-    return graph
-}
-
-const BasicNetGraph = () => {
-    const [graph, setGraph] = useState<UndirectedGraph>()
-    // reference to graph-container div
-    let graphContainer = React.createRef<HTMLDivElement>()
-    useEffect(() => {
-        const graph = createGraph()
-        setGraph(graph)
-    }, [])
-
-    useEffect(() => {
-        if (graph) {
-            const s = new Sigma(graph, graphContainer.current!)
-        }
-    }, [graph])
-
-    return (
-        <div id="graph-container" ref={graphContainer} style={{ width: 'auto', height: "100%", display: "flex" }}></div>
-    )
-}
-
+export const BasicNetGraph = () => {
+  return (
+    <SigmaContainer style={{ height: "200px", width: "200px" }}>
+      <LoadGraph />
+      <ControlsContainer>
+        <FullScreenControl />
+        <ZoomControl />
+      </ControlsContainer>
+    </SigmaContainer>
+  );
+};
 export default BasicNetGraph
