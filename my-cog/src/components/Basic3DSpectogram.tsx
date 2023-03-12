@@ -51,6 +51,7 @@ const Basic3DSpectogram = () => {
                 const HEATMAP_COLUMNS = data.length
                 const HEATMAP_ROWS = data.length
                 const dashboard = lightningChart().Dashboard({
+                    container: "chart3D",
                     numberOfColumns: 2,
                     numberOfRows: 1,
                     theme: Themes.darkGold,
