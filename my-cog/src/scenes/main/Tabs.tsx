@@ -17,33 +17,41 @@ function Tabs() {
   const [tabContents, setTabContents] = useState<JSX.Element[]>([]);
 
   const addTab = () => {
+    let tab = topTab(numTabs + 1);
+    let content = new contentTab(numTabs + 1);
     setNumTabs(numTabs + 1);
-    setTabsList([...tabsList, <button
-      className="tabs"
-      onClick={() => toggleTab(4)}
-    >
-      Tab {numTabs + 1}
-    </button>]);
-    setTabContents([...tabContents, <div></div>]);
+    setTabsList([...tabsList, tab]);
+    setTabContents([...tabContents, content.render()]);
+    toggleTab(numTabs + 1);
   };
   
-  class topTab extends React.Component {
-      index: number;
-      constructor(index: number) {
-        super(index);
-        this.index = index;
-      }
-      
-      render() {
+  const topTab = (index:number) => {
         return (<button
-          className={toggleState === this.index ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(this.index)}
+          className={toggleState === index ? "tabs active-tabs" : "tabs"}
+          onClick={() => toggleTab(index)}
         >
-          Tab {this.index}
+          Tab {index}
         </button>);
-      }
+  }
 
-  };
+  
+
+  class contentTab extends React.Component {
+    index: number;
+    constructor(index: number) {
+      super(index);
+      this.index = index;
+    }
+    
+    render() {
+      return (<div
+        className={toggleState === this.index ? "content  active-content" : "content"}
+        >
+        Content of tab {this.index}
+      </div>);
+    }
+
+};
 
   return (
     <div className="container">
@@ -98,8 +106,8 @@ function Tabs() {
           <Rnd default={{
                   x: 15,
                   y: 100,
-                  width: 450,
-                  height: 300,
+                  width: 900,
+                  height: 500,
                 }}
                 bounds="parent"
                 minWidth={500}
@@ -117,8 +125,8 @@ function Tabs() {
             E
           </p>
         </div>
+        {tabContents}
       </div>
-      {tabContents}
     </div>
   );
 }

@@ -125,7 +125,8 @@ const BasicGraphinGraph = () => {
             <div id="mountNode"></div>
             Frequency: {freqDropdown}
             {minMaxInput}
-            <Graphin data={data} layout={{ type: 'circular' }}>
+            <Graphin data={data} layout={{ type: 'circular' }} style={{flex:1, maxWidth:'100%',
+        maxHeight:'100%'}}>
                 <ActivateRelations trigger="click" />
                 <SampleBehavior />
             </Graphin>
