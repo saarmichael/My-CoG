@@ -5,12 +5,14 @@ import { BasicHeatMap } from './components/BasicHeatMap';
 import BasicSpectogram from './components/BasicSpectogram';
 import BasicNetGraph from './components/BasicNetGraph';
 import MainGrid from './scenes/main/GridComponents';
+import { Rnd } from 'react-rnd';
+import {Box, Box1} from './scenes/main/GridComponents';
+import Tabs from './scenes/main/Tabs';
 
 function App() {
   return (
-    <div className="App">
-      
-      <MainGrid />
+    <div>
+      <Tabs/>
     </div>
   );
 }
