@@ -26,19 +26,21 @@ function Tabs() {
     </button>]);
     setTabContents([...tabContents, <div></div>]);
   };
+  
   class topTab extends React.Component {
-      index: JSX.Element;
+      index: number;
       constructor(index: number) {
         super(index);
-        this.index = <button
-        className={toggleState === {index} ? "tabs active-tabs" : "tabs"}
-        onClick={() => toggleTab(index)}>
-        Tab {index}
-      </button>;
+        this.index = index;
       }
       
       render() {
-        return (this.index);
+        return (<button
+          className={toggleState === this.index ? "tabs active-tabs" : "tabs"}
+          onClick={() => toggleTab(this.index)}
+        >
+          Tab {this.index}
+        </button>);
       }
 
   };
