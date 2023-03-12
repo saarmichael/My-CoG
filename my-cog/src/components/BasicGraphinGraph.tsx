@@ -1,12 +1,41 @@
-import React from 'react';
-import Graphin, { Behaviors, GraphinData } from '@antv/graphin';
+import React, { useContext, useEffect } from 'react';
+import Graphin, { Behaviors, GraphinContext, GraphinContextType, GraphinData, IG6GraphEvent} from '@antv/graphin';
 import { changeEdgeWidthGraphin, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
+import { INode, NodeConfig } from '@antv/g6';
+
+
+const SampleBehavior = () => {
+    const { graph, apis } = useContext(GraphinContext);
+  
+    useEffect(() => {
+      // 初始化聚焦到`node-1`
+  
+      apis.focusNodeById('electrode 1');
+  
+      const handleClick = (evt: IG6GraphEvent) => {
+        const node = evt.item as INode;
+        const model = node.getModel() as NodeConfig;
+        apis.focusNodeById(model.id);
+      };
+      // 每次点击聚焦到点击节点上
+      graph.on('node:click', handleClick);
+      return () => {
+        graph.off('node:click', handleClick);
+      };
+    }, []);
+    return null;
+  };
 
 // a component that creates and renders a graphin graph
 // it creates its data
 // there is a button that changes the data
 // the graph is rendered in the div with id="mountNode"
 const BasicGraphinGraph = () => {
+
+    const { ActivateRelations } = Behaviors;
+    const minRef = React.useRef<HTMLInputElement>(null);
+    const maxRef = React.useRef<HTMLInputElement>(null);
+
     const createGraphData = () => {
         // create the nodes and edges using GraphService module
         let { nodes, edges }: GraphinData = getGraphinData(0);
@@ -14,6 +43,8 @@ const BasicGraphinGraph = () => {
         return { nodes, edges };
     }
     const [state, setState] = React.useState<GraphinData>(createGraphData());
+
+    
 
     const freqs: number[] = getFrequencyList();
     // create a dropdown menu that consists of the frequencies and the user can select one
@@ -30,7 +61,6 @@ const BasicGraphinGraph = () => {
                 return <option key={index} value={freq}>{freq}</option>
             })}
         </select>
-
     );
 
     // two input fields: min and max.
@@ -38,11 +68,6 @@ const BasicGraphinGraph = () => {
     // the graph then updates accordingly
     // listen to the onChange event of the input fields and update the state accordingly
     // cerate a ref to the input fields and use the ref to get the values of the input fields
-
-    // refs
-    const minRef = React.useRef<HTMLInputElement>(null);
-    const maxRef = React.useRef<HTMLInputElement>(null);
-
     const minMaxUpdate = () => {
         // validity check: check if the input fields are not empty
         if (minRef.current && maxRef.current) {
@@ -97,6 +122,8 @@ const BasicGraphinGraph = () => {
             Frequency: {freqDropdown}
             {minMaxInput}
             <Graphin data={data} layout={{ type: 'circular' }}>
+                <ActivateRelations trigger="click" />
+                <SampleBehavior />
             </Graphin>
         </>
     );
