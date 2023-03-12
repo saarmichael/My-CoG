@@ -6,15 +6,14 @@ import BasicSpectogram from './components/BasicSpectogram';
 import BasicNetGraph from './components/BasicNetGraph';
 import BasicG6Graph from './components/BasicG6Graph';
 import MainGrid from './scenes/main/GridComponents';
-import BasicGraphinGraph from './components/BasicGraphinGraph';
-import DataContainer from './components/DataContainer';
-
+import { Rnd } from 'react-rnd';
+import {Box, Box1} from './scenes/main/GridComponents';
+import Tabs from './scenes/main/Tabs';
 
 function App() {
   return (
-    <div className="App">
-      
-      <DataContainer />
+    <div>
+      <Tabs/>
     </div>
   );
 }
