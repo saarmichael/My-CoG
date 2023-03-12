@@ -1,21 +1,25 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinContextType, GraphinData, IG6GraphEvent} from '@antv/graphin';
 import { changeEdgeWidthGraphin, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
+import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 
 
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
+   
   
     useEffect(() => {
       // 初始化聚焦到`node-1`
   
-      apis.focusNodeById('electrode 1');
+      apis.focusNodeById('electrode1');
   
       const handleClick = (evt: IG6GraphEvent) => {
         const node = evt.item as INode;
         const model = node.getModel() as NodeConfig;
         apis.focusNodeById(model.id);
+        // set the context
+        
       };
       // 每次点击聚焦到点击节点上
       graph.on('node:click', handleClick);
