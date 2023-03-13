@@ -74,3 +74,14 @@ def write_spectrogram(t, f, Sxx, file_name):
         'Sxx': Sxx.tolist()
     }
     write_dict(spectrogram, file_name)
+
+def write_spectrograms(f, t, spectrograms, file_name):
+    # create a dictionary to hold the spectrogram data
+    for i in range(len(spectrograms)):
+        spectrograms[i] = spectrograms[i].tolist()
+    spectrograms_dict = {
+        'f': f.tolist(),
+        't': t.tolist(),
+        'spectrograms': spectrograms
+    }
+    write_dict(spectrograms_dict, file_name)

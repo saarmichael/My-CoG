@@ -12,6 +12,7 @@ import {
     UIDraggingModes,
     Themes
 } from '@arction/lcjs';
+import { getSpectrogramData, SpectrogramData } from '../shared/getters';
 import * as elec1_spectrogram from '../shared/ecog_data/elec1_spectrogram.json'
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 
@@ -19,39 +20,23 @@ interface Basic3DSpectogramProps {
     data: number[][];
 }
 
-type SpectrogramData = {
-    t: number[],
-    f: number[],
-    Sxx: number[][]
-}
-
 
 const Basic3DSpectogram = () => {
-    //const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
     const elec1SpecData = elec1_spectrogram as SpectrogramData
     /* asynchronous function that generate resolutionX over resolutionY matrix of random numbers */
-    const getData = async (spectroData: SpectrogramData) => {
-        let t = spectroData.t
-        let f = spectroData.f
-        let Sxx = spectroData.Sxx
-        // create a new number matrix of 100 over 100
-        // const data: number[][] = []
-        // // loop over the matrix and fill it with random numbers
-        // for (let i = 0; i < t.length; i++) {
-        //     let row = []
-        //     for (let j = 0; j < resolutionY; j++) {
-        //         row.push(Math.random() * 100)
-        //     }
-        //     data.push(row)
-        // }
-        return Sxx
+    const getData = async (electrodeID: string): Promise<SpectrogramData> => {
+        // get the ID number alone parse it to a number
+        const elecNum = parseInt(electrodeID[electrodeID.length - 1]);
+        const data = await getSpectrogramData(elecNum);
+        return data;
     }
 
     const create3DChart = () => {
-        getData(elec1SpecData)
-            .then((data) => {
-                const HEATMAP_COLUMNS = data.length
-                const HEATMAP_ROWS = data.length
+        getData(electrode)
+            .then(({ f, t, Sxx }) => {
+                const HEATMAP_COLUMNS = t.length
+                const HEATMAP_ROWS = f.length
                 const dashboard = lightningChart().Dashboard({
                     container: "chart3D",
                     numberOfColumns: 2,
@@ -73,7 +58,7 @@ const Basic3DSpectogram = () => {
                 })
                     .setTitle('Generating test data ...')
 
-                chart2D.setTitle(`2D Heatmap Grid ${HEATMAP_ROWS}x${HEATMAP_COLUMNS}}`)
+                chart2D.setTitle(`2D Heatmap Grid ${HEATMAP_ROWS}x${HEATMAP_COLUMNS}`)
                 chart3D.setTitle(`3D Surface Grid ${HEATMAP_ROWS}x${HEATMAP_COLUMNS} color by Y`)
 
                 const lut = new LUT({
@@ -92,7 +77,7 @@ const Basic3DSpectogram = () => {
                 })
                     .setFillStyle(new PalettedFill({ lut }))
                     .setWireframeStyle(emptyLine)
-                    .invalidateIntensityValues(data)
+                    .invalidateIntensityValues(Sxx)
 
                 const surfaceSeries3D = chart3D.addSurfaceGridSeries({
                     columns: HEATMAP_COLUMNS,
@@ -100,7 +85,7 @@ const Basic3DSpectogram = () => {
                 })
                     .setFillStyle(new PalettedFill({ lut, lookUpProperty: 'y' }))
                     .setWireframeStyle(emptyLine)
-                    .invalidateHeightMap(data)
+                    .invalidateHeightMap(Sxx)
 
                 const selectorColorShadingStyle = chart3D.addUIElement(UIElementBuilders.CheckBox)
                     .setPosition({ x: 100, y: 100 })
