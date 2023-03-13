@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     lightningChart,
     LUT,
@@ -13,6 +13,7 @@ import {
     Themes
 } from '@arction/lcjs';
 import * as elec1_spectrogram from '../shared/ecog_data/elec1_spectrogram.json'
+import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 
 interface Basic3DSpectogramProps {
     data: number[][];
@@ -26,9 +27,10 @@ type SpectrogramData = {
 
 
 const Basic3DSpectogram = () => {
+    //const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
     const elec1SpecData = elec1_spectrogram as SpectrogramData
     /* asynchronous function that generate resolutionX over resolutionY matrix of random numbers */
-    const getData = async (spectroData : SpectrogramData) => {
+    const getData = async (spectroData: SpectrogramData) => {
         let t = spectroData.t
         let f = spectroData.f
         let Sxx = spectroData.Sxx

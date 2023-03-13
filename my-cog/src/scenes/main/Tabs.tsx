@@ -81,30 +81,30 @@ function Tabs() {
         <div
           className={toggleState === 1 ? "content  active-content" : "content"}
         >
-          <ElectrodeFocusProvider>
-            <Rnd default={{
-              x: 15,
-              y: 100,
-              width: 320,
-              height: 200,
-            }}
-              bounds="parent"
-              minWidth={600}
-              minHeight={650}>
-              <Box1 />
-            </Rnd>
-            <Rnd default={{
-              x: 615,
-              y: 100,
-              width: 320,
-              height: 200,
-            }}
-              bounds="parent"
-              minWidth={600}
-              minHeight={650}>
-              <Box />
-            </Rnd>
-          </ElectrodeFocusProvider>
+
+          <Rnd default={{
+            x: 15,
+            y: 100,
+            width: 320,
+            height: 200,
+          }}
+            bounds="parent"
+            minWidth={600}
+            minHeight={650}>
+            <Box1 />
+          </Rnd>
+
+          <Rnd default={{
+            x: 615,
+            y: 100,
+            width: 320,
+            height: 200,
+          }}
+            bounds="parent"
+            minWidth={600}
+            minHeight={650}>
+            <Box />
+          </Rnd>
         </div>
         <div
           className={toggleState === 2 ? "content  active-content" : "content"}

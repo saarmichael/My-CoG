@@ -127,7 +127,7 @@ const BasicGraphinGraph = () => {
                     <ActivateRelations trigger="click" />
                     <SampleBehavior />
                 </Graphin>
-                {electrode}
+                {electrode ? <h1>{electrode}</h1> : <h1>no electrode</h1>}
             </div>
         </>
     );
