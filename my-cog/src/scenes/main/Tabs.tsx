@@ -3,6 +3,7 @@ import { Box, Box1 } from "./GridComponents";
 import "./Tabs.css";
 import { Rnd } from 'react-rnd';
 import React from "react";
+import { ElectrodeFocusProvider } from "../../contexts/ElectrodeFocusContext";
 
 function Tabs() {
   const [toggleState, setToggleState] = useState(1);
@@ -80,17 +81,30 @@ function Tabs() {
         <div
           className={toggleState === 1 ? "content  active-content" : "content"}
         >
-          <Rnd default={{
-            x: 15,
-            y: 100,
-            width: 320,
-            height: 200,
-          }}
-            bounds="parent"
-            minWidth={600}
-            minHeight={650}>
-            <Box />
-          </Rnd>
+          <ElectrodeFocusProvider>
+            <Rnd default={{
+              x: 15,
+              y: 100,
+              width: 320,
+              height: 200,
+            }}
+              bounds="parent"
+              minWidth={600}
+              minHeight={650}>
+              <Box1 />
+            </Rnd>
+            <Rnd default={{
+              x: 615,
+              y: 100,
+              width: 320,
+              height: 200,
+            }}
+              bounds="parent"
+              minWidth={600}
+              minHeight={650}>
+              <Box />
+            </Rnd>
+          </ElectrodeFocusProvider>
         </div>
         <div
           className={toggleState === 2 ? "content  active-content" : "content"}

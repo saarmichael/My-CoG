@@ -7,7 +7,7 @@ import { INode, NodeConfig } from '@antv/g6';
 
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
-
+    const { electrode, setElectrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
 
     useEffect(() => {
 
@@ -17,7 +17,7 @@ const SampleBehavior = () => {
             const node = evt.item as INode;
             const model = node.getModel() as NodeConfig;
             // set the context
-
+            setElectrode(model.id);
         };
         // 每次点击聚焦到点击节点上
         graph.on('node:click', handleClick);
@@ -33,7 +33,7 @@ const SampleBehavior = () => {
 // there is a button that changes the data
 // the graph is rendered in the div with id="mountNode"
 const BasicGraphinGraph = () => {
-
+    const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
     const { ActivateRelations } = Behaviors;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
@@ -127,6 +127,7 @@ const BasicGraphinGraph = () => {
                     <ActivateRelations trigger="click" />
                     <SampleBehavior />
                 </Graphin>
+                {electrode}
             </div>
         </>
     );
