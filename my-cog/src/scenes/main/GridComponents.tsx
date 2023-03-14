@@ -8,7 +8,7 @@ import './GridStyle.css';
 export function Box() {
   return (
     <div className="box"
-      style={{ padding: "5px", width: "100%", height: '100%', paddingBottom: '40px' }}>
+      style={{ padding: "5px", width: "100%", height: '100%' }}>
       <BasicGraphinGraph />
     </div>
   );

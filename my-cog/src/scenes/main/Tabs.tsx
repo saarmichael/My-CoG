@@ -89,19 +89,19 @@ function Tabs() {
             height: 200,
           }}
             bounds="parent"
-            minWidth={600}
+            minWidth={1000}
             minHeight={650}>
             <Box1 />
           </Rnd>
 
           <Rnd default={{
-            x: 615,
+            x: 1015,
             y: 100,
             width: 320,
             height: 200,
           }}
             bounds="parent"
-            minWidth={600}
+            minWidth={650}
             minHeight={650}>
             <Box />
           </Rnd>
