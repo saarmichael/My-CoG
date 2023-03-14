@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import Graphin, { Behaviors, GraphinContext, GraphinContextType, GraphinData, IG6GraphEvent} from '@antv/graphin';
+import Graphin, { Behaviors, GraphinContext, GraphinContextType, GraphinData, IG6GraphEvent } from '@antv/graphin';
 import { changeEdgeWidthGraphin, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
@@ -7,35 +7,33 @@ import { INode, NodeConfig } from '@antv/g6';
 
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
-   
-  
+    const { electrode, setElectrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+
     useEffect(() => {
-      // 初始化聚焦到`node-1`
-  
-      apis.focusNodeById('electrode1');
-  
-      const handleClick = (evt: IG6GraphEvent) => {
-        const node = evt.item as INode;
-        const model = node.getModel() as NodeConfig;
-        apis.focusNodeById(model.id);
-        // set the context
-        
-      };
-      // 每次点击聚焦到点击节点上
-      graph.on('node:click', handleClick);
-      return () => {
-        graph.off('node:click', handleClick);
-      };
+
+        graph.changeSize(600, 550);
+        // 初始化聚焦到`node-1`
+        const handleClick = (evt: IG6GraphEvent) => {
+            const node = evt.item as INode;
+            const model = node.getModel() as NodeConfig;
+            // set the context
+            setElectrode(model.id);
+        };
+        // 每次点击聚焦到点击节点上
+        graph.on('node:click', handleClick);
+        return () => {
+            graph.off('node:click', handleClick);
+        };
     }, []);
     return null;
-  };
+};
 
 // a component that creates and renders a graphin graph
 // it creates its data
 // there is a button that changes the data
 // the graph is rendered in the div with id="mountNode"
 const BasicGraphinGraph = () => {
-
+    const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
     const { ActivateRelations } = Behaviors;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
@@ -48,7 +46,7 @@ const BasicGraphinGraph = () => {
     }
     const [state, setState] = React.useState<GraphinData>(createGraphData());
 
-    
+
 
     const freqs: number[] = getFrequencyList();
     // create a dropdown menu that consists of the frequencies and the user can select one
@@ -122,13 +120,15 @@ const BasicGraphinGraph = () => {
     const data = state;
     return (
         <>
-            <div id="mountNode"></div>
-            Frequency: {freqDropdown}
-            {minMaxInput}
-            <Graphin data={data} layout={{ type: 'circular' }}>
-                <ActivateRelations trigger="click" />
-                <SampleBehavior />
-            </Graphin>
+            <div id="mountNode">
+                Frequency: {freqDropdown}
+                {minMaxInput}
+                <Graphin data={data} layout={{ type: 'circular' }} style={{margin:"10px"}}>
+                    <ActivateRelations trigger="click" />
+                    <SampleBehavior />
+                </Graphin>
+                {electrode ? <h1>{electrode}</h1> : <h1>no electrode</h1>}
+            </div>
         </>
     );
 }
