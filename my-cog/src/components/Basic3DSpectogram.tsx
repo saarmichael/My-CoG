@@ -35,8 +35,8 @@ const Basic3DSpectogram = () => {
     const create3DChart = () => {
         getData(electrode)
             .then(({ f, t, Sxx }) => {
-                const HEATMAP_COLUMNS = t.length
-                const HEATMAP_ROWS = f.length
+                const HEATMAP_COLUMNS = f.length
+                const HEATMAP_ROWS = t.length
                 const dashboard = lightningChart().Dashboard({
                     container: "chart3D",
                     numberOfColumns: 2,

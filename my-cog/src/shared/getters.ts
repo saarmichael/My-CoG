@@ -1,6 +1,6 @@
 // import the data from the ecog_data dir
 import coherence_matrices from './ecog_data/coherence_matrices.json';
-import spectroData from './ecog_data/spectrograms.json';
+import spectrograms from './ecog_data/spectrograms.json';
 
 
 export type SpectrogramData = {
@@ -15,7 +15,12 @@ export type CoherenceMatrix = {
 };
 
 export const getSpectrogramData = (elecNum: number): SpectrogramData => {
-    return { spectroData.f, spectroData.t, spectroData.spectrograms[elecNum] };
+    // parse the data from the json file spectrograms because it is very large
+    let data = JSON.parse(JSON.stringify(spectrograms));
+    let f = data.f;
+    let t = data.t;
+    let Sxx = data.spectrograms;
+    return {f:f, t:t, Sxx:Sxx[elecNum]};
 }
 
 
