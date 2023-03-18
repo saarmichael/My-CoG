@@ -29,18 +29,6 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
     }
   };
 
-  const handleComponentToggle = (index: number) => {
-    setHiddenComponentIndex((prev) => {
-      if (prev.includes(index)) {
-        // Remove the index if it's already in the list
-        return prev.filter((i) => i !== index);
-      } else {
-        // Add the index if it's not in the list
-        return [...prev, index];
-      }
-    });
-  };
-
   const handleComponentSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedIndex = Number(event.target.value);
     setHiddenComponentIndex((prev) => {
@@ -57,14 +45,8 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
   const renderComponentOptions = () => {
     return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
       const componentType = component.type as React.FC;
-      const isHidden = hiddenComponentIndex.includes(index);
       return componentType === React.Fragment ? null : (
         <option key={index} value={index}>
-          <input
-            type="checkbox"
-            checked={isHidden}
-            onChange={() => handleComponentToggle(index)}
-          />
           {hiddenComponentIndex.includes(index)? 'Show ' : 'Hide '} {componentType.displayName || componentType.name || "Component"} {index + 1}
         </option>
       );
