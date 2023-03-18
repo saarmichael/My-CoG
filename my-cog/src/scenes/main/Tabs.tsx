@@ -1,138 +1,182 @@
-import { useState } from "react";
 import { Box, Box1 } from "./GridComponents";
 import "./Tabs.css";
 import { Rnd } from 'react-rnd';
 import React from "react";
-import { ElectrodeFocusProvider } from "../../contexts/ElectrodeFocusContext";
+import { useState } from "react";
 
-function Tabs() {
-  const [toggleState, setToggleState] = useState(1);
-  const [numTabs, setNumTabs] = useState(3);
+interface Tab {
+  label: string;
+  content: JSX.Element;
+}
 
-  const toggleTab = (index: number) => {
-    setToggleState(index);
+interface TabsProps {
+  tabs: Tab[];
+  onAddTab?: () => void;
+}
+
+const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);
+
+  const handleTabClick = (index: number) => {
+    setActiveTabIndex(index);
+    setHiddenComponentIndex([]);
   };
 
-  const [tabsList, setTabsList] = useState<JSX.Element[]>([]);
-
-  const [tabContents, setTabContents] = useState<JSX.Element[]>([]);
-
-  const addTab = () => {
-    let tab = topTab(numTabs + 1);
-    let content = new contentTab(numTabs + 1);
-    setNumTabs(numTabs + 1);
-    setTabsList([...tabsList, tab]);
-    setTabContents([...tabContents, content.render()]);
-    toggleTab(numTabs + 1);
+  const handleAddTabClick = () => {
+    if (onAddTab) {
+      onAddTab();
+    }
   };
-  
-  class topTab extends React.Component {
-      index: number;
-      constructor(index: number) {
-        super(index);
-        this.index = index;
-      }
-      
-      render() {
-        return (<button
-          className={toggleState === this.index ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(this.index)}
-        >
-          Tab {this.index}
-        </button>);
-      }
 
-};
+  const handleComponentToggle = (index: number) => {
+    setHiddenComponentIndex((prev) => {
+      if (prev.includes(index)) {
+        // Remove the index if it's already in the list
+        return prev.filter((i) => i !== index);
+      } else {
+        // Add the index if it's not in the list
+        return [...prev, index];
+      }
+    });
+  };
+
+  const handleComponentSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedIndex = Number(event.target.value);
+    setHiddenComponentIndex((prev) => {
+      if (prev.includes(selectedIndex)) {
+        // Remove the index if it's already in the list
+        return prev.filter((i) => i !== selectedIndex);
+      } else {
+        // Add the index if it's not in the list
+        return [...prev, selectedIndex];
+      }
+    });
+  };
+
+  const renderComponentOptions = () => {
+    return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
+      const componentType = component.type as React.FC;
+      const isHidden = hiddenComponentIndex.includes(index);
+      return (
+        <option key={index} value={index}>
+          <input
+            type="checkbox"
+            checked={isHidden}
+            onChange={() => handleComponentToggle(index)}
+          />
+          {hiddenComponentIndex.includes(index)? 'Show ' : 'Hide '} {componentType.displayName || componentType.name || "Component"} {index + 1}
+        </option>
+      );
+    });
+  };
+
 
   return (
     <div className="container">
       <div className="bloc-tabs">
-        <button
-          className={toggleState === 1 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(1)}
-        >
-          Tab 1
-        </button>
-        <button
-          className={toggleState === 2 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(2)}
-        >
-          Tab 2
-        </button>
-        <button
-          className={toggleState === 3 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(3)}
-        >
-          Tab 3
-        </button>
-        {tabsList}
-        <button
-          className="tabs"
-          onClick={() => addTab()}
-        >
-          +
-        </button>
-
+        {tabs.map((tab, index) => (
+          <button
+            key={index}
+            onClick={() => handleTabClick(index)}
+            className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
+          >
+            {tab.label}
+          </button>
+        ))}
+        {onAddTab && (
+          <button onClick={handleAddTabClick}>➕</button>
+        )}
       </div>
-
-      <div className="content-tabs">
-        <div
-          className={toggleState === 1 ? "content  active-content" : "content"}
-        >
-
-          <Rnd default={{
-            x: 15,
-            y: 100,
-            width: 320,
-            height: 200,
-          }}
-            bounds="parent"
-            minWidth={600}
-            minHeight={650}>
-            <Box1 />
-          </Rnd>
-
-          <Rnd default={{
-            x: 615,
-            y: 100,
-            width: 320,
-            height: 200,
-          }}
-            bounds="parent"
-            minWidth={600}
-            minHeight={650}>
-            <Box />
-          </Rnd>
-        </div>
-        <div
-          className={toggleState === 2 ? "content  active-content" : "content"}
-        >
-          <Rnd default={{
-                  x: 15,
-                  y: 100,
-                  width: 450,
-                  height: 300,
-                }}
-                bounds="parent"
-                minWidth={500}
-                minHeight={190}>
-            <Box1/>
-          </Rnd>
-        </div>
-
-        <div
-          className={toggleState === 3 ? "content  active-content" : "content"}
-        >
-          <h2>Content 3</h2>
-          <hr />
-          <p>
-            E
-          </p>
-        </div>
-        {tabContents}
+      <div>
+        <select value="" onChange={handleComponentSelect}>
+          <option value="" disabled>
+            Select a component to hide
+          </option>
+          {renderComponentOptions()}
+        </select>
+        {tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => (
+          hiddenComponentIndex.includes(index)
+            ? null
+            : (
+              <div key={index}>
+                {component}
+              </div>
+            )
+        ))}
       </div>
     </div>
   );
-}
+};
 
-export default Tabs;
+const Tabbing = () => {
+  const [tabs, setTabs] = useState([
+    {
+      label: "Tab 1",
+      content: <div
+                className="active-content"
+              >
+      
+                <Rnd default={{
+                  x: 15,
+                  y: 100,
+                  width: 320,
+                  height: 200,
+                }}
+                  bounds="parent"
+                  minWidth={600}
+                  minHeight={650}>
+                  <Box1 />
+                </Rnd>
+      
+                <Rnd default={{
+                  x: 615,
+                  y: 100,
+                  width: 320,
+                  height: 200,
+                }}
+                  bounds="parent"
+                  minWidth={600}
+                  minHeight={650}>
+                  <Box />
+                </Rnd>
+              </div>,
+    },
+    {
+      label: "Tab 2",
+      content: <div
+                className="active-content"
+              >
+                <Rnd default={{
+                        x: 15,
+                        y: 100,
+                        width: 450,
+                        height: 300,
+                      }}
+                      bounds="parent"
+                      minWidth={500}
+                      minHeight={190}>
+                  <Box1/>
+                </Rnd>
+              </div>,
+    },
+    {
+      label: "Tab 3",
+      content:  <div className="active-content">
+                  <h2>Tab 1 Content</h2>
+                  <p>This is the first paragraph.</p>
+                  <p>This is the second paragraph.</p>
+                </div>,
+    },
+  ]);
+
+  const handleAddTab = () => {
+    const newTabLabel = `Tab ${tabs.length + 1}`;
+    const newTabContent = <div>Content for {newTabLabel}</div>;
+    setTabs([...tabs, { label: newTabLabel, content: newTabContent }]);
+  };
+
+  return <Tabs tabs={tabs} onAddTab={handleAddTab} />;
+};
+
+export default Tabbing;

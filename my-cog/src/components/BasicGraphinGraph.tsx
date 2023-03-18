@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import Graphin, { Behaviors, GraphinContext, GraphinContextType, GraphinData, IG6GraphEvent } from '@antv/graphin';
+import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
 import { changeEdgeWidthGraphin, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
@@ -34,7 +34,7 @@ const SampleBehavior = () => {
 // the graph is rendered in the div with id="mountNode"
 const BasicGraphinGraph = () => {
     const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
-    const { ActivateRelations } = Behaviors;
+    const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
 
@@ -123,9 +123,11 @@ const BasicGraphinGraph = () => {
             <div id="mountNode">
                 Frequency: {freqDropdown}
                 {minMaxInput}
-                <Graphin data={data} layout={{ type: 'circular' }} style={{margin:"10px"}}>
+                <Graphin data={data} layout={{ type: 'circular', center: [275, 300] }} style={{ width:"75%"}}>
                     <ActivateRelations trigger="click" />
                     <SampleBehavior />
+                    <ZoomCanvas disabled={true}/>
+                    <DragCanvas disabled={true}/>
                 </Graphin>
                 {electrode ? <h1>{electrode}</h1> : <h1>no electrode</h1>}
             </div>
