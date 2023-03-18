@@ -58,7 +58,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
     return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
       const componentType = component.type as React.FC;
       const isHidden = hiddenComponentIndex.includes(index);
-      return (
+      return componentType === React.Fragment ? null : (
         <option key={index} value={index}>
           <input
             type="checkbox"
@@ -158,6 +158,7 @@ const Tabbing = () => {
                       minHeight={190}>
                   <Box1/>
                 </Rnd>
+                <></>
               </div>,
     },
     {
@@ -172,7 +173,7 @@ const Tabbing = () => {
 
   const handleAddTab = () => {
     const newTabLabel = `Tab ${tabs.length + 1}`;
-    const newTabContent = <div>Content for {newTabLabel}</div>;
+    const newTabContent = <div><div>Content for {newTabLabel}</div><></></div>;
     setTabs([...tabs, { label: newTabLabel, content: newTabContent }]);
   };
 
