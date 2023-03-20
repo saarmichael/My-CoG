@@ -8,17 +8,19 @@ import './GridStyle.css';
 export function Box() {
   return (
     <div className="box"
-      style={{ padding: "5px", width: "100%", height: '100%', paddingBottom: '40px' }}>
+      style={{ display: 'flex', padding: "5px", width: "100%", height: '100%', paddingBottom: '1%' }}>
       <BasicGraphinGraph />
     </div>
   );
 }
 
-export function Box1 (){
-
-return (<div className="box">
-          <BasicHeatMap />
-        </div>)
+export function Box1() {
+  const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+  return (
+    <div id="box1" className="box">
+      <Basic3DSpectogram />
+      {electrode}
+    </div>);
 }
 
 export default Box;
