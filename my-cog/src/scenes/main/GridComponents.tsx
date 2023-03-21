@@ -6,12 +6,13 @@ import { BasicHeatMap } from "../../components/BasicHeatMap";
 import Spectrogram from "../../components/Spectrogram";
 import { ElectrodeFocusContext, IElectrodeFocusContext } from "../../contexts/ElectrodeFocusContext";
 import './GridStyle.css';
+import { GraphContainer } from "../../components/GraphContainer";
 
 export function Box() {
   return (
     <div className="box"
       style={{ display: 'flex', padding: "5px", width: "100%", height: '100%', paddingBottom: '1%' }}>
-      <BasicGraphinGraph />
+      <GraphContainer />
     </div>
   );
 }
@@ -22,7 +23,8 @@ export function Box1() {
     <div id="box1" className="box">
       <Spectrogram />
       {electrode}
-    </div>);
+    </div>
+  );
 }
 
 export default Box;

@@ -88,10 +88,14 @@ const getGraphinEdges = (CM: number[][], nodes: IUserNode[]): IUserEdge[] => {
                     target: "electrode" + j.toString(),
                     value: CM[i][j],
                     style: {
-                        label: {
-                            value: CM[i][j].toString(),
-                            fontSize: 10,
-                        }
+                        keyshape: {
+                            lineWidth: 1,
+                            stroke: '#000000',
+                            strokeOpacity: 1,
+                            endArrow: {
+                                path: '0',
+                            }
+                        },
                     }
                 });
             }
@@ -130,19 +134,15 @@ export const changeEdgeWidthGraphin = (edges: IUserEdge[], min: number, max: num
         newEdges.push({
             ...edges[i],
             style: {
+                // keep the original style and add the new style
+                ...edges[i].style,
+                
                 keyshape: {
+                    ...edges[i].style?.keyshape,
                     lineWidth: min + (max - min) * (edges[i].value / edgeSum),
                     stroke: '#000000',
                     strokeOpacity: 0.8,
                 },
-                label: {
-                    // make the label to be the value of the edge but only two decimal places
-                    value: edges[i].value.toFixed(2),
-                    fontSize: 12,
-                    stroke: '#2A1802',
-                    fill: 'blue',
-                    opacity: 0.6,
-                }
             }
         });
     }
@@ -169,10 +169,10 @@ export const getGraphinDataByCM = (CM: number[][], getPositions?: (n: number, ra
         edges,
     }
 }
-export const getGraphinData = (freq: number, getPositions?: (n: number, radius: number) => number[][])
+export const getGraphinData = (freq: FreqRange, getPositions?: (n: number, radius: number) => number[][])
     : GraphinData => {
-    const CM = getCoherenceMatrix(freq);
-    return getGraphinDataByCM(CM, getPositions);
+    
+    return getAverageGraphinData(freq.min, freq.max, getPositions);
 }
 
 
@@ -185,6 +185,10 @@ export const getFrequencyList = (): number[] => {
 
 /*!! THIS FUNCTION IS BETTER OFF BE WRITTEN IN PYTHON DUE TO MEANINGFUL CALCULATIONS OVER FLOATS !!*/
 const getAverageCM = (minRange: number, maxRange: number): number[][] => {
+    // special case: minRange = maxRange: return the coherence matrix of that frequency or the one that is closest to it
+    if (minRange === maxRange) {
+        return getCoherenceMatrix(minRange);
+    }
     // get the average coherence matrix over the range [minRange, maxRange]
     const freqList = getFrequencies();
     let CM = getCoherenceMatrix(freqList[0]);
@@ -213,4 +217,9 @@ export const getAverageGraphinData = (minRange: number, maxRange: number,
     getPositions?: (n: number, radius: number) => number[][]): GraphinData => {
     const CM = getAverageCM(minRange, maxRange);
     return getGraphinDataByCM(CM, getPositions);
+}
+
+export interface FreqRange {
+    min: number;
+    max: number;
 }

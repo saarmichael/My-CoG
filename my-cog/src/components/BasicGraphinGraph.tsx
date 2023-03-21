@@ -1,8 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
+import { changeEdgeWidthGraphin, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
+import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 
 
 const SampleBehavior = () => {
@@ -51,19 +52,33 @@ const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
     const { electrode, setElectrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { widthView, colorCodedView, setColorCodedView, setThresholdView, setWidthView, thresholdView } =
+        useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
+    const [freqRange, setFreqRange] = React.useState<FreqRange>({ min: 0, max: 0 });
 
     const createGraphData = () => {
         // create the nodes and edges using GraphService module
-        let { nodes, edges }: GraphinData = getGraphinData(0);
+        let { nodes, edges }: GraphinData = getGraphinData(freqRange);
         // create a string[] of the node ids
-        edges = changeEdgeWidthGraphin(edges, 1, 30);
+        if (widthView) {
+            edges = changeEdgeWidthGraphin(edges, 1, 30);
+        }
+        if(colorCodedView){
+            // edges = colorCodeEdges(edges);
+        }
+        if(thresholdView){
+            // edges = thresholdEdges(edges);
+        }
         return { nodes, edges };
     }
     const [state, setState] = React.useState<GraphinData>(createGraphData());
 
-
+    // cahnge the graph data according to the user's selections
+    useEffect(() => {
+        setState(createGraphData());
+    }, [freqRange, widthView, colorCodedView, thresholdView]);
 
     const freqs: number[] = getFrequencyList();
     // create a dropdown menu that consists of the frequencies and the user can select one
@@ -72,9 +87,7 @@ const BasicGraphinGraph = () => {
     const freqDropdown = (
         <select onChange={(e) => {
             const freq = parseFloat(e.target.value);
-            let { nodes, edges }: GraphinData = getGraphinData(freq);
-            edges = changeEdgeWidthGraphin(edges, 1, 30);
-            setState({ nodes, edges });
+            setFreqRange({ min: freq, max: freq });
         }}>
             {freqs.map((freq, index) => {
                 return <option key={index} value={freq}>{freq}</option>
@@ -115,10 +128,7 @@ const BasicGraphinGraph = () => {
             if (min > freqs[freqs.length - 1]) {
                 minRef.current.value = "0";
             }
-            let { nodes, edges }: GraphinData =
-                getAverageGraphinData(parseFloat(minRef.current.value), parseFloat(maxRef.current.value));
-            edges = changeEdgeWidthGraphin(edges, 1, 50);
-            setState({ nodes, edges });
+            setFreqRange({ min: min, max: max });
         }
         // update the edges width of the current frequency range
     }
@@ -144,11 +154,11 @@ const BasicGraphinGraph = () => {
             <div id="mountNode">
                 Frequency: {freqDropdown}
                 {minMaxInput}
-                <Graphin data={data} layout={{ type: 'circular', center: [275, 300] }} style={{ width:"75%"}}>
+                <Graphin data={data} layout={{ type: 'circular', center: [275, 300] }} style={{ width: "75%" }}>
                     <ActivateRelations trigger="click" />
                     <SampleBehavior />
-                    <ZoomCanvas disabled={true}/>
-                    <DragCanvas disabled={true}/>
+                    <ZoomCanvas disabled={true} />
+                    <DragCanvas disabled={true} />
                 </Graphin>
                 {electrode ? <h1>{electrode}</h1> : <h1>no electrode</h1>}
             </div>
