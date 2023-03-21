@@ -1,6 +1,8 @@
 import { getCoherenceMatrix, getFrequencies } from './getters'
 import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
+import {interpolate} from 'd3-interpolate'
+
 
 
 // function that creates circular positions (x, y)[] for the nodes
@@ -143,6 +145,44 @@ export const changeEdgeWidthGraphin = (edges: IUserEdge[], min: number, max: num
                     stroke: '#000000',
                     strokeOpacity: 0.8,
                 },
+            }
+        });
+    }
+    return newEdges;
+}
+
+const sigmoid = (x: number) => {
+    return 1 / (1 + Math.exp(-x));
+}
+
+export const colorCodeEdges = (edges: IUserEdge[]) => {
+    // color code the edges based on the value of the edge
+    let newEdges: IUserEdge[] = [];
+    const edgeSum = getEdgesSum(edges);
+    console.log(edgeSum);
+    // the color range is from light blue to dark red
+    const lightBlue = '#66e5ff';
+    const darkRed = '#b30003';
+    for (let i = 0; i < edges.length; i++) {
+        const edge = edges[i];
+        const value = edge.value;
+        // generate the color based on the value
+        const color = interpolate(lightBlue, darkRed) (sigmoid(15*(value/edgeSum)-2));
+        newEdges.push({
+            ...edge,
+            style: {
+                ...edge.style,
+                keyshape: {
+                    ...edge.style?.keyshape,
+                    stroke: color,
+                    fill: color,
+                    strokeOpacity: 0.8,
+                },
+                label: {
+                    value: value.toFixed(2),
+                    fontSize: 12,
+                    fill: 'black'
+                }
             }
         });
     }

@@ -18,7 +18,7 @@ export const VisGraphOptionsContext = createContext<IVisGraphOptionsContext | nu
 
 export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = ({ children }) => {
     const [widthView, setWidthView] = useState<boolean>(true);
-    const [colorCodedView, setColorCodedView] = useState<boolean>(false);
+    const [colorCodedView, setColorCodedView] = useState<boolean>(true);
     const [thresholdView, setThresholdView] = useState<boolean>(false);
     return (
         <VisGraphOptionsContext.Provider

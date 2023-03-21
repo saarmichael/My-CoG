@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
+import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
@@ -66,7 +66,7 @@ const BasicGraphinGraph = () => {
             edges = changeEdgeWidthGraphin(edges, 1, 30);
         }
         if(colorCodedView){
-            // edges = colorCodeEdges(edges);
+            edges = colorCodeEdges(edges);
         }
         if(thresholdView){
             // edges = thresholdEdges(edges);
