@@ -1,6 +1,8 @@
 import { getCoherenceMatrix, getFrequencies } from './getters'
 import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
+import {interpolate} from 'd3-interpolate'
+
 
 
 // function that creates circular positions (x, y)[] for the nodes
@@ -88,10 +90,14 @@ const getGraphinEdges = (CM: number[][], nodes: IUserNode[]): IUserEdge[] => {
                     target: "electrode" + j.toString(),
                     value: CM[i][j],
                     style: {
-                        label: {
-                            value: CM[i][j].toString(),
-                            fontSize: 10,
-                        }
+                        keyshape: {
+                            lineWidth: 1,
+                            stroke: '#000000',
+                            strokeOpacity: 1,
+                            endArrow: {
+                                path: '0',
+                            }
+                        },
                     }
                 });
             }
@@ -130,18 +136,52 @@ export const changeEdgeWidthGraphin = (edges: IUserEdge[], min: number, max: num
         newEdges.push({
             ...edges[i],
             style: {
+                // keep the original style and add the new style
+                ...edges[i].style,
+                
                 keyshape: {
+                    ...edges[i].style?.keyshape,
                     lineWidth: min + (max - min) * (edges[i].value / edgeSum),
                     stroke: '#000000',
                     strokeOpacity: 0.8,
                 },
+            }
+        });
+    }
+    return newEdges;
+}
+
+const sigmoid = (x: number) => {
+    return 1 / (1 + Math.exp(-x));
+}
+
+export const colorCodeEdges = (edges: IUserEdge[]) => {
+    // color code the edges based on the value of the edge
+    let newEdges: IUserEdge[] = [];
+    const edgeSum = getEdgesSum(edges);
+    console.log(edgeSum);
+    // the color range is from light blue to dark red
+    const lightBlue = '#66e5ff';
+    const darkRed = '#b30003';
+    for (let i = 0; i < edges.length; i++) {
+        const edge = edges[i];
+        const value = edge.value;
+        // generate the color based on the value
+        const color = interpolate(lightBlue, darkRed) (sigmoid(15*(value/edgeSum)-2));
+        newEdges.push({
+            ...edge,
+            style: {
+                ...edge.style,
+                keyshape: {
+                    ...edge.style?.keyshape,
+                    stroke: color,
+                    fill: color,
+                    strokeOpacity: 0.8,
+                },
                 label: {
-                    // make the label to be the value of the edge but only two decimal places
-                    value: edges[i].value.toFixed(2),
+                    value: value.toFixed(2),
                     fontSize: 12,
-                    stroke: '#2A1802',
-                    fill: 'blue',
-                    opacity: 0.6,
+                    fill: 'black'
                 }
             }
         });
@@ -169,10 +209,10 @@ export const getGraphinDataByCM = (CM: number[][], getPositions?: (n: number, ra
         edges,
     }
 }
-export const getGraphinData = (freq: number, getPositions?: (n: number, radius: number) => number[][])
+export const getGraphinData = (freq: FreqRange, getPositions?: (n: number, radius: number) => number[][])
     : GraphinData => {
-    const CM = getCoherenceMatrix(freq);
-    return getGraphinDataByCM(CM, getPositions);
+    
+    return getAverageGraphinData(freq.min, freq.max, getPositions);
 }
 
 
@@ -185,6 +225,10 @@ export const getFrequencyList = (): number[] => {
 
 /*!! THIS FUNCTION IS BETTER OFF BE WRITTEN IN PYTHON DUE TO MEANINGFUL CALCULATIONS OVER FLOATS !!*/
 const getAverageCM = (minRange: number, maxRange: number): number[][] => {
+    // special case: minRange = maxRange: return the coherence matrix of that frequency or the one that is closest to it
+    if (minRange === maxRange) {
+        return getCoherenceMatrix(minRange);
+    }
     // get the average coherence matrix over the range [minRange, maxRange]
     const freqList = getFrequencies();
     let CM = getCoherenceMatrix(freqList[0]);
@@ -213,4 +257,9 @@ export const getAverageGraphinData = (minRange: number, maxRange: number,
     getPositions?: (n: number, radius: number) => number[][]): GraphinData => {
     const CM = getAverageCM(minRange, maxRange);
     return getGraphinDataByCM(CM, getPositions);
+}
+
+export interface FreqRange {
+    min: number;
+    max: number;
 }
