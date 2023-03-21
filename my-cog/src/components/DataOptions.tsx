@@ -4,9 +4,18 @@ import { ElectrodeFocusContext, IElectrodeFocusContext } from "../contexts/Elect
 
 export const DataOptions = () => {
     // return a selection of electrodes from the electrode list context
-    const { setElectrode, electrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { electrode, setElectrode, electrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    // make sure all the electrodes appear in the selection
+    
     const selection = (
-        <select onChange={(e) => setElectrode(e.target.value)}></select>
+        <select onChange={(e) => setElectrode(e.target.value)} value={electrode} >
+            {electrodeList.map((electrode) => (
+                <option key={electrode} value={electrode}>
+                    {electrode}
+                </option>
+            ))}
+        </select>
     );
+        
     return selection;
 };

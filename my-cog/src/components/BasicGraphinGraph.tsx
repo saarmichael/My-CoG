@@ -25,6 +25,21 @@ const SampleBehavior = () => {
             graph.off('node:click', handleClick);
         };
     }, []);
+
+    useEffect(() => {
+        // change the selected node on the graph when the context changes
+        const node = graph.findById(electrode) as INode;
+        if (node) {
+            // deselect all nodes
+            graph.findAllByState('node', 'selected').forEach((n) => {
+                graph.setItemState(n, 'selected', false);
+            });
+            graph.setItemState(node, 'selected', true);
+            // "click" the selected node
+            graph.emit('node:click', { item: node });
+
+        }
+    }, [electrode]);
     return null;
 };
 
@@ -119,7 +134,9 @@ const BasicGraphinGraph = () => {
 
     createGraphData();
     // set the electrode list according to the current graph
-    setElectrodeList(state.nodes.map((node) => node.id));
+    useEffect(() => {
+        setElectrodeList(state.nodes.map((node) => node.id));
+    }, [state]);
     const data = state;
     return (
         <>
