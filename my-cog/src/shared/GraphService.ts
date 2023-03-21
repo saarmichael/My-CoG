@@ -167,7 +167,8 @@ export const colorCodeEdges = (edges: IUserEdge[]) => {
         const edge = edges[i];
         const value = edge.value;
         // generate the color based on the value
-        const color = interpolate(lightBlue, darkRed) (sigmoid(15*(value/edgeSum)-2));
+        const edgeWeight = 1 + (30 - 1) * (value / edgeSum);
+        const color = interpolate(lightBlue, darkRed) (sigmoid(edgeWeight! - 1.5));
         newEdges.push({
             ...edge,
             style: {
@@ -185,6 +186,17 @@ export const colorCodeEdges = (edges: IUserEdge[]) => {
                 }
             }
         });
+    }
+    return newEdges;
+}
+
+export const thresholdGraph = (edges: IUserEdge[], threshold: number) => {
+    let newEdges: IUserEdge[] = [];
+    for (let i = 0; i < edges.length; i++) {
+        const edge = edges[i];
+        if (edge.value > threshold) {
+            newEdges.push(edge);
+        }
     }
     return newEdges;
 }
