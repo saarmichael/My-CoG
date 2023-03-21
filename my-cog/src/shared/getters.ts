@@ -3,6 +3,7 @@ import coherence_matrices from './ecog_data/coherence_matrices.json';
 import spectrograms from './ecog_data/spectrograms.json';
 
 
+
 export type SpectrogramData = {
     f: number[],
     t: number[],
@@ -14,12 +15,22 @@ export type CoherenceMatrix = {
     values: number[][];
 };
 
-export const getSpectrogramData = (elecNum: number): SpectrogramData => {
+export const getSpectrogramDataSync = (elecNum: number): SpectrogramData => {
     // parse the data from the json file spectrograms because it is very large
     let data = JSON.parse(JSON.stringify(spectrograms));
     let f = data.f;
     let t = data.t;
     let Sxx = data.spectrograms;
+    return {f:f, t:t, Sxx:Sxx[elecNum]};
+}
+
+export const getSpectrogramData = async (elecNum: number): Promise<SpectrogramData> => {
+    // read the data from the json file using fetch
+    let data = await fetch('http://localhost:3000//spectrograms.json');
+    let json = await data.json();
+    let f = json.f;
+    let t = json.t;
+    let Sxx = json.spectrograms;
     return {f:f, t:t, Sxx:Sxx[elecNum]};
 }
 

@@ -11,7 +11,7 @@ const SampleBehavior = () => {
 
     useEffect(() => {
 
-        graph.changeSize(600, 550);
+        graph.changeSize(580, 560);
         // 初始化聚焦到`node-1`
         const handleClick = (evt: IG6GraphEvent) => {
             const node = evt.item as INode;
@@ -25,6 +25,21 @@ const SampleBehavior = () => {
             graph.off('node:click', handleClick);
         };
     }, []);
+
+    useEffect(() => {
+        // change the selected node on the graph when the context changes
+        const node = graph.findById(electrode) as INode;
+        if (node) {
+            // deselect all nodes
+            graph.findAllByState('node', 'selected').forEach((n) => {
+                graph.setItemState(n, 'selected', false);
+            });
+            graph.setItemState(node, 'selected', true);
+            // "click" the selected node
+            graph.emit('node:click', { item: node });
+
+        }
+    }, [electrode]);
     return null;
 };
 
@@ -33,14 +48,16 @@ const SampleBehavior = () => {
 // there is a button that changes the data
 // the graph is rendered in the div with id="mountNode"
 const BasicGraphinGraph = () => {
-    const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
+    const { electrode, setElectrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
 
     const createGraphData = () => {
         // create the nodes and edges using GraphService module
         let { nodes, edges }: GraphinData = getGraphinData(0);
+        // create a string[] of the node ids
         edges = changeEdgeWidthGraphin(edges, 1, 30);
         return { nodes, edges };
     }
@@ -117,6 +134,10 @@ const BasicGraphinGraph = () => {
 
 
     createGraphData();
+    // set the electrode list according to the current graph
+    useEffect(() => {
+        setElectrodeList(state.nodes.map((node) => node.id));
+    }, [state]);
     const data = state;
     return (
         <>

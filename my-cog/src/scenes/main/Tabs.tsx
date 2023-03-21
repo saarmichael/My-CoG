@@ -3,6 +3,11 @@ import "./Tabs.css";
 import { Rnd } from 'react-rnd';
 import React from "react";
 import { useState } from "react";
+import { DataOptions } from "../../components/DataOptions";
+import { ElectrodeFocusProvider } from "../../contexts/ElectrodeFocusContext";
+
+
+
 
 interface Tab {
   label: string;
@@ -47,7 +52,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
       const componentType = component.type as React.FC;
       return componentType === React.Fragment ? null : (
         <option key={index} value={index}>
-          {hiddenComponentIndex.includes(index)? 'Show ' : 'Hide '} {componentType.displayName || componentType.name || "Component"} {index + 1}
+          {hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '} {componentType.displayName || componentType.name || "Component"} {index + 1}
         </option>
       );
     });
@@ -96,60 +101,60 @@ const Tabbing = () => {
     {
       label: "Tab 1",
       content: <div
-                className="active-content"
-              >
-      
-                <Rnd default={{
-                  x: 15,
-                  y: 100,
-                  width: 320,
-                  height: 200,
-                }}
-                  bounds="parent"
-                  minWidth={600}
-                  minHeight={650}>
-                  <Box1 />
-                </Rnd>
-      
-                <Rnd default={{
-                  x: 615,
-                  y: 100,
-                  width: 320,
-                  height: 200,
-                }}
-                  bounds="parent"
-                  minWidth={600}
-                  minHeight={650}>
-                  <Box />
-                </Rnd>
-              </div>,
+        className="active-content"
+      >
+        <DataOptions />
+        <Rnd default={{
+          x: 15,
+          y: 100,
+          width: 320,
+          height: 200,
+        }}
+          bounds="parent"
+          minWidth={600}
+          minHeight={650}>
+          <Box1 />
+        </Rnd>
+
+        <Rnd default={{
+          x: 615,
+          y: 100,
+          width: 320,
+          height: 200,
+        }}
+          bounds="parent"
+          minWidth={600}
+          minHeight={650}>
+          <Box />
+        </Rnd>
+      </div>,
     },
     {
       label: "Tab 2",
       content: <div
-                className="active-content"
-              >
-                <Rnd default={{
-                        x: 15,
-                        y: 100,
-                        width: 450,
-                        height: 300,
-                      }}
-                      bounds="parent"
-                      minWidth={500}
-                      minHeight={190}>
-                  <Box1/>
-                </Rnd>
-                <></>
-              </div>,
+        className="active-content"
+      >
+        <Rnd default={{
+          x: 15,
+          y: 100,
+          width: 450,
+          height: 300,
+        }}
+          bounds="parent"
+          minWidth={500}
+          minHeight={190}>
+          <Box1 />
+        </Rnd>
+        <></>
+      </div>,
     },
     {
       label: "Tab 3",
-      content:  <div className="active-content">
-                  <h2>Tab 1 Content</h2>
-                  <p>This is the first paragraph.</p>
-                  <p>This is the second paragraph.</p>
-                </div>,
+      content: <div className="active-content">
+        <h2>Tab 1 Content</h2>
+        <p>This is the first paragraph.</p>
+        <p>This is the second paragraph.</p>
+      </div>,
     },
   ]);
 

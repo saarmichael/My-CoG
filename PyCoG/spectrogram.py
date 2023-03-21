@@ -6,6 +6,8 @@ def normalize(array):
 
 # function to calculate the spectrogram of a signal using the Welch method
 def spectrogram(x, fs, window_size, overlap):
+    # trim the signal
+    x = x[0:10000]
     # normalize the signal
     x = normalize(x)
     # calculate the spectrogram
