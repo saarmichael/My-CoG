@@ -33,7 +33,7 @@ const SampleBehavior = () => {
 // there is a button that changes the data
 // the graph is rendered in the div with id="mountNode"
 const BasicGraphinGraph = () => {
-    const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { electrode, setElectrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
     const { ActivateRelations } = Behaviors;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
@@ -41,6 +41,7 @@ const BasicGraphinGraph = () => {
     const createGraphData = () => {
         // create the nodes and edges using GraphService module
         let { nodes, edges }: GraphinData = getGraphinData(0);
+        // create a string[] of the node ids
         edges = changeEdgeWidthGraphin(edges, 1, 30);
         return { nodes, edges };
     }
@@ -117,6 +118,8 @@ const BasicGraphinGraph = () => {
 
 
     createGraphData();
+    // set the electrode list according to the current graph
+    setElectrodeList(state.nodes.map((node) => node.id));
     const data = state;
     return (
         <>

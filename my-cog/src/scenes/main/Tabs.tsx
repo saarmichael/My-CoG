@@ -4,6 +4,7 @@ import "./Tabs.css";
 import { Rnd } from 'react-rnd';
 import React from "react";
 import { ElectrodeFocusProvider } from "../../contexts/ElectrodeFocusContext";
+import { DataOptions } from "../../components/DataOptions";
 
 function Tabs() {
   const [toggleState, setToggleState] = useState(1);
@@ -81,7 +82,7 @@ function Tabs() {
         <div
           className={toggleState === 1 ? "content  active-content" : "content"}
         >
-
+          <DataOptions />
           <Rnd default={{
             x: 15,
             y: 100,
