@@ -168,7 +168,7 @@ export const colorCodeEdges = (edges: IUserEdge[]) => {
         const value = edge.value;
         // generate the color based on the value
         const edgeWeight = 1 + (30 - 1) * (value / edgeSum);
-        const color = interpolate(lightBlue, darkRed) (sigmoid(edgeWeight! - 1.5));
+        const color = interpolate(lightBlue, darkRed) (sigmoid(edgeWeight - 1.5));
         newEdges.push({
             ...edge,
             style: {

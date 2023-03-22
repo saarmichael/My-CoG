@@ -5,6 +5,8 @@ import React from "react";
 import { useState } from "react";
 import { DataOptions } from "../../components/DataOptions";
 import { ElectrodeFocusProvider } from "../../contexts/ElectrodeFocusContext";
+import { GraphVisToggles } from "../../components/GraphVisToggles";
+import { VisGraphOptionsProvider } from "../../contexts/VisualGraphOptionsContext";
 
 
 
@@ -104,6 +106,7 @@ const Tabbing = () => {
         className="active-content"
       >
         <DataOptions />
+        <GraphVisToggles />
         <Rnd default={{
           x: 15,
           y: 100,
@@ -164,7 +167,11 @@ const Tabbing = () => {
     setTabs([...tabs, { label: newTabLabel, content: newTabContent }]);
   };
 
-  return <Tabs tabs={tabs} onAddTab={handleAddTab} />;
+  return (
+    <VisGraphOptionsProvider >
+      <Tabs tabs={tabs} onAddTab={handleAddTab} />
+    </VisGraphOptionsProvider>
+  );
 };
 
 export default Tabbing;
