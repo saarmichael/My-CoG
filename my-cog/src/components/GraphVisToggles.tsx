@@ -8,32 +8,20 @@ import { GraphVisCheckbox } from './GraphVisCheckbox';
 
 export const GraphVisToggles = () => {
 
-    const { widthView, setWidthView, colorCodedView, setColorCodedView, thresholdView, setThresholdView } =
-        useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const { options } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
 
     return (
         <>
-            <GraphVisCheckbox
-                label="Width View"
-                checked={widthView}
-                onChange={() => {
-                    setWidthView(!widthView);
-                }}
-            />
-            <GraphVisCheckbox
-                label="Color Coded View"
-                checked={colorCodedView}
-                onChange={() => {
-                    setColorCodedView(!colorCodedView);
-                }}
-            />
-            <GraphVisCheckbox
-                label="Threshold View"
-                checked={thresholdView}
-                onChange={() => {
-                    setThresholdView(!thresholdView);
-                }}
-            />
+            {options.map((option, index) => {
+                return (
+                    <GraphVisCheckbox
+                        key={index}
+                        label={option.label}
+                        checked={option.checked}
+                    />
+                );
+            })
+            }
         </>
     );
 };
