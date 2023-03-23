@@ -158,6 +158,24 @@ const sigmoid = (x: number) => {
     return 1 / (1 + Math.exp(-x));
 }
 
+export const showEdgeWeight = (edges: IUserEdge[]) : IUserEdge[] => {
+    let newEdges: IUserEdge[] = [];
+    for (let i = 0; i < edges.length; i++) {
+        newEdges.push({
+            ...edges[i],
+            style: {
+                ...edges[i].style,
+                label: {
+                    value: edges[i].value.toFixed(2),
+                    fontSize: 10,
+                    fill: '#000000',
+                }
+            }
+        });
+    }
+    return newEdges;
+}
+
 export const colorCodeEdgesCarry = () => (edges: IUserEdge[]) => {
     colorCodeEdges(edges);
 }
@@ -185,11 +203,6 @@ export const colorCodeEdges = (edges: IUserEdge[]) => {
                     fill: color,
                     strokeOpacity: 0.8,
                 },
-                label: {
-                    value: value.toFixed(2),
-                    fontSize: 12,
-                    fill: 'black'
-                }
             }
         });
     }

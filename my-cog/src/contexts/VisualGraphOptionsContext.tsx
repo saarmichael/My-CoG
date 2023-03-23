@@ -1,7 +1,7 @@
 import { IUserEdge } from "@antv/graphin";
 import exp from "constants";
 import React, { createContext, useState, ReactNode } from "react";
-import { changeEdgeWidthGraphinCarry, colorCodeEdges, colorCodeEdgesCarry, thresholdGraphCarry } from "../shared/GraphService";
+import { changeEdgeWidthGraphinCarry, colorCodeEdges, colorCodeEdgesCarry, showEdgeWeight, thresholdGraphCarry } from "../shared/GraphService";
 
 export interface IVisGraphOption {
     label: string;
@@ -37,6 +37,11 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             label: "Threshold View",
             checked: true,
             onChange: thresholdGraphCarry(0.2)
+        },
+        {
+            label: "Show weights",
+            checked: true,
+            onChange: showEdgeWeight
         }
     ]);
 
