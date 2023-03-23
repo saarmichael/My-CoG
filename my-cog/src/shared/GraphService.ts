@@ -129,6 +129,9 @@ export const changeEdgeWidth = (freq: number, edges: any, min: number, max: numb
     return newEdges;
 }
 
+export const changeEdgeWidthGraphinCarry = (min: number, max: number) => (edges: IUserEdge[]) =>{ 
+    return changeEdgeWidthGraphin(edges, min, max);
+}
 export const changeEdgeWidthGraphin = (edges: IUserEdge[], min: number, max: number) => {
     let edgeSum = getEdgesSum(edges);
     let newEdges: IUserEdge[] = [];
@@ -155,20 +158,41 @@ const sigmoid = (x: number) => {
     return 1 / (1 + Math.exp(-x));
 }
 
+export const showEdgeWeight = (edges: IUserEdge[]) : IUserEdge[] => {
+    let newEdges: IUserEdge[] = [];
+    for (let i = 0; i < edges.length; i++) {
+        newEdges.push({
+            ...edges[i],
+            style: {
+                ...edges[i].style,
+                label: {
+                    value: edges[i].value.toFixed(2),
+                    fontSize: 10,
+                    fill: '#000000',
+                }
+            }
+        });
+    }
+    return newEdges;
+}
+
+export const colorCodeEdgesCarry = () => (edges: IUserEdge[]) => {
+    colorCodeEdges(edges);
+}
 export const colorCodeEdges = (edges: IUserEdge[]) => {
     // color code the edges based on the value of the edge
     let newEdges: IUserEdge[] = [];
     const edgeSum = getEdgesSum(edges);
     console.log(edgeSum);
     // the color range is from light blue to dark red
-    const lightBlue = '#66e5ff';
-    const darkRed = '#b30003';
+    const lightBlue = 'rgb(108,99,255)';
+    const darkRed = 'red';
     for (let i = 0; i < edges.length; i++) {
         const edge = edges[i];
         const value = edge.value;
         // generate the color based on the value
         const edgeWeight = 1 + (30 - 1) * (value / edgeSum);
-        const color = interpolate(lightBlue, darkRed) (sigmoid(edgeWeight! - 1.5));
+        const color = interpolate(lightBlue, darkRed) (sigmoid(edgeWeight - 1.5));
         newEdges.push({
             ...edge,
             style: {
@@ -179,15 +203,14 @@ export const colorCodeEdges = (edges: IUserEdge[]) => {
                     fill: color,
                     strokeOpacity: 0.8,
                 },
-                label: {
-                    value: value.toFixed(2),
-                    fontSize: 12,
-                    fill: 'black'
-                }
             }
         });
     }
     return newEdges;
+}
+
+export const thresholdGraphCarry = (threshold: number) => (edges: IUserEdge[]) => {
+    return thresholdGraph(edges, threshold);
 }
 
 export const thresholdGraph = (edges: IUserEdge[], threshold: number) => {

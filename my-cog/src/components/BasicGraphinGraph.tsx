@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData, thresholdGraph } from '../shared/GraphService';
+import { changeEdgeWidthGraphin, changeEdgeWidthGraphinCarry, colorCodeEdges, colorCodeEdgesCarry, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData, thresholdGraph, thresholdGraphCarry } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
@@ -52,8 +52,7 @@ const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
     const { electrode, setElectrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
-    const { widthView, colorCodedView, setColorCodedView, setThresholdView, setWidthView, thresholdView } =
-        useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const { options, setOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
     const [freqRange, setFreqRange] = React.useState<FreqRange>({ min: 0, max: 0 });
@@ -61,24 +60,21 @@ const BasicGraphinGraph = () => {
     const createGraphData = () => {
         // create the nodes and edges using GraphService module
         let { nodes, edges }: GraphinData = getGraphinData(freqRange);
-        // create a string[] of the node ids
-        if (widthView) {
-            edges = changeEdgeWidthGraphin(edges, 1, 30);
-        }
-        if(colorCodedView){
-            edges = colorCodeEdges(edges);
-        }
-        if(thresholdView){
-            edges = thresholdGraph(edges, 0.2);
-        }
+        edges = options.reduce((acc, option) => {
+            if (option.checked) {
+                return option.onChange(acc);
+            }
+            return acc;
+        }, edges);
+
         return { nodes, edges };
     }
     const [state, setState] = React.useState<GraphinData>(createGraphData());
 
-    // cahnge the graph data according to the user's selections
+    // change the graph data according to the user's selections
     useEffect(() => {
         setState(createGraphData());
-    }, [freqRange, widthView, colorCodedView, thresholdView]);
+    }, [freqRange, options]);
 
     const freqs: number[] = getFrequencyList();
     // create a dropdown menu that consists of the frequencies and the user can select one
