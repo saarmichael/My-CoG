@@ -15,7 +15,7 @@ interface IElectrodeFocusProviderProps {
 export const ElectrodeFocusContext = createContext<IElectrodeFocusContext | null>(null);
 
 export const ElectrodeFocusProvider: React.FC<IElectrodeFocusProviderProps> = ({ children }) => {
-    const [electrode, setElectrode] = useState<string>("electrode1");
+    const [electrode, setElectrode] = useState<string>("none");
     const [electrodeList, setElectrodeList] = useState<string[]>([]);
     return (
         <ElectrodeFocusContext.Provider value={{ electrode, electrodeList, setElectrode, setElectrodeList }}>

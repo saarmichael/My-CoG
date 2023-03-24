@@ -9,6 +9,10 @@ export const getData = async (electrodeID: string): Promise<SpectrogramData> => 
 }
 
 export const getDataSync = (electrodeID: string): SpectrogramData => {
+    // special case: electrode ID is "none":
+    if (electrodeID === "none") {
+        return { f: [], t: [], Sxx: [] };
+    }
     // get the ID number alone parse it to a number
     const elecNum = parseInt(electrodeID[electrodeID.length - 1]);
     const data = getSpectrogramDataSync(elecNum);

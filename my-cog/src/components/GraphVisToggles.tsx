@@ -6,6 +6,7 @@ import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/Vis
 import { Checkbox } from '@mui/material';
 import { GraphVisCheckbox } from './GraphVisCheckbox';
 
+
 export const GraphVisToggles = () => {
 
     const { options } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;

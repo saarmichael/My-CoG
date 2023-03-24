@@ -39,6 +39,20 @@ const SampleBehavior = () => {
             // "click" the selected node
             graph.emit('node:click', { item: node });
 
+        } else {
+            // deselect all nodes
+            graph.findAllByState('node', 'selected').forEach((n) => {
+                graph.setItemState(n, 'selected', false);
+            });
+            // deactivate active edges
+            graph.findAllByState('edge', 'active').forEach((e) => {
+                graph.setItemState(e, 'active', false);
+            });
+            // make all edges visible again
+            graph.findAllByState('edge', 'hidden').forEach((e) => {
+                graph.setItemState(e, 'hidden', false);
+            }
+            );
         }
     }, [electrode]);
     return null;
@@ -142,7 +156,9 @@ const BasicGraphinGraph = () => {
     createGraphData();
     // set the electrode list according to the current graph
     useEffect(() => {
-        setElectrodeList(state.nodes.map((node) => node.id));
+        let elecList = state.nodes.map((node) => node.id);
+        elecList.push("none");
+        setElectrodeList(elecList);
     }, [state]);
     const data = state;
     return (
