@@ -17,7 +17,9 @@ const SampleBehavior = () => {
         const handleClick = (evt: IG6GraphEvent) => {
             const node = evt.item as INode;
             const model = node.getModel() as NodeConfig;
-            // set the context
+            // first check of the node is already selected
+            // find all the node with state 'relationActive'
+            
             setElectrode(model.id);
         };
         // 每次点击聚焦到点击节点上
@@ -32,27 +34,21 @@ const SampleBehavior = () => {
         const node = graph.findById(electrode) as INode;
         if (node) {
             // deselect all nodes
-            graph.findAllByState('node', 'selected').forEach((n) => {
-                graph.setItemState(n, 'selected', false);
+            graph.getNodes().forEach((n) => {
+                graph.clearItemStates(n);
             });
-            graph.setItemState(node, 'selected', true);
             // "click" the selected node
             graph.emit('node:click', { item: node });
 
         } else {
-            // deselect all nodes
-            graph.findAllByState('node', 'selected').forEach((n) => {
-                graph.setItemState(n, 'selected', false);
+            // deactivate all node and edge states
+            graph.getNodes().forEach((n) => {
+                graph.clearItemStates(n);
             });
-            // deactivate active edges
-            graph.findAllByState('edge', 'active').forEach((e) => {
-                graph.setItemState(e, 'active', false);
+            graph.getEdges().forEach((e) => {
+                graph.clearItemStates(e);
             });
-            // make all edges visible again
-            graph.findAllByState('edge', 'hidden').forEach((e) => {
-                graph.setItemState(e, 'hidden', false);
-            }
-            );
+
         }
     }, [electrode]);
     return null;
