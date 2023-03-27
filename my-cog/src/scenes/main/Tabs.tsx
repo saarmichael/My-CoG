@@ -74,23 +74,23 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
           </button>
         ))}
         {onAddTab && (
-          <button onClick={handleAddTabClick}>➕</button>
+          <button className="plus" onClick={handleAddTabClick}>➕</button>
         )}
       </div>
-      <div>
-        <select value="" onChange={handleComponentSelect}>
+      <select value="" onChange={handleComponentSelect}>
           <option value="" disabled>
             Select a component to hide
           </option>
           {renderComponentOptions()}
-        </select>
+      </select>
+      <div style={{position: 'absolute', height: '100%', width: '100%'}}>
         {tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => (
           hiddenComponentIndex.includes(index)
             ? null
             : (
-              <div key={index}>
+              <>
                 {component}
-              </div>
+              </>
             )
         ))}
       </div>
@@ -128,8 +128,9 @@ const Tabbing = () => {
           bounds="parent"
           minWidth={600}
           minHeight={650}>
-          <Box />
+          <Box/>
         </Rnd>
+                
       </div>,
     },
     {
