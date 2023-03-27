@@ -1,7 +1,8 @@
 import { getCoherenceMatrix, getFrequencies } from './getters'
 import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
-import {interpolate} from 'd3-interpolate'
+import { interpolate } from 'd3-interpolate'
+import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
 
 
 
@@ -129,19 +130,26 @@ export const changeEdgeWidth = (freq: number, edges: any, min: number, max: numb
     return newEdges;
 }
 
-export const changeEdgeWidthGraphinCarry = (min: number, max: number) => (edges: IUserEdge[]) =>{ 
-    return changeEdgeWidthGraphin(edges, min, max);
-}
-export const changeEdgeWidthGraphin = (edges: IUserEdge[], min: number, max: number) => {
+// export const changeEdgeWidthGraphinCarry = (min: number, max: number) => (edges: IUserEdge[]) =>{ 
+//     return changeEdgeWidthGraphin(edges, min, max);
+// }
+
+export const changeEdgeWidthGraphin = (edges: IUserEdge[], settings: IVisSettings) => {
     let edgeSum = getEdgesSum(edges);
     let newEdges: IUserEdge[] = [];
+    let min = 1;
+    let max = 30;
+    if (settings.edgeWidth) {
+        min = settings.edgeWidth.min;
+        max = settings.edgeWidth.max;
+    }
     for (let i = 0; i < edges.length; i++) {
         newEdges.push({
             ...edges[i],
             style: {
                 // keep the original style and add the new style
                 ...edges[i].style,
-                
+
                 keyshape: {
                     ...edges[i].style?.keyshape,
                     lineWidth: min + (max - min) * (edges[i].value / edgeSum),
@@ -158,7 +166,7 @@ const sigmoid = (x: number) => {
     return 1 / (1 + Math.exp(-x));
 }
 
-export const showEdgeWeight = (edges: IUserEdge[]) : IUserEdge[] => {
+export const showEdgeWeight = (edges: IUserEdge[], settings?: IVisSettings): IUserEdge[] => {
     let newEdges: IUserEdge[] = [];
     for (let i = 0; i < edges.length; i++) {
         newEdges.push({
@@ -176,23 +184,53 @@ export const showEdgeWeight = (edges: IUserEdge[]) : IUserEdge[] => {
     return newEdges;
 }
 
-export const colorCodeEdgesCarry = () => (edges: IUserEdge[]) => {
-    colorCodeEdges(edges);
-}
-export const colorCodeEdges = (edges: IUserEdge[]) => {
+export const colorCodeEdgesDefault = (edges: IUserEdge[], settings: IVisSettings) => {
+    // use only the default color (firstColor) to color code the edges
+    // if firstColor is not specified, use the default color (dark blue)
+    let newEdges: IUserEdge[] = [];
+    let strongColor = 'rgb(108,99,255)';
+    if (settings.edgeColor) {
+        if (settings.edgeColor.firstColor) {
+            strongColor = settings.edgeColor.firstColor;
+        }
+    }
+    for (let i = 0; i < edges.length; i++) {
+        newEdges.push({
+            ...edges[i],
+            style: {
+                ...edges[i].style,
+                keyshape: {
+                    ...edges[i].style?.keyshape,
+                    stroke: strongColor,
+                    fill: strongColor,
+                },
+            }
+        });
+    }
+    return newEdges;
+};
+
+export const colorCodeEdges = (edges: IUserEdge[], settings: IVisSettings) => {
     // color code the edges based on the value of the edge
     let newEdges: IUserEdge[] = [];
     const edgeSum = getEdgesSum(edges);
-    console.log(edgeSum);
     // the color range is from light blue to dark red
-    const lightBlue = 'rgb(108,99,255)';
-    const darkRed = 'red';
+    let weakColor = 'rgb(108,99,255)';
+    let strongColor = 'red';
+    if (settings.edgeColor) {
+        if (settings.edgeColor.firstColor) {
+            strongColor = settings.edgeColor.firstColor;
+        }
+        if (settings.edgeColor.secondColor) {
+            weakColor = settings.edgeColor.secondColor;
+        }
+    }
     for (let i = 0; i < edges.length; i++) {
         const edge = edges[i];
         const value = edge.value;
         // generate the color based on the value
         const edgeWeight = 1 + (30 - 1) * (value / edgeSum);
-        const color = interpolate(lightBlue, darkRed) (sigmoid(edgeWeight - 1.5));
+        const color = interpolate(weakColor, strongColor)(sigmoid(edgeWeight - 1.5));
         newEdges.push({
             ...edge,
             style: {
@@ -209,16 +247,18 @@ export const colorCodeEdges = (edges: IUserEdge[]) => {
     return newEdges;
 }
 
-export const thresholdGraphCarry = (threshold: number) => (edges: IUserEdge[]) => {
-    return thresholdGraph(edges, threshold);
-}
+// export const thresholdGraphCarry = (threshold: number) => (edges: IUserEdge[]) => {
+//     return thresholdGraph(edges, threshold);
+// }
 
-export const thresholdGraph = (edges: IUserEdge[], threshold: number) => {
+export const thresholdGraph = (edges: IUserEdge[], settings: IVisSettings) => {
     let newEdges: IUserEdge[] = [];
     for (let i = 0; i < edges.length; i++) {
         const edge = edges[i];
-        if (edge.value > threshold) {
-            newEdges.push(edge);
+        if (settings.threshold) {
+            if (edge.value > settings.threshold) {
+                newEdges.push(edge);
+            }
         }
     }
     return newEdges;
@@ -246,7 +286,7 @@ export const getGraphinDataByCM = (CM: number[][], getPositions?: (n: number, ra
 }
 export const getGraphinData = (freq: FreqRange, getPositions?: (n: number, radius: number) => number[][])
     : GraphinData => {
-    
+
     return getAverageGraphinData(freq.min, freq.max, getPositions);
 }
 

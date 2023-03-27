@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { Checkbox } from '@mui/material';
 import { GraphVisCheckbox } from './GraphVisCheckbox';
+import { ColorPicker } from './ColorPicker';
 
 export const GraphVisToggles = () => {
 
@@ -22,6 +23,7 @@ export const GraphVisToggles = () => {
                 );
             })
             }
+            <ColorPicker />
         </>
     );
 };
