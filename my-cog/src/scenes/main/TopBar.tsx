@@ -1,34 +1,89 @@
-import React from 'react';
 import './TopBar.css';
+import React, { useState } from 'react';
+import { handleNew, handleOpen, handleSave, handleSaveAs, handleUndo, handleRedo, handleFullscreen, handleOptions, handleLogout } from '../../shared/TopBarUtil';
 
-interface ITopBarProps {
-    onFileClick: () => void;
-    onEditClick: () => void;
-    onViewClick: () => void;
-    onOptionsClick: () => void;
-    onLogoutClick: () => void;
+interface MenuItem {
+  name: string;
+  items: JSX.Element[];
 }
 
-export const TopBar: React.FC<ITopBarProps> = ({ onFileClick, onEditClick, onViewClick, onOptionsClick, onLogoutClick }) => {
-    return (
-        <div className="top-bar">
-            <div className="top-bar__item" onClick={onFileClick}>
-                File</div>
-            <div className="top-bar__item" onClick={onEditClick}>
-                Edit
+interface TopBarProps {
+  menuItems: MenuItem[];
+}
+
+export const TopBar: React.FC<TopBarProps> = ({ menuItems }) => {
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+
+  const toggleMenu = (index: number) => {
+    setActiveMenu(activeMenu === index ? null : index);
+  };
+
+  return (
+    <div className="topbar">
+        {menuItems.map((menuItem, index) => (
+            <div key={index} className="menu-item" onClick={() => toggleMenu(index)}>
+            {menuItem.name}
+            {activeMenu === index && (
+                <div className="menu-dropdown">
+                {menuItem.items.map((item, itemIndex) => (
+                    <div key={itemIndex} className="menu-item">
+                    {item}
+                    </div>
+                ))}
+                </div>
+            )}
             </div>
-            <div className="top-bar__item" onClick={onViewClick}>
-                View
-            </div>
-            
-            <div className="top-bar__item top-bar__options" onClick={onOptionsClick}>
-            ⚙
-            </div>
-            <div className="top-bar__item top-bar__logout" onClick={onLogoutClick}>
-            Logout
-            </div>
+        ))}
+        <div className="menu-item top-bar__options" onClick={handleOptions}>
+            &nbsp;⚙&nbsp;
         </div>
-    );
+        <div className="menu-item top-bar__logout" onClick={handleLogout}>
+            Logout
+        </div>
+    </div>
+  );
 };
 
+
+export const menuItems: MenuItem[] = [
+    {
+        name: 'File',
+        items: [
+        <div onClick={() => handleNew()}>
+            New
+        </div>,
+        <div onClick={() => handleOpen()}>
+            Open
+        </div>, 
+        <div onClick={() => handleSave()}>
+            Save
+        </div>,     
+        <div onClick={() => handleSaveAs()}>
+            Save AS
+        </div>
+        ]
+    },
+    {
+        name: 'Edit',
+        items: [
+            <div className="menu-item" onClick={() => handleUndo()}>
+                Undo
+            </div>, 
+            <div className="menu-item" onClick={() => handleRedo()}>
+                Redo
+            </div>
+        ]
+    },
+    {
+        name: 'View',
+        items: [
+            <div className="menu-item" onClick={() => handleFullscreen()}>
+                Fullscreen
+            </div>
+        ]
+    }
+];
+
+
 export default TopBar;
+

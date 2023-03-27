@@ -1,15 +1,39 @@
-export function handleFileClick() {
-    console.log("File Clicked");
+export function handleNew() {
+    console.log("New");
 }
-export function handleEditClick() {
-    console.log("Edit Clicked");
+
+export function handleOpen() {
+    console.log("Open");
 }
-export function handleViewClick() {
-    console.log("View Clicked");
+
+export function handleSave() {
+    console.log("Save");
 }
-export function handleOptionsClick() {
-    console.log("Option Clicked");
+
+export function handleSaveAs() {
+    console.log("Save As");
 }
-export function handleLogoutClick() {
-    console.log("Logout Clicked");
+
+export function handleUndo() {
+    console.log("Undo");
+}
+
+export function handleRedo() {
+    console.log("Redo");
+}
+
+export function handleFullscreen() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        document.documentElement.requestFullscreen();
+      }
+}
+
+export function handleOptions() {
+    console.log("Options");
+}
+
+export function handleLogout() {
+    console.log("Logout");
 }
