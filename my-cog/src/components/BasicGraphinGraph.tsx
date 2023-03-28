@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, changeEdgeWidthGraphinCarry, colorCodeEdges, colorCodeEdgesCarry, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData, thresholdGraph, thresholdGraphCarry } from '../shared/GraphService';
+import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData, thresholdGraph } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
@@ -52,7 +52,7 @@ const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
     const { electrode, setElectrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
-    const { options, setOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const { options, setOptions, settings, setSettings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
     const [freqRange, setFreqRange] = React.useState<FreqRange>({ min: 0, max: 0 });
@@ -62,7 +62,11 @@ const BasicGraphinGraph = () => {
         let { nodes, edges }: GraphinData = getGraphinData(freqRange);
         edges = options.reduce((acc, option) => {
             if (option.checked) {
-                return option.onChange(acc);
+                return option.onChange(acc, settings);
+            } else {
+                if (option.defaultBehavior) {
+                    return option.defaultBehavior(acc, settings);
+                }
             }
             return acc;
         }, edges);
@@ -74,7 +78,7 @@ const BasicGraphinGraph = () => {
     // change the graph data according to the user's selections
     useEffect(() => {
         setState(createGraphData());
-    }, [freqRange, options]);
+    }, [freqRange, options, settings]);
 
     const freqs: number[] = getFrequencyList();
     // create a dropdown menu that consists of the frequencies and the user can select one
