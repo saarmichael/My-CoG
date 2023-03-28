@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
-import { GithubPicker } from 'react-color';
-import { IVisGraphOption, IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
+import { GithubPicker, SliderPicker } from 'react-color';
+import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 
 
 export const ColorPicker = () => {
-    const { settings, setSettings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const { options, settings, setSettings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
 
     return (
         <>
-            <GithubPicker
+            <SliderPicker
                 color={settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#000000"}
                 onChange={(c) => {
                     setSettings({
@@ -20,18 +20,21 @@ export const ColorPicker = () => {
                     });
                 }}
             />
-            <GithubPicker
-                color={settings.edgeColor?.secondColor ? (settings.edgeColor?.secondColor) : "#000000"}
-                onChange={(c) => {
-                    setSettings({
-                        ...settings,
-                        edgeColor: {
-                            ...settings.edgeColor,
-                            secondColor: c.hex
-                        }
-                    });
-                }}
-            />
+            {
+                // if color-coding is enabled, show the second color picker
+                options.find((option) => option.label === "Color Coded View")?.checked &&
+                <SliderPicker
+                    color={settings.edgeColor?.secondColor ? (settings.edgeColor?.secondColor) : "#000000"}
+                    onChange={(c) => {
+                        setSettings({
+                            ...settings,
+                            edgeColor: {
+                                ...settings.edgeColor,
+                                secondColor: c.hex
+                            }
+                        });
+                    }}
+                />}
         </>
     );
 };
