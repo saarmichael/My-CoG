@@ -59,8 +59,8 @@ const BasicGraphinGraph = () => {
 
     const createGraphData = () => {
         // create the nodes and edges using GraphService module
-        let { nodes, edges }: GraphinData = getGraphinData(freqRange);
-        edges = options.reduce((acc, option) => {
+        let graph: GraphinData = getGraphinData(freqRange);
+        graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, settings);
             } else {
@@ -69,9 +69,9 @@ const BasicGraphinGraph = () => {
                 }
             }
             return acc;
-        }, edges);
+        }, graph);
 
-        return { nodes, edges };
+        return graph;
     }
     const [state, setState] = React.useState<GraphinData>(createGraphData());
 

@@ -134,7 +134,8 @@ export const changeEdgeWidth = (freq: number, edges: any, min: number, max: numb
 //     return changeEdgeWidthGraphin(edges, min, max);
 // }
 
-export const changeEdgeWidthGraphin = (edges: IUserEdge[], settings: IVisSettings) => {
+export const changeEdgeWidthGraphin = (graph: GraphinData, settings: IVisSettings) => {
+    const edges = graph.edges;
     let edgeSum = getEdgesSum(edges);
     let newEdges: IUserEdge[] = [];
     let min = 1;
@@ -159,14 +160,16 @@ export const changeEdgeWidthGraphin = (edges: IUserEdge[], settings: IVisSetting
             }
         });
     }
-    return newEdges;
+    graph.edges = newEdges;
+    return graph;
 }
 
 const sigmoid = (x: number) => {
     return 1 / (1 + Math.exp(-x));
 }
 
-export const showEdgeWeight = (edges: IUserEdge[], settings?: IVisSettings): IUserEdge[] => {
+export const showEdgeWeight = (graph: GraphinData, settings?: IVisSettings) => {
+    const edges = graph.edges;
     let newEdges: IUserEdge[] = [];
     for (let i = 0; i < edges.length; i++) {
         newEdges.push({
@@ -181,10 +184,12 @@ export const showEdgeWeight = (edges: IUserEdge[], settings?: IVisSettings): IUs
             }
         });
     }
-    return newEdges;
+    graph.edges = newEdges;
+    return graph;
 }
 
-export const colorCodeEdgesDefault = (edges: IUserEdge[], settings: IVisSettings) => {
+export const colorCodeEdgesDefault = (graph: GraphinData, settings: IVisSettings) => {
+    const edges = graph.edges;
     // use only the default color (firstColor) to color code the edges
     // if firstColor is not specified, use the default color (dark blue)
     let newEdges: IUserEdge[] = [];
@@ -207,11 +212,13 @@ export const colorCodeEdgesDefault = (edges: IUserEdge[], settings: IVisSettings
             }
         });
     }
-    return newEdges;
+    graph.edges = newEdges;
+    return graph;
 };
 
-export const colorCodeEdges = (edges: IUserEdge[], settings: IVisSettings) => {
+export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
     // color code the edges based on the value of the edge
+    const edges = graph.edges;
     let newEdges: IUserEdge[] = [];
     const edgeSum = getEdgesSum(edges);
     // the color range is from light blue to dark red
@@ -244,14 +251,16 @@ export const colorCodeEdges = (edges: IUserEdge[], settings: IVisSettings) => {
             }
         });
     }
-    return newEdges;
+    graph.edges = newEdges;
+    return graph;
 }
 
 // export const thresholdGraphCarry = (threshold: number) => (edges: IUserEdge[]) => {
 //     return thresholdGraph(edges, threshold);
 // }
 
-export const thresholdGraph = (edges: IUserEdge[], settings: IVisSettings) => {
+export const thresholdGraph = (graph: GraphinData, settings: IVisSettings) => {
+    const edges = graph.edges;
     let newEdges: IUserEdge[] = [];
     for (let i = 0; i < edges.length; i++) {
         const edge = edges[i];
@@ -261,7 +270,8 @@ export const thresholdGraph = (edges: IUserEdge[], settings: IVisSettings) => {
             }
         }
     }
-    return newEdges;
+    graph.edges = newEdges;
+    return graph;
 }
 
 

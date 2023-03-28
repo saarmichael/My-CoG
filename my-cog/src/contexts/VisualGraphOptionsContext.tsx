@@ -1,4 +1,4 @@
-import { IUserEdge } from "@antv/graphin";
+import { IUserEdge, IUserNode, GraphinData } from "@antv/graphin";
 import exp from "constants";
 import React, { createContext, useState, ReactNode } from "react";
 import { changeEdgeWidthGraphin, colorCodeEdges, colorCodeEdgesDefault, showEdgeWeight, thresholdGraph } from "../shared/GraphService";
@@ -22,8 +22,8 @@ export interface IVisSettings {
 export interface IVisGraphOption {
     label: string;
     checked: boolean;
-    onChange: ((edges: IUserEdge[], settings: IVisSettings) => IUserEdge[]);
-    defaultBehavior?: ((edges: IUserEdge[], settings: IVisSettings) => IUserEdge[]);
+    onChange: ((graph: GraphinData, settings: IVisSettings) => GraphinData);
+    defaultBehavior?: ((graph: GraphinData, settings: IVisSettings) => GraphinData);
 }
 
 
