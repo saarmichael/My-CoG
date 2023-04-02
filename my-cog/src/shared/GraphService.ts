@@ -117,6 +117,22 @@ const getEdgesSum = (edges: IUserEdge[]): number => {
     return sum;
 }
 
+const getNodesWeighSum = (graph: GraphinData) => {
+    // return a dictionary with key the node id and value the sum of the weights of the edges that are connected to it
+    const nodes = graph.nodes;
+    const edges = graph.edges;
+    let nodesWeighSum: { [key: string]: number } = {};
+    for (let i = 0; i < nodes.length; i++) {
+        nodesWeighSum[nodes[i].id] = 0;
+    }
+    for (let i = 0; i < edges.length; i++) {
+        const edge = edges[i];
+        nodesWeighSum[edge.source] += edge.value;
+        nodesWeighSum[edge.target] += edge.value;
+    }
+    return nodesWeighSum;
+}
+
 export const changeEdgeWidth = (freq: number, edges: any, min: number, max: number) => {
     const CM = getCoherenceMatrix(freq);
     let edgeSum = getEdgesSum(edges);
@@ -164,9 +180,34 @@ export const changeEdgeWidthGraphin = (graph: GraphinData, settings: IVisSetting
     return graph;
 }
 
-const sigmoid = (x: number) => {
-    return 1 / (1 + Math.exp(-x));
+
+export const edgeWidthGraphinDefault = (graph: GraphinData, settings: IVisSettings) => {
+    // use only the default width (default) to change the width of the edges
+    // if default is not specified, use the default width (1)
+    let newEdges: IUserEdge[] = [];
+    let width = 1;
+
+    if (settings.edgeWidth) {
+        if (settings.edgeWidth.default) {
+            width = settings.edgeWidth.default;
+        }
+    }
+    for (let i = 0; i < graph.edges.length; i++) {
+        newEdges.push({
+            ...graph.edges[i],
+            style: {
+                ...graph.edges[i].style,
+                keyshape: {
+                    ...graph.edges[i].style?.keyshape,
+                    lineWidth: width,
+                },
+            }
+        });
+    }
+    graph.edges = newEdges;
+    return graph;
 }
+
 
 export const showEdgeWeight = (graph: GraphinData, settings?: IVisSettings) => {
     const edges = graph.edges;
@@ -216,6 +257,10 @@ export const colorCodeEdgesDefault = (graph: GraphinData, settings: IVisSettings
     return graph;
 };
 
+const sigmoid = (x: number) => {
+    return 1 / (1 + Math.exp(-x));
+}
+
 export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
     // color code the edges based on the value of the edge
     const edges = graph.edges;
@@ -252,6 +297,85 @@ export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
         });
     }
     graph.edges = newEdges;
+    return graph;
+}
+
+export const colorCodeNodes = (graph: GraphinData, settings: IVisSettings) => {
+    let edgeSum = getEdgesSum(graph.edges);
+    const nodesWeighSum = getNodesWeighSum(graph);
+    let weakColor = 'rgb(108,99,255)';
+    let strongColor = 'red';
+    if (settings.nodeColor) {
+        if (settings.nodeColor.firstColor) {
+            strongColor = settings.nodeColor.firstColor;
+        }
+        if (settings.nodeColor.secondColor) {
+            weakColor = settings.nodeColor.secondColor;
+        }
+    }
+    for (let i = 0; i < graph.nodes.length; i++) {
+        const nodeWeight = nodesWeighSum[graph.nodes[i].id];
+        const nodeWeightPercentage = nodeWeight / edgeSum;
+        const color = interpolate(weakColor, strongColor)(sigmoid(nodeWeightPercentage * 30 - 1.5));
+        graph.nodes[i].style = {
+            ...graph.nodes[i].style,
+            keyshape: {
+                ...graph.nodes[i].style?.keyshape,
+                fill: color,
+                stroke: color,
+            }
+        }
+    }
+    return graph;
+}
+
+export const colorCodeNodesDefault = (graph: GraphinData, settings: IVisSettings) => {
+    let color = 'rgb(108,99,255)';
+    if (settings.nodeColor) {
+        if (settings.nodeColor.firstColor) {
+            color = settings.nodeColor.firstColor;
+        }
+    }
+    for (let i = 0; i < graph.nodes.length; i++) {
+        graph.nodes[i].style = {
+            ...graph.nodes[i].style,
+            keyshape: {
+                ...graph.nodes[i].style?.keyshape,
+                fill: color,
+                stroke: color,
+            }
+        }
+    }
+    return graph;
+}
+
+export const changeNodeOpacity = (graph: GraphinData, settings: IVisSettings) => {
+    let edgeSum = getEdgesSum(graph.edges);
+    const nodesWeighSum = getNodesWeighSum(graph);
+    for (let i = 0; i < graph.nodes.length; i++) {
+        const nodeWeight = nodesWeighSum[graph.nodes[i].id];
+        const nodeWeightPercentage = nodeWeight / edgeSum;
+        graph.nodes[i].style = {
+            ...graph.nodes[i].style,
+            keyshape: {
+                ...graph.nodes[i].style?.keyshape,
+                fillOpacity: nodeWeightPercentage,
+            }
+        }
+    }
+    return graph;
+}
+
+export const nodeOpacityDefault = (graph: GraphinData, settings: IVisSettings) => {
+    for (let i = 0; i < graph.nodes.length; i++) {
+        graph.nodes[i].style = {
+            ...graph.nodes[i].style,
+            keyshape: {
+                ...graph.nodes[i].style?.keyshape,
+                fillOpacity: 0.2,
+            }
+        }
+    }
     return graph;
 }
 
@@ -301,8 +425,6 @@ export const getGraphinData = (freq: FreqRange, getPositions?: (n: number, radiu
 }
 
 
-
-
 export const getFrequencyList = (): number[] => {
     return getFrequencies();
 }
@@ -347,4 +469,83 @@ export const getAverageGraphinData = (minRange: number, maxRange: number,
 export interface FreqRange {
     min: number;
     max: number;
+}
+
+
+export const changeNodeSize = (graph: GraphinData, settings: IVisSettings) => {
+    const nodes = graph.nodes;
+    let edgeSum = getEdgesSum(graph.edges);
+    const nodesWeighSum = getNodesWeighSum(graph);
+    let newNodes: IUserNode[] = [];
+    let min = 1;
+    let max = 30;
+    if (settings.nodeSize) {
+        min = settings.nodeSize.min;
+        max = settings.nodeSize.max;
+    }
+    for (let i = 0; i < nodes.length; i++) {
+        graph.nodes[i].style = {
+            ...graph.nodes[i].style,
+            keyshape: {
+                ...graph.nodes[i].style?.keyshape,
+                size: min + (max - min) * (nodesWeighSum[nodes[i].id] / edgeSum),
+            }
+        };
+    }
+    return graph;
+}
+
+export const nodeSizeDefault = (graph: GraphinData, settings: IVisSettings) => {
+    // set the node size to the default value
+    const nodes = graph.nodes;
+    let newNodes: IUserNode[] = [];
+    let size = 10;
+    if (settings.nodeSize) {
+        if (settings.nodeSize.default) {
+            size = settings.nodeSize.default;
+        }
+    }
+    for (let i = 0; i < nodes.length; i++) {
+        newNodes.push({
+            ...nodes[i],
+            style: {
+                // keep the original style and add the new style
+                ...nodes[i].style,
+                keyshape: {
+                    ...nodes[i].style?.keyshape,
+                    size: size,
+                },
+            }
+        });
+    }
+    graph.nodes = newNodes;
+    return graph;
+}
+
+export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
+    for (let i = 0; i < graph.nodes.length; i++) {
+        graph.nodes[i].style = {
+            ...graph.nodes[i].style,
+            label: {
+                ...graph.nodes[i].style?.label,
+                value: graph.nodes[i].id,
+            }
+        };
+
+    }
+    return graph;
+}
+
+export const hideNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
+    for (let i = 0; i < graph.nodes.length; i++) {
+        graph.nodes[i].style = {
+            ...graph.nodes[i].style,
+            label: {
+                ...graph.nodes[i].style?.label,
+                value: '',
+            }
+        };
+
+    }
+    return graph;
 }
