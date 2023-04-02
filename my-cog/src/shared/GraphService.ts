@@ -372,7 +372,7 @@ export const nodeOpacityDefault = (graph: GraphinData, settings: IVisSettings) =
             ...graph.nodes[i].style,
             keyshape: {
                 ...graph.nodes[i].style?.keyshape,
-                fillOpacity: 1,
+                fillOpacity: 0.2,
             }
         }
     }
