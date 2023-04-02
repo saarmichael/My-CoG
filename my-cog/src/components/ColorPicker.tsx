@@ -16,6 +16,10 @@ export const ColorPicker = () => {
                         edgeColor: {
                             ...settings.edgeColor,
                             firstColor: c.hex
+                        },
+                        nodeColor: {
+                            ...settings.nodeColor,
+                            firstColor: c.hex
                         }
                     });
                 }}
@@ -30,6 +34,10 @@ export const ColorPicker = () => {
                             ...settings,
                             edgeColor: {
                                 ...settings.edgeColor,
+                                secondColor: c.hex
+                            },
+                            nodeColor: {
+                                ...settings.nodeColor,
                                 secondColor: c.hex
                             }
                         });

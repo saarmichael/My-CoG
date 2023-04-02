@@ -1,21 +1,28 @@
 import { IUserEdge, IUserNode, GraphinData } from "@antv/graphin";
 import exp from "constants";
 import React, { createContext, useState, ReactNode } from "react";
-import { changeEdgeWidthGraphin, colorCodeEdges, colorCodeEdgesDefault, showEdgeWeight, thresholdGraph } from "../shared/GraphService";
+import { changeEdgeWidthGraphin, changeNodeOpacity, changeNodeSize, colorCodeEdges, colorCodeEdgesDefault, colorCodeNodes, colorCodeNodesDefault, edgeWidthGraphinDefault, hideNodeLabel, nodeOpacityDefault, nodeSizeDefault, showEdgeWeight, showNodeLabel, thresholdGraph } from "../shared/GraphService";
 
 export interface IVisSettings {
     edgeColor?: {
         firstColor?: string;
         secondColor?: string;
     }
-    nodeColor?: {
-        firstColor: string;
-        secondColor?: string;
-    }
     edgeWidth?: {
         min: number;
         max: number;
+        default?: number;
     }
+    nodeSize?: {
+        min: number;
+        max: number;
+        default?: number;
+    }
+    nodeColor?: {
+        firstColor?: string;
+        secondColor?: string;
+    }
+    nodeOpacity?: number;
     threshold?: number;
 }
 
@@ -46,7 +53,8 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
         {
             label: "Width View",
             checked: true,
-            onChange: changeEdgeWidthGraphin
+            onChange: changeEdgeWidthGraphin,
+            defaultBehavior: edgeWidthGraphinDefault
         },
         {
             label: "Color Coded View",
@@ -63,6 +71,30 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             label: "Show weights",
             checked: true,
             onChange: showEdgeWeight
+        },
+        {
+            label: "Node Size View",
+            checked: true,
+            onChange: changeNodeSize,
+            defaultBehavior: nodeSizeDefault
+        },
+        {
+            label: "Show Node Label",
+            checked: true,
+            onChange: showNodeLabel,
+            defaultBehavior: hideNodeLabel
+        },
+        {
+            label: "Color coded nodes",
+            checked: true,
+            onChange: colorCodeNodes,
+            defaultBehavior: colorCodeNodesDefault
+        },
+        {
+            label: "Node opacity",
+            checked: true,
+            onChange: changeNodeOpacity,
+            defaultBehavior: nodeOpacityDefault
         }
     ]);
     const [settings, setSettings] = useState<IVisSettings>({
@@ -70,14 +102,20 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             firstColor: "#000000",
             secondColor: "#000000"
         },
-        nodeColor: {
-            firstColor: "#000000",
-            secondColor: "#000000"
-        },
         edgeWidth: {
             min: 1,
             max: 30
         },
+        nodeSize: {
+            min: 20,
+            max: 50,
+            default: 20
+        },
+        nodeColor: {
+            firstColor: "#000000",
+            secondColor: "#000000"
+        },
+        nodeOpacity: 0.5,
         threshold: 0.2
     });
 
