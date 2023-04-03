@@ -9,9 +9,9 @@ export const DataOptions = () => {
     
     const selection = (
         <select onChange={(e) => setElectrode(e.target.value)} value={electrode} >
-            {electrodeList.map((electrode) => (
-                <option key={electrode} value={electrode}>
-                    {electrode}
+            {electrodeList.map((elec) => (
+                <option key={elec} value={elec}>
+                    {elec}
                 </option>
             ))}
         </select>
