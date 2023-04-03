@@ -99,8 +99,8 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
     ]);
     const [settings, setSettings] = useState<IVisSettings>({
         edgeColor: {
-            firstColor: "#000000",
-            secondColor: "#000000"
+            firstColor: "#A9A9A9",
+            secondColor: "#A9A9A9"
         },
         edgeWidth: {
             min: 1,

@@ -1,5 +1,6 @@
 import { Box, Box1 } from "./GridComponents";
 import "./Tabs.css";
+import "../../components/SideBar.css"
 import { Rnd } from 'react-rnd';
 import React from "react";
 import { useState } from "react";
@@ -62,7 +63,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
 
 
   return (
-    <div className="container">
+    <div className="container main-content">
       <div className="bloc-tabs">
         {tabs.map((tab, index) => (
           <button
@@ -78,12 +79,14 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
         )}
       </div>
       <select value="" onChange={handleComponentSelect}>
-          <option value="" disabled>
-            Select a component to hide
-          </option>
-          {renderComponentOptions()}
+        <option value="" disabled>
+          Select a component to hide
+        </option>
+        {renderComponentOptions()}
       </select>
-      <div style={{position: 'absolute', height: '100%', width: '100%'}}>
+      &nbsp;
+      <DataOptions />
+      <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
         {tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => (
           hiddenComponentIndex.includes(index)
             ? null
@@ -105,7 +108,7 @@ const Tabbing = () => {
       content: <div
         className="active-content"
       >
-        <DataOptions />
+
         <GraphVisToggles />
         <Rnd default={{
           x: 15,
@@ -128,9 +131,9 @@ const Tabbing = () => {
           bounds="parent"
           minWidth={600}
           minHeight={650}>
-          <Box/>
+          <Box />
         </Rnd>
-                
+
       </div>,
     },
     {
@@ -169,9 +172,9 @@ const Tabbing = () => {
   };
 
   return (
-    <VisGraphOptionsProvider >
-      <Tabs tabs={tabs} onAddTab={handleAddTab} />
-    </VisGraphOptionsProvider>
+
+    <Tabs tabs={tabs} onAddTab={handleAddTab} />
+
   );
 };
 

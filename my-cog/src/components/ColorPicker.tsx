@@ -9,7 +9,7 @@ export const ColorPicker = () => {
     return (
         <>
             <SliderPicker
-                color={settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#000000"}
+                color={settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#A9A9A9"}
                 onChange={(c) => {
                     setSettings({
                         ...settings,
