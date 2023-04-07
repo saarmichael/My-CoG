@@ -35,5 +35,5 @@ export function handleOptions() {
 }
 
 export function handleLogout() {
-    console.log("Logout");
+    window.close();
 }
