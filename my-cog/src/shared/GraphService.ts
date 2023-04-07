@@ -522,15 +522,37 @@ export const nodeSizeDefault = (graph: GraphinData, settings: IVisSettings) => {
     return graph;
 }
 
+
+const getIdNum = (id: string): string => {
+    let num: string = '';
+    for (let i = id.length - 1; i >= 0; i--) {
+        if (id[i] >= '0' && id[i] <= '9') {
+            num = id[i] + num;
+        }
+        else {
+            break;
+        }
+    }
+    return num;
+}
+
+
 export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
     for (let i = 0; i < graph.nodes.length; i++) {
+        // get the number og the node (it is the last chars of the id. notice that the number could be more than one digit)
+        const idNum = getIdNum(graph.nodes[i].id);
         graph.nodes[i].style = {
             ...graph.nodes[i].style,
             label: {
                 ...graph.nodes[i].style?.label,
-                value: graph.nodes[i].id,
+                value: idNum,
+                position: 'center',
+            },
+            keyshape: {
+                ...graph.nodes[i].style?.keyshape,
             }
         };
+
 
     }
     return graph;
