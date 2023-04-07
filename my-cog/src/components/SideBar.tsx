@@ -9,7 +9,7 @@ import { ColorPicker } from "./ColorPicker";
 const Sidebar = () => {
 
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [showPicker, setShowPicker] = useState(false);
 
     const colorPickDiv = (
