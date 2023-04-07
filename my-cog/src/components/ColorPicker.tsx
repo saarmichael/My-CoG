@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { GithubPicker, SliderPicker } from 'react-color';
+import { GithubPicker } from 'react-color';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 
 
@@ -8,8 +8,8 @@ export const ColorPicker = () => {
 
     return (
         <>
-            <SliderPicker
-                color={settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#000000"}
+            <GithubPicker
+                color={settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#A9A9A9"}
                 onChange={(c) => {
                     setSettings({
                         ...settings,
@@ -26,8 +26,10 @@ export const ColorPicker = () => {
             />
             {
                 // if color-coding is enabled, show the second color picker
-                options.find((option) => option.label === "Color Coded View")?.checked &&
-                <SliderPicker
+                ((options.find((option) => option.label === "Color Coded View")?.checked) 
+                || (options.find((option) => option.label === "Color coded nodes")?.checked))
+                &&
+                <GithubPicker
                     color={settings.edgeColor?.secondColor ? (settings.edgeColor?.secondColor) : "#000000"}
                     onChange={(c) => {
                         setSettings({

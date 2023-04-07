@@ -1,0 +1,53 @@
+.sidebar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: #f0f0f0;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .sidebar h2 {
+    margin: 0;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar nav ul li {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #666;
+    cursor: pointer;
+  }
+  
+  .sidebar nav ul li:hover {
+    background-color: #ddd;
+  }
+  
+  /* Set the width of the main content area based on the sidebar state */
+  
+.main-content {
+    margin-left: 0;
+    width: calc(100% - 300px);
+  }
+  
+  
+  .sidebar.open ~ .main-content {
+    margin-left: 300px;
+    top:5%;
+    width: calc(100% - 300px);
+  }

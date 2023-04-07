@@ -24,7 +24,6 @@ export function Box1() {
   return (
     <div id="box1" className="box">
       <Spectrogram />
-      {electrode}
     </div>
   );
 }

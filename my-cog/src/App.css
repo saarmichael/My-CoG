@@ -66,4 +66,10 @@ html, body, #root, #root > div {
   padding-bottom: 40px;
 }
 
+.app-container {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
 

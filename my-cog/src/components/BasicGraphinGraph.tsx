@@ -160,7 +160,6 @@ const BasicGraphinGraph = () => {
                     <ZoomCanvas disabled={true} />
                     <DragCanvas disabled={true} />
                 </Graphin>
-                {electrode ? <h1>{electrode}</h1> : <h1>no electrode</h1>}
             </div>
         </>
     );
