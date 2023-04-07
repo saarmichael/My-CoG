@@ -80,7 +80,7 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
         },
         {
             label: "Show Node Label",
-            checked: false,
+            checked: true,
             onChange: showNodeLabel,
             defaultBehavior: hideNodeLabel
         },
