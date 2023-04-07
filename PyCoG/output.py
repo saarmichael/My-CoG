@@ -4,16 +4,10 @@ import json
 
 def write_dict(dict, file_name):
     cwd = os.getcwd()
-    # move back one directory
-    os.chdir('..')
-    os.chdir('my-cog\src\shared\ecog_data')
+    os.chdir('..\my-cog\src\shared\ecog_data')
     # add the .json extension if it is not there
     if file_name[-5:] != '.json':
         file_name = file_name + '.json'
-    # delete the old files if they exist
-    if os.path.exists(file_name):
-        os.remove(file_name)
-    
     with open(file_name, 'w') as f:
         json.dump(dict, f)
     f.close()
