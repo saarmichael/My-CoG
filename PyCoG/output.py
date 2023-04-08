@@ -79,3 +79,14 @@ def write_spectrograms(f, t, spectrograms, file_name):
         'spectrograms': spectrograms
     }
     write_dict(spectrograms_dict, file_name)
+
+
+def write_coherence_over_time(f, window_time, t, coherence_matrices, file_name):
+    # create a dictionary to hold the spectrogram data
+    coherence_over_time = {
+        'f': f.tolist(),
+        'window_time': window_time,
+        't': t.tolist(),
+        'coherence_matrices': coherence_matrices.tolist()
+    }
+    write_dict(coherence_over_time, file_name)
