@@ -7,6 +7,8 @@ def coherence(x, y, fs, window, overlap):
     Compute the coherence between two signals x and y.
     """
     f, Cxy = signal.coherence(x, y, fs=fs, window=window, nperseg=256)
+    f = f[0:int(len(f)/2)]
+    Cxy = Cxy[0:int(len(Cxy)/2)]
     return f, Cxy
 
 def get_coherence_matrices(data, fs, window, overlap):

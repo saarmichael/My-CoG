@@ -90,7 +90,7 @@ const BasicGraphinGraph = () => {
             setFreqRange({ min: freq, max: freq });
         }}>
             {freqs.map((freq, index) => {
-                return <option key={index} value={freq}>{freq}</option>
+                return <option key={index} value={freq.toFixed(2)}>{freq.toFixed(2)}</option>
             })}
         </select>
     );

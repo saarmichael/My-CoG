@@ -19,11 +19,11 @@ elec2 = bp_data[:, 1] # second electrode
 
 # get the coherence matrices
 
-# f, CM = get_coherence_matrices(bp_data, 1000, 'hann', 0.5)
-# write_coherence_matrices(f, CM, 'coherence_matrices.json')
+f, CM = get_coherence_matrices(bp_data, 1000, 'hann', 0.5)
+write_coherence_matrices(f, CM, 'coherence_matrices.json')
 
 # f, t, specs = spectrograms(bp_data, 1000, 1000, 200)
 # write_spectrograms(f, t, specs, file_name='spectrograms')
 
-f, window_time, t, CM = coherence_over_time(bp_data, 1000, 10, 0.5)
-write_coherence_over_time(f, window_time, t, CM, 'coherence_over_time.json')
+# f, window_time, t, CM = coherence_over_time(bp_data, 1000, 10, 0.5)
+# write_coherence_over_time(f, window_time, t, CM, 'coherence_over_time.json')
