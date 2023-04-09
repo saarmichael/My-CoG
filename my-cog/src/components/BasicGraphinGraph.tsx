@@ -4,6 +4,7 @@ import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinDat
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
+import { Checkbox } from '@mui/material';
 
 
 const SampleBehavior = () => {
@@ -52,7 +53,7 @@ const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
     const { electrode, setElectrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
-    const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const { options, settings, generalOptions, setGeneralOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
     const [freqRange, setFreqRange] = React.useState<FreqRange>({ min: 0, max: 0 });
@@ -152,6 +153,21 @@ const BasicGraphinGraph = () => {
     return (
         <>
             <div id="mountNode">
+                <Checkbox onChange={(e) => {
+                    // set the general options with the label "time windows" to be the opposite of the current value
+                    let isChecked = generalOptions.find((option) => option.label == "time windows")?.checked;
+                    setGeneralOptions(generalOptions.map((option) => {
+                        if (option.label == "time windows") {
+                            return { ...option, checked: !isChecked }
+                        }
+                        return option;
+                    }));
+                }}
+                    checked={generalOptions.find((option) => option.label == "time windows")?.checked} 
+                    value={"time windows"} 
+                    />
+
+
                 Frequency: {freqDropdown}
                 {minMaxInput}
                 <Graphin data={data} layout={{ type: 'circular', center: [275, 300] }} style={{ width: "75%" }}>

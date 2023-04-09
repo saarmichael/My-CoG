@@ -39,6 +39,17 @@ export interface IVisGraphOptionsContext {
     setOptions: (options: IVisGraphOption[]) => void;
     settings: IVisSettings;
     setSettings: (settings: IVisSettings) => void;
+    generalOptions: IGeneralGraphOption[];
+    setGeneralOptions: (options: IGeneralGraphOption[]) => void;
+}
+
+export interface IGeneralGraphOption {
+    label: string;
+    checked: boolean;
+}
+
+export interface IGeneralOptionsContext {
+    options: IGeneralGraphOption[];
 }
 
 interface IVisGraphOptionsProviderProps {
@@ -119,10 +130,16 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
         threshold: 0.2
     });
 
+    const [generalOptions, setGeneralOptions] = useState<IGeneralGraphOption[]>([
+        {
+            label: "time windows",
+            checked: false
+        },
+    ]);
 
     return (
         <VisGraphOptionsContext.Provider
-            value={{ options, setOptions, settings, setSettings }}
+            value={{ options, setOptions, settings, setSettings, generalOptions, setGeneralOptions }}
         >
             {children}
         </VisGraphOptionsContext.Provider >
