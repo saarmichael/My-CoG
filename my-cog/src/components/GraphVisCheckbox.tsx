@@ -1,12 +1,13 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import './GraphVisCheckbox.css';
 
 export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) => {
 
-    const { options, setOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
-
+    const { options, setOptions, settings, setSettings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const inputRef = useRef<HTMLInputElement>(null);
+    const thisOption = options.find((option) => option.label === props.label);
     return (
         <>
             <FormControlLabel
@@ -32,7 +33,28 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                 }
                 label={props.label}
             />
+            {(thisOption?.needValue && thisOption.checked) ? <> {props.label}
 
+                <>
+                    <input
+                        type='number'
+                        value={thisOption.value}
+                        ref={inputRef}
+                    />
+                    <button
+                        onClick={() => {
+                            // change the setting in the settings object
+                            if (thisOption.settingName) {
+                                setSettings({
+                                    ...settings,
+                                    [thisOption.settingName]: Number(inputRef.current?.value)
+                                });
+                            }
+                        }}>Submit</button>
+
+                </>
+
+            </> : null}
         </>
     );
 }

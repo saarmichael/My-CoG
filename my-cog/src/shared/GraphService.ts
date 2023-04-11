@@ -1,4 +1,4 @@
-import { getCoherenceMatrix, getFrequencies } from './getters'
+import { getCoherenceByTime, getCoherenceMatrix, getFrequencies, getFrequenciesTime, getTimeWindows } from './getters'
 import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
 import { interpolate } from 'd3-interpolate'
@@ -388,7 +388,7 @@ export const thresholdGraph = (graph: GraphinData, settings: IVisSettings) => {
     let newEdges: IUserEdge[] = [];
     for (let i = 0; i < edges.length; i++) {
         const edge = edges[i];
-        if (settings.threshold) {
+        if (settings.threshold !== undefined) {
             if (edge.value > settings.threshold) {
                 newEdges.push(edge);
             }
@@ -418,15 +418,21 @@ export const getGraphinDataByCM = (CM: number[][], getPositions?: (n: number, ra
         edges,
     }
 }
-export const getGraphinData = (freq: FreqRange, getPositions?: (n: number, radius: number) => number[][])
+export const getGraphinData = (freq: FreqRange, getPositions?: (n: number, radius: number) => number[][], time?: number)
     : GraphinData => {
-
-    return getAverageGraphinData(freq.min, freq.max, getPositions);
+    
+    return getAverageGraphinData(freq.min, freq.max, getPositions, time);
 }
+
+
 
 
 export const getFrequencyList = (): number[] => {
     return getFrequencies();
+}
+
+export const getTimeIntervals = (): number[] => {
+    return getTimeWindows();
 }
 
 
@@ -460,10 +466,50 @@ const getAverageCM = (minRange: number, maxRange: number): number[][] => {
     return CM;
 }
 
+const getAverageCMbyCM = (CM: number[][][], freqs: number[], minRange: number, maxRange: number): number[][] => {
+    // special case: minRange = maxRange: return the coherence matrix of that frequency or the one that is closest to it
+    if (minRange === maxRange) {
+        // find the index of the closest frequency to minRange and return the CM at that index
+        let index = freqs.findIndex((freq) => freq >= minRange);
+        if (index === -1) {
+            index = freqs.length - 1;
+        }
+        return CM[index];
+    }
+    // get the average coherence matrix over the range [minRange, maxRange]
+    let averageCM = CM[0];
+    let numOfMatrices = 0;
+    for (let i = 1; i < freqs.length; i++) {
+        if (freqs[i] >= minRange && freqs[i] <= maxRange) {
+            numOfMatrices++;
+            for (let j = 0; j < averageCM.length; j++) {
+                for (let k = 0; k < averageCM.length; k++) {
+                    averageCM[j][k] += CM[i][j][k];
+                }
+            }
+        }
+    }
+    // divide the sum by the number of matrices in the range
+    for (let j = 0; j < averageCM.length; j++) {
+        for (let k = 0; k < averageCM.length; k++) {
+            averageCM[j][k] /= numOfMatrices;
+        }
+    }
+    return averageCM;
+};
+
+
 export const getAverageGraphinData = (minRange: number, maxRange: number,
-    getPositions?: (n: number, radius: number) => number[][]): GraphinData => {
-    const CM = getAverageCM(minRange, maxRange);
-    return getGraphinDataByCM(CM, getPositions);
+    getPositions?: (n: number, radius: number) => number[][], time?: number): GraphinData => {
+    if (time !== undefined) {
+        // get the CM at the given time
+        const timeCMs = getCoherenceByTime(time);
+        const frequencies = getFrequenciesTime();
+        return getGraphinDataByCM(getAverageCMbyCM(timeCMs, frequencies, minRange, maxRange), getPositions);
+    } else {
+        const CM = getAverageCM(minRange, maxRange);
+        return getGraphinDataByCM(CM, getPositions);
+    }
 }
 
 export interface FreqRange {

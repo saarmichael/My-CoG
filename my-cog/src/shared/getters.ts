@@ -1,6 +1,7 @@
 // import the data from the ecog_data dir
 import coherence_matrices from './ecog_data/coherence_matrices.json';
 import spectrograms from './ecog_data/spectrograms.json';
+import coherence_over_time from './ecog_data/coherence_over_time.json';
 
 
 
@@ -46,6 +47,10 @@ export const getFrequencies = () : number[] => {
     return coherence_matrices.f;
 };
 
+export const getFrequenciesTime = () : number[] => {
+    return coherence_over_time.f;
+};
+
 // get the coherence matrix of a specific frequency band
 export const getCoherenceMatrix = (freqBand: number): number[][] => {
     // freqBand is the key of the coherence matrix
@@ -61,4 +66,20 @@ export const getCoherenceMatrix = (freqBand: number): number[][] => {
     index = Math.round(index);
     return coherence_matrices.Cxy[index];
 };
+
+export const getTimeWindows = (): number[] => {
+    return coherence_over_time.t;
+}
+
+export const getCoherenceOverTime = () => {
+    return coherence_over_time;
+};
+
+export const getCoherenceByTime = (time: number) => {
+    let t = coherence_over_time.t; // vector of time interval beginnings
+    // find the index of the closest time using absolute value and difference of 0.5
+    let index = t.findIndex((t) => Math.abs(t - time) < 0.5);
+    index = Math.round(index);
+    return coherence_over_time.coherence_matrices[index];
+}
 
