@@ -5,8 +5,12 @@ import DataContainer from './components/DataContainer';
 import { menuItems, TopBar } from './scenes/main/TopBar';
 import Sidebar from './components/SideBar';
 import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
+import { simpleGetRequest, simplePostRequest } from './shared/ServerRequests';
 
 function App() {
+  simpleGetRequest()
+  simplePostRequest()
+
   return (
     <div>
       <TopBar
