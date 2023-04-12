@@ -9,30 +9,39 @@ import './GridStyle.css';
 import { GraphContainer } from "../../components/GraphContainer";
 import { GraphVisToggles } from "../../components/GraphVisToggles";
 import SlidingBar from "../../components/SlidingBar";
+import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
+import React from "react";
 
 export function Box() {
+  const data = getCoherenceByTime(0);
+
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    console.log(newValue);
+  };
+
   return (
     <div className="box"
       style={{ display: 'flex', padding: "5px", width: "100%", height: '100%', paddingBottom: '1%' }}>
       
       <GraphContainer />
+      
     </div>
   );
 }
 
 export function Box1() {
   const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
-  const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(10000);
+  
+  const data = getSpectrogramDataSync(0);
 
-  const handleTimeframeChange = (newStartTime: number, newEndTime: number) => {
-    setStartTime(newStartTime);
-    setEndTime(newEndTime);
+  const handleChange = (event: Event, newValue: number | number[]) => {
+      console.log(newValue);
   };
+
   return (
     <div id="box1" className="box">
       <Spectrogram />
-      <SlidingBar start={0} end={100} min={0} max={1000} onChange={handleTimeframeChange} />
+      <SlidingBar time={data.t} onChange={handleChange} />
     </div>
   );
 }

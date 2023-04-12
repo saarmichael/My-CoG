@@ -77,3 +77,13 @@ def coherence_over_time(data, fs, num_windows, time_overlap):
         time_CM[i, :, :] = CM
 
     return f, window_time, time, time_CM
+
+"""
+    calculate the coherence for a specific time frame
+"""
+def coherence_time_frame(data, fs, start, end, time_overlap=0.5):
+    start = float(start) * fs
+    end = float(end) * fs
+    print(start, end)
+    f, CM = get_coherence_matrices(data[int(start):int(end), :], fs, 'hann', time_overlap)
+    return f, CM

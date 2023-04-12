@@ -112,7 +112,7 @@ const BasicGraphinGraph = () => {
             <label>Time: </label>
             <select
                 ref={timeRef}
-                onChange={(e) => {
+                onChange={async (e) => {
                     setGeneralOptions(generalOptions.map(option => {
                         if (option.label === "time windows") {
                             // return the option with the new value
@@ -120,6 +120,17 @@ const BasicGraphinGraph = () => {
                         }
                         return option;
                     }));
+                    const url = 'http://localhost:5000/time?start=' + parseFloat(e.target.value) + '&end=' + (parseFloat(e.target.value) + 20);
+                    try {
+                        const response = await fetch(url);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        const data = await response.text();
+                        console.log(data);
+                        } catch (error) {
+                        console.error(error);
+                        }
                 }}>
                 {times.map((time, index) => {
                     return <option key={index} value={time.toFixed(2)}>{time.toFixed(2)}</option>
