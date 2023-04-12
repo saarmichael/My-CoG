@@ -7,12 +7,20 @@ def normalize(array):
 # function to calculate the spectrogram of a signal using the Welch method
 def spectrogram(x, fs, window_size, overlap):
     # trim the signal
-    x = x[0:10000]
+    x = x[:10000]
     # normalize the signal
     x = normalize(x)
     # calculate the spectrogram
-    # takes small amount for faster tunetime
-    f, t, Sxx = signal.spectrogram(x[:1000], fs=fs, window='hann', scaling='density')
+    f, t, Sxx = signal.spectrogram(x, fs=fs, window='hann', scaling='density')
+    f, t, Sxx = signal.spectrogram(x, fs)
+
+    fmax = 250 # Hz
+    freq_slice = np.where((f >= 0) & (f <= fmax))
+
+    # keep only frequencies of interest
+    f   = f[freq_slice]
+    Sxx = Sxx[freq_slice,:][0]
+
     return f, t, Sxx.T
 
 def spectrograms(Xs, fs, window_size, overlap):

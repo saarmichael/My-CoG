@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData, thresholdGraph } from '../shared/GraphService';
+import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData, getTimeIntervals, thresholdGraph } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
+import { Checkbox } from '@mui/material';
 
 
 const SampleBehavior = () => {
@@ -52,14 +53,24 @@ const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
     const { electrode, setElectrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
-    const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const { options, settings, generalOptions, setGeneralOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
+    const timeRef = React.useRef<HTMLSelectElement>(null);
     const [freqRange, setFreqRange] = React.useState<FreqRange>({ min: 0, max: 0 });
 
     const createGraphData = () => {
         // create the nodes and edges using GraphService module
-        let graph: GraphinData = getGraphinData(freqRange);
+        let graph: GraphinData;
+        let time: number | undefined = undefined;
+        let option = generalOptions.find(option => option.label === "time windows");
+        if (option) {
+            if (option.checked && option.value) {
+                time = parseFloat(option.value);
+            }
+        }
+        graph = getGraphinData(freqRange, undefined /*getPositions*/, time); // getPositions is undefined
+
         graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, settings);
@@ -78,7 +89,7 @@ const BasicGraphinGraph = () => {
     // change the graph data according to the user's selections
     useEffect(() => {
         setState(createGraphData());
-    }, [freqRange, options, settings]);
+    }, [freqRange, options, settings, generalOptions]);
 
     const freqs: number[] = getFrequencyList();
     // create a dropdown menu that consists of the frequencies and the user can select one
@@ -90,9 +101,32 @@ const BasicGraphinGraph = () => {
             setFreqRange({ min: freq, max: freq });
         }}>
             {freqs.map((freq, index) => {
-                return <option key={index} value={freq}>{freq}</option>
+                return <option key={index} value={freq.toFixed(2)}>{freq.toFixed(2)}</option>
             })}
         </select>
+    );
+
+    const times: number[] = getTimeIntervals();
+    const timesDropdown = (
+        <>
+            <label>Time: </label>
+            <select
+                ref={timeRef}
+                onChange={(e) => {
+                    setGeneralOptions(generalOptions.map(option => {
+                        if (option.label === "time windows") {
+                            // return the option with the new value
+                            return { ...option, checked: true, value: e.target.value };
+                        }
+                        return option;
+                    }));
+                }}>
+                {times.map((time, index) => {
+                    return <option key={index} value={time.toFixed(2)}>{time.toFixed(2)}</option>
+                })}
+            </select>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </>
     );
 
     // two input fields: min and max.
@@ -152,6 +186,21 @@ const BasicGraphinGraph = () => {
     return (
         <>
             <div id="mountNode">
+                <Checkbox onChange={(e) => {
+                    // set the general options with the label "time windows" to be the opposite of the current value
+                    let isChecked = generalOptions.find((option) => option.label == "time windows")?.checked;
+                    setGeneralOptions(generalOptions.map((option) => {
+                        if (option.label == "time windows") {
+                            return { ...option, checked: !isChecked }
+                        }
+                        return option;
+                    }));
+                }}
+                    checked={generalOptions.find((option) => option.label == "time windows")?.checked}
+                    value={"time windows"}
+                />
+
+                {generalOptions.find((option) => option.label == "time windows")?.checked ? timesDropdown : null}
                 Frequency: {freqDropdown}
                 {minMaxInput}
                 <Graphin data={data} layout={{ type: 'circular', center: [275, 300] }} style={{ width: "75%" }}>

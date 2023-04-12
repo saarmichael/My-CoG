@@ -31,6 +31,9 @@ export interface IVisGraphOption {
     checked: boolean;
     onChange: ((graph: GraphinData, settings: IVisSettings) => GraphinData);
     defaultBehavior?: ((graph: GraphinData, settings: IVisSettings) => GraphinData);
+    value?: number;
+    needValue: boolean;
+    settingName?: string;
 }
 
 
@@ -39,6 +42,18 @@ export interface IVisGraphOptionsContext {
     setOptions: (options: IVisGraphOption[]) => void;
     settings: IVisSettings;
     setSettings: (settings: IVisSettings) => void;
+    generalOptions: IGeneralGraphOption[];
+    setGeneralOptions: (options: IGeneralGraphOption[]) => void;
+}
+
+export interface IGeneralGraphOption {
+    label: string;
+    checked: boolean;
+    value?: string;
+}
+
+export interface IGeneralOptionsContext {
+    options: IGeneralGraphOption[];
 }
 
 interface IVisGraphOptionsProviderProps {
@@ -54,47 +69,56 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             label: "Width View",
             checked: false,
             onChange: changeEdgeWidthGraphin,
-            defaultBehavior: edgeWidthGraphinDefault
+            defaultBehavior: edgeWidthGraphinDefault,
+            needValue: false
         },
         {
             label: "Color Coded View",
             checked: false,
             onChange: colorCodeEdges,
-            defaultBehavior: colorCodeEdgesDefault
+            defaultBehavior: colorCodeEdgesDefault,
+            needValue: false
         },
         {
             label: "Threshold View",
             checked: false,
-            onChange: thresholdGraph
+            onChange: thresholdGraph,
+            needValue: true,
+            settingName: "threshold"
         },
         {
             label: "Show weights",
             checked: false,
-            onChange: showEdgeWeight
+            onChange: showEdgeWeight,
+            needValue: false
         },
         {
             label: "Node Size View",
             checked: false,
             onChange: changeNodeSize,
-            defaultBehavior: nodeSizeDefault
+            defaultBehavior: nodeSizeDefault,
+            needValue: false
         },
         {
             label: "Show Node Label",
             checked: true,
             onChange: showNodeLabel,
-            defaultBehavior: hideNodeLabel
+            defaultBehavior: hideNodeLabel,
+            needValue: false
         },
         {
             label: "Color coded nodes",
             checked: false,
             onChange: colorCodeNodes,
-            defaultBehavior: colorCodeNodesDefault
+            defaultBehavior: colorCodeNodesDefault,
+            needValue: false
         },
         {
             label: "Node opacity",
             checked: false,
             onChange: changeNodeOpacity,
-            defaultBehavior: nodeOpacityDefault
+            defaultBehavior: nodeOpacityDefault,
+            needValue: false
         }
     ]);
     const [settings, setSettings] = useState<IVisSettings>({
@@ -119,10 +143,16 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
         threshold: 0.2
     });
 
+    const [generalOptions, setGeneralOptions] = useState<IGeneralGraphOption[]>([
+        {
+            label: "time windows",
+            checked: false
+        },
+    ]);
 
     return (
         <VisGraphOptionsContext.Provider
-            value={{ options, setOptions, settings, setSettings }}
+            value={{ options, setOptions, settings, setSettings, generalOptions, setGeneralOptions }}
         >
             {children}
         </VisGraphOptionsContext.Provider >

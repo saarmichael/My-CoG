@@ -8,6 +8,7 @@ import { DataOptions } from "../../components/DataOptions";
 import { ElectrodeFocusProvider } from "../../contexts/ElectrodeFocusContext";
 import { GraphVisToggles } from "../../components/GraphVisToggles";
 import { VisGraphOptionsProvider } from "../../contexts/VisualGraphOptionsContext";
+import TimeframeSlider from "../../components/SlidingBar";
 
 
 
