@@ -13,6 +13,7 @@ bp_data = finger_bp['data']
 bp_data = bp_data[:, 0:10]
 elec1 = bp_data[:, 0] # first electrode
 elec2 = bp_data[:, 1] # second electrode
+print (bp_data.shape)
 
 # write_array(elec2, 'elec1.json')
 # write_array(elec1, 'elec2.json')
@@ -22,5 +23,5 @@ elec2 = bp_data[:, 1] # second electrode
 # f, CM = get_coherence_matrices(bp_data, 1000, 'hann', 0.5)
 # write_coherence_matrices(f, CM, 'coherence_matrices.json')
 
-f, t, specs = spectrograms(bp_data, 1000, 1000, 200)
-write_spectrograms(f, t, specs, file_name='spectrograms')
+# f, t, specs = spectrograms(bp_data, 1000, 1000, 200)
+# write_spectrograms(f, t, specs, file_name='spectrograms')
