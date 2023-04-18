@@ -1,4 +1,4 @@
-import { Box, Box1 } from "./GridComponents";
+import { Box, Box1, Box2 } from "./GridComponents";
 import "./Tabs.css";
 import "../../components/SideBar.css"
 import { Rnd } from 'react-rnd';
@@ -120,7 +120,7 @@ const Tabbing = () => {
           bounds="parent"
           minWidth={600}
           minHeight={650}>
-          <Box1 />
+          <Box2 />
         </Rnd>
 
         <Rnd default={{
