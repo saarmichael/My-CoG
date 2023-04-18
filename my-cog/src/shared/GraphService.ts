@@ -424,6 +424,16 @@ export const getGraphinData = (freq: FreqRange, getPositions?: (n: number, radiu
     return getAverageGraphinData(freq.min, freq.max, getPositions, time);
 }
 
+export const getSimpleGraphinData = (): GraphinData => {
+    const CM = getCoherenceMatrix(0);
+    const nodes = getGraphinNodes(CM);
+    const edges = getGraphinEdges(CM, nodes);
+    return {
+        nodes,
+        edges,
+    }
+}
+
 
 
 
