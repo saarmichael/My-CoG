@@ -1,10 +1,43 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 from scipy.io import loadmat
 from coherence import coherence_time_frame
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 CORS(app, origins=['http://localhost:3000'])
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    auth_code = db.Column(db.String(50), nullable=False)
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+@app.route('/users', methods=['GET', 'POST'])
+def users():
+    if request.method == 'POST':
+        data = request.get_json()
+        new_user = User(username=data['username'], auth_code=data['auth_code'])
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({'message': 'User created successfully!'})
+    else:
+        users = User.query.all()
+        output = []
+        for user in users:
+            user_data = {}
+            user_data['id'] = user.id
+            user_data['username'] = user.username
+            user_data['auth_code'] = user.auth_code
+            output.append(user_data)
+        return jsonify({'users': output})
 
 # load the data
 finger_bp = loadmat('bp_fingerflex.mat')
