@@ -88,6 +88,11 @@ const BasicGraphinGraph = () => {
 
     // change the graph data according to the user's selections
     useEffect(() => {
+        const url = 'http://localhost:5000/graph';
+        fetch(url).then(response => response.json()).then(data => {
+            console.log(data);
+        });
+        
         setState(createGraphData());
     }, [freqRange, options, settings, generalOptions]);
 
