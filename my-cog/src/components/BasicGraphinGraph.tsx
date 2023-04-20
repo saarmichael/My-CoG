@@ -5,6 +5,9 @@ import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/Elect
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { Checkbox } from '@mui/material';
+import { apiGET } from '../shared/ServerRequests';
+import { BasicGraphResponse } from '../shared/requests';
+
 
 
 const SampleBehavior = () => {
@@ -89,10 +92,10 @@ const BasicGraphinGraph = () => {
     // change the graph data according to the user's selections
     useEffect(() => {
         const url = 'http://localhost:5000/graph';
-        fetch(url).then(response => response.json()).then(data => {
+        const response = apiGET<BasicGraphResponse>(url);
+        response.then((data) => {
             console.log(data);
         });
-        
         setState(createGraphData());
     }, [freqRange, options, settings, generalOptions]);
 
