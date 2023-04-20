@@ -32,12 +32,13 @@ def hello():
 #       CM: coherence matrix
 #       the CM that corresponds to the time frame specified by the start and end parameters
 @app.route("/time", methods=["GET"])
-def get_time_frame():
+def get_coherence_matrices():
     data = bp_data
     start = request.args.get("start")
     end = request.args.get("end")
     f, CM = coherence_time_frame(data, 1000, start, end)
     result = {"f": f.tolist(), "CM": CM.tolist()}
+    print(f"CM returned with {len(f)} frequencies and {len(CM)} electrodes")
     return jsonify(result)
 
 
@@ -61,14 +62,18 @@ def get_graph_basic_info():
         nodes.append({"id": str(i), "label": "Electrode " + str(i)})
     # create the edges. theres an edge between every node
     edges = []
-    for n in nodes:
-        for m in nodes:
-            if n != m:
-                edges.append(
-                    {"id": n["id"] + "-" + m["id"], "from": n["id"], "to": m["id"]}
-                )
+    for i in range(num_nodes):
+        for j in range(i + 1, num_nodes):
+            edges.append(
+                {
+                    "id": nodes[i]["id"] + "-" + nodes[j]["id"],
+                    "source": nodes[i]["id"],
+                    "target": nodes[j]["id"],
+                }
+            )
     layout = "circular"
     # return the result
+    print(f"graph returned with {num_nodes} nodes and {len(edges)} edges")
     return jsonify({"layout": layout, "nodes": nodes, "edges": edges})
 
 

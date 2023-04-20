@@ -3,7 +3,12 @@ import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
 import { interpolate } from 'd3-interpolate'
 import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
+import { CoherenceResponse, TimeInterval } from './requests';
+import { apiGET } from './ServerRequests';
+import { getBasicGraph } from './RequestsService';
 
+let singletonGraph: GraphinData;
+const coherenceMap = new Map<string, Promise<CoherenceResponse>>();
 
 
 // function that creates circular positions (x, y)[] for the nodes
@@ -418,10 +423,48 @@ export const getGraphinDataByCM = (CM: number[][], getPositions?: (n: number, ra
         edges,
     }
 }
-export const getGraphinData = (freq: FreqRange, getPositions?: (n: number, radius: number) => number[][], time?: number)
-    : GraphinData => {
-    
-    return getAverageGraphinData(freq.min, freq.max, getPositions, time);
+
+const buildRequest = (time?: TimeInterval) => {
+    let url = 'http://localhost:5000/time?';
+    if (time) {
+        url += 'start=' + time?.start + '&end=' + time?.end;
+    }
+    return url;
+}
+
+const applyCMOnGraph = (graph: GraphinData, CM: number[][]) => {
+    // iterate over edges and update their values according to the CM
+    graph.edges.forEach((edge, index) => {
+        const sourceIndex = graph.nodes.findIndex(node => node.id === edge.source);
+        const targetIndex = graph.nodes.findIndex(node => node.id === edge.target);
+        const value = CM[sourceIndex][targetIndex];
+        graph.edges[index].value = value;
+    });
+    return graph;
+}
+
+export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, time?: TimeInterval)
+    : Promise<GraphinData> => {
+    const url = buildRequest(time);
+    let response: CoherenceResponse | undefined;
+    if (!coherenceMap.has(url)) {
+        coherenceMap.set(url, apiGET<CoherenceResponse>(url));
+    }
+    response = await coherenceMap.get(url);
+    if (response === undefined) {
+        return graph;
+    }
+    const CM = getAverageCMbyCM(response.CM, response.f, freq);
+    graph = applyCMOnGraph(graph, CM);
+    return graph;
+}
+
+export const getGraphBase = async (): Promise<GraphinData> => {
+    // if the singleton doesnt exists, ask the server for the data
+    if(!singletonGraph) { 
+        singletonGraph = await getBasicGraph();
+    }
+    return singletonGraph;
 }
 
 export const getSimpleGraphinData = (): GraphinData => {
@@ -447,8 +490,10 @@ export const getTimeIntervals = (): number[] => {
 
 
 /*!! THIS FUNCTION IS BETTER OFF BE WRITTEN IN PYTHON DUE TO MEANINGFUL CALCULATIONS OVER FLOATS !!*/
-const getAverageCM = (minRange: number, maxRange: number): number[][] => {
+const getAverageCM = (freq: FreqRange): number[][] => {
     // special case: minRange = maxRange: return the coherence matrix of that frequency or the one that is closest to it
+    const minRange = freq.min;
+    const maxRange = freq.max;
     if (minRange === maxRange) {
         return getCoherenceMatrix(minRange);
     }
@@ -476,8 +521,10 @@ const getAverageCM = (minRange: number, maxRange: number): number[][] => {
     return CM;
 }
 
-const getAverageCMbyCM = (CM: number[][][], freqs: number[], minRange: number, maxRange: number): number[][] => {
+const getAverageCMbyCM = (CM: number[][][], freqs: number[], range: FreqRange): number[][] => {
     // special case: minRange = maxRange: return the coherence matrix of that frequency or the one that is closest to it
+    const minRange = range.min;
+    const maxRange = range.max;
     if (minRange === maxRange) {
         // find the index of the closest frequency to minRange and return the CM at that index
         let index = freqs.findIndex((freq) => freq >= minRange);
@@ -509,15 +556,15 @@ const getAverageCMbyCM = (CM: number[][][], freqs: number[], minRange: number, m
 };
 
 
-export const getAverageGraphinData = (minRange: number, maxRange: number,
+export const getAverageGraphinData = (freq: FreqRange,
     getPositions?: (n: number, radius: number) => number[][], time?: number): GraphinData => {
     if (time !== undefined) {
         // get the CM at the given time
         const timeCMs = getCoherenceByTime(time);
         const frequencies = getFrequenciesTime();
-        return getGraphinDataByCM(getAverageCMbyCM(timeCMs, frequencies, minRange, maxRange), getPositions);
+        return getGraphinDataByCM(getAverageCMbyCM(timeCMs, frequencies, freq), getPositions);
     } else {
-        const CM = getAverageCM(minRange, maxRange);
+        const CM = getAverageCM(freq);
         return getGraphinDataByCM(CM, getPositions);
     }
 }

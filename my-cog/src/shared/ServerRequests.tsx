@@ -1,3 +1,5 @@
+
+
 export const simpleGetRequest = async () => {
     fetch('http://localhost:5000/')
     .then(response => response.text())
@@ -27,7 +29,7 @@ export const getBasicGraphInfo = async () => {
     .catch(error => console.error(error))
 }
 
-export function apiGET<T>(url: string): Promise<T> {
+export async function apiGET<T>(url: string): Promise<T> {
   return fetch(url)
     .then(response => {
       if (!response.ok) {
