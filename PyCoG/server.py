@@ -5,11 +5,11 @@ from coherence import coherence_time_frame
 import json
 
 app = Flask(__name__)
-CORS(app, origins=['http://localhost:3000'])
+CORS(app, origins=["http://localhost:3000"])
 
 # load the data
-finger_bp = loadmat('bp_fingerflex.mat')
-bp_data = finger_bp['data']
+finger_bp = loadmat("bp_fingerflex.mat")
+bp_data = finger_bp["data"]
 bp_data = bp_data[:, 0:10]
 
 
@@ -18,9 +18,9 @@ bp_data = bp_data[:, 0:10]
 ###############################################
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 def hello():
-    return 'Hello, World!'
+    return "Hello, World!"
 
 
 # get_time_frame
@@ -31,14 +31,15 @@ def hello():
 #       f: frequency vector
 #       CM: coherence matrix
 #       the CM that corresponds to the time frame specified by the start and end parameters
-@app.route('/time', methods=['GET'])
+@app.route("/time", methods=["GET"])
 def get_time_frame():
     data = bp_data
-    start = request.args.get('start')
-    end = request.args.get('end')
+    start = request.args.get("start")
+    end = request.args.get("end")
     f, CM = coherence_time_frame(data, 1000, start, end)
-    result = {'f': f.tolist(), 'CM': CM.tolist()}
+    result = {"f": f.tolist(), "CM": CM.tolist()}
     return jsonify(result)
+
 
 # get_graph_basic_info
 #   Parameters:
@@ -47,9 +48,7 @@ def get_time_frame():
 #     layout,
 #     nodes: { id, label, x?, y?,  }
 #     edges: { id, from, to, label?, }
-
-
-@app.route('/graph', methods=['GET'])
+@app.route("/graph", methods=["GET"])
 def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
@@ -65,24 +64,26 @@ def get_graph_basic_info():
     for n in nodes:
         for m in nodes:
             if n != m:
-                edges.append({"id": n["id"] + "-" + m["id"],
-                             "from": n["id"], "to": m["id"]})
-    layout = 'circular'
+                edges.append(
+                    {"id": n["id"] + "-" + m["id"], "from": n["id"], "to": m["id"]}
+                )
+    layout = "circular"
     # return the result
     return jsonify({"layout": layout, "nodes": nodes, "edges": edges})
+
 
 ###############################################
 ############### POST REQUESTS #################
 ###############################################
 
 
-@app.route('/data', methods=['POST'])
+@app.route("/data", methods=["POST"])
 def receive_data():
     data = request.json
     print(data)
     # do something with data
-    return 'Data received'
+    return "Data received"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run()
-    
