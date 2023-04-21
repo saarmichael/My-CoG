@@ -6,13 +6,25 @@ import { menuItems, TopBar } from './scenes/main/TopBar';
 import Sidebar from './components/SideBar';
 import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
 import { simpleGetRequest, simplePostRequest } from './shared/ServerRequests';
+import { useState } from 'react';
+import Login from './scenes/global/Login';
+import Register from './scenes/global/Register';
 
 function App() {
-  simpleGetRequest()
-  simplePostRequest()
+  const [loggedIn, setLoggedIn] = useState(false);
 
   return (
     <div>
+      <div>
+      {loggedIn ? (
+        <p>You are logged in!</p>
+      ) : (
+        <>
+          <Login onLogin={() => setLoggedIn(true)} />
+          <Register onRegister={() => setLoggedIn(true)} />
+        </>
+      )}
+    </div>
       <TopBar
         menuItems={menuItems}
       />
