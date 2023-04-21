@@ -1,10 +1,13 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinData, getFrequencyList, getGraphinData, getTimeIntervals, thresholdGraph } from '../shared/GraphService';
+import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinData, getFrequencyList, getGraphBase, getTimeIntervals, thresholdGraph, updateGraphCoherence } from '../shared/GraphService';
 import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { Checkbox } from '@mui/material';
+import { apiGET } from '../shared/ServerRequests';
+import { BasicGraphResponse, TimeInterval } from '../shared/requests';
+
 
 
 const SampleBehavior = () => {
@@ -59,18 +62,20 @@ const BasicGraphinGraph = () => {
     const timeRef = React.useRef<HTMLSelectElement>(null);
     const [freqRange, setFreqRange] = React.useState<FreqRange>({ min: 0, max: 0 });
 
-    const createGraphData = () => {
+    const createGraphData = async () => {
         // create the nodes and edges using GraphService module
-        let graph: GraphinData;
-        let time: number | undefined = undefined;
+        let graph: GraphinData = { nodes: [{ id: "1" }], edges: [] };
+        let time: TimeInterval | undefined = undefined;
         let option = generalOptions.find(option => option.label === "time windows");
         if (option) {
             if (option.checked && option.value) {
-                time = parseFloat(option.value);
+                time = { start: parseFloat(option.value), end: parseFloat(option.value) + 20 };
             }
         }
-        graph = getGraphinData(freqRange, undefined /*getPositions*/, time); // getPositions is undefined
+        // call getGraphBase to get the base graph data
+        graph = await getGraphBase();
 
+        graph = await updateGraphCoherence(graph, freqRange, time);
         graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, settings);
@@ -82,13 +87,17 @@ const BasicGraphinGraph = () => {
             return acc;
         }, graph);
 
-        return graph;
+        console.log(`graph:`, graph);
+        return {...graph};
     }
-    const [state, setState] = React.useState<GraphinData>(createGraphData());
-
+    const [state, setState] = React.useState<GraphinData>({ nodes: [{ id: "1" }], edges: [] });
+    
     // change the graph data according to the user's selections
     useEffect(() => {
-        setState(createGraphData());
+        createGraphData().then((data) => {
+            console.log(`data:`, data);
+            setState({...data});
+        });
     }, [freqRange, options, settings, generalOptions]);
 
     const freqs: number[] = getFrequencyList();
