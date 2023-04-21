@@ -1,6 +1,6 @@
 import { GraphinData } from "@antv/graphin";
 import { apiGET } from "./ServerRequests";
-import { BasicGraphResponse } from "./requests";
+import { BasicGraphResponse } from "./Requests";
 
 const baseAddress = "http://localhost:5000";
 
