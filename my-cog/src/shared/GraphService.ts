@@ -182,7 +182,7 @@ export const changeEdgeWidthGraphin = (graph: GraphinData, settings: IVisSetting
         });
     }
     graph.edges = newEdges;
-    return graph;
+    return {...graph};
 }
 
 
@@ -210,7 +210,7 @@ export const edgeWidthGraphinDefault = (graph: GraphinData, settings: IVisSettin
         });
     }
     graph.edges = newEdges;
-    return graph;
+    return {...graph};
 }
 
 
@@ -231,7 +231,7 @@ export const showEdgeWeight = (graph: GraphinData, settings?: IVisSettings) => {
         });
     }
     graph.edges = newEdges;
-    return graph;
+    return {...graph};
 }
 
 export const colorCodeEdgesDefault = (graph: GraphinData, settings: IVisSettings) => {
@@ -259,7 +259,7 @@ export const colorCodeEdgesDefault = (graph: GraphinData, settings: IVisSettings
         });
     }
     graph.edges = newEdges;
-    return graph;
+    return {...graph};
 };
 
 const sigmoid = (x: number) => {
@@ -302,7 +302,7 @@ export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
         });
     }
     graph.edges = newEdges;
-    return graph;
+    return {...graph};
 }
 
 export const colorCodeNodes = (graph: GraphinData, settings: IVisSettings) => {
@@ -331,7 +331,7 @@ export const colorCodeNodes = (graph: GraphinData, settings: IVisSettings) => {
             }
         }
     }
-    return graph;
+    return {...graph};
 }
 
 export const colorCodeNodesDefault = (graph: GraphinData, settings: IVisSettings) => {
@@ -351,7 +351,7 @@ export const colorCodeNodesDefault = (graph: GraphinData, settings: IVisSettings
             }
         }
     }
-    return graph;
+    return {...graph};
 }
 
 export const changeNodeOpacity = (graph: GraphinData, settings: IVisSettings) => {
@@ -368,7 +368,7 @@ export const changeNodeOpacity = (graph: GraphinData, settings: IVisSettings) =>
             }
         }
     }
-    return graph;
+    return {...graph};
 }
 
 export const nodeOpacityDefault = (graph: GraphinData, settings: IVisSettings) => {
@@ -381,7 +381,7 @@ export const nodeOpacityDefault = (graph: GraphinData, settings: IVisSettings) =
             }
         }
     }
-    return graph;
+    return {...graph};
 }
 
 // export const thresholdGraphCarry = (threshold: number) => (edges: IUserEdge[]) => {
@@ -400,7 +400,7 @@ export const thresholdGraph = (graph: GraphinData, settings: IVisSettings) => {
         }
     }
     graph.edges = newEdges;
-    return graph;
+    return {...graph};
 }
 
 
@@ -440,7 +440,7 @@ const applyCMOnGraph = (graph: GraphinData, CM: number[][]) => {
         const value = CM[sourceIndex][targetIndex];
         graph.edges[index].value = value;
     });
-    return graph;
+    return {...graph};
 }
 
 export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, time?: TimeInterval)
@@ -452,11 +452,11 @@ export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, 
     }
     response = await coherenceMap.get(url);
     if (response === undefined) {
-        return graph;
+        return {...graph};
     }
     const CM = getAverageCMbyCM(response.CM, response.f, freq);
-    graph = applyCMOnGraph(graph, CM);
-    return graph;
+    const newGraph = applyCMOnGraph(graph, CM);
+    return newGraph;
 }
 
 export const getGraphBase = async (): Promise<GraphinData> => {
@@ -595,7 +595,7 @@ export const changeNodeSize = (graph: GraphinData, settings: IVisSettings) => {
             }
         };
     }
-    return graph;
+    return {...graph};
 }
 
 export const nodeSizeDefault = (graph: GraphinData, settings: IVisSettings) => {
@@ -622,7 +622,7 @@ export const nodeSizeDefault = (graph: GraphinData, settings: IVisSettings) => {
         });
     }
     graph.nodes = newNodes;
-    return graph;
+    return {...graph};
 }
 
 
@@ -658,7 +658,7 @@ export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
 
 
     }
-    return graph;
+    return {...graph};
 }
 
 export const hideNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
@@ -672,5 +672,5 @@ export const hideNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
         };
 
     }
-    return graph;
+    return {...graph};
 }

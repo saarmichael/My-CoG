@@ -96,7 +96,7 @@ const BasicGraphinGraph = () => {
     useEffect(() => {
         createGraphData().then((data) => {
             console.log(`data:`, data);
-            setState(data);
+            setState({...data});
         });
     }, [freqRange, options, settings, generalOptions]);
 
