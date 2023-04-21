@@ -9,6 +9,7 @@ import { getBasicGraph } from './RequestsService';
 
 let singletonGraph: GraphinData;
 const coherenceMap = new Map<string, Promise<CoherenceResponse>>();
+let singletonFrequencies: number[];
 
 
 // function that creates circular positions (x, y)[] for the nodes

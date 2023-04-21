@@ -24,7 +24,16 @@ def hello():
     return "Hello, World!"
 
 
-# get_time_frame
+@app.route("/frequencies", methods=["GET"])
+def getFrequencies():
+    f, _ = coherence_time_frame(bp_data, 1000, 0, 1)[0]
+    print(
+        f"{bcolors.GETREQUEST}frequencies returned with {len(f)} frequencies{bcolors.ENDC}"
+    )
+    return jsonify(f.tolist())
+
+
+# get_coherence_matrices
 #   Parameters:
 #       start: start time of the time frame
 #       end: end time of the time frame
@@ -40,7 +49,7 @@ def get_coherence_matrices():
     f, CM = coherence_time_frame(data, 1000, start, end)
     result = {"f": f.tolist(), "CM": CM.tolist()}
     print(
-        f"{bcolors.GETREQUEST} CM returned with {len(f)} frequencies and {len(CM)} electrodes {bcolors.ENDC}"
+        f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM)} electrodes {bcolors.ENDC}"
     )
     return jsonify(result)
 

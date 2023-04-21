@@ -8,3 +8,8 @@ export const getBasicGraph = async () : Promise<BasicGraphResponse> => {
     const url = `${baseAddress}/graph`;
     return apiGET<BasicGraphResponse>(url);
 }
+
+export const getFrequencies = async () : Promise<number[]> => {
+    const url = `${baseAddress}/frequencies`;
+    return apiGET<number[]>(url);
+}

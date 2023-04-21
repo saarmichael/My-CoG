@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { getSpectrogramDataSync } from "../shared/getters";
 
 interface SlidingBarProps {
-  time: number[];
+  array: number[];
   onChange: (event: Event, newValue: number | number[]) => void;
 }
 
@@ -12,7 +12,7 @@ const SlidingBar = (props: SlidingBarProps) => {
   const handleMouseDown = (event: React.MouseEvent<HTMLInputElement>) => {
     event.stopPropagation();
   };
-  const [value, setValue] = React.useState<number[]>([props.time[0], props.time[props.time.length - 1]]);
+  const [value, setValue] = React.useState<number[]>([props.array[0], props.array[props.array.length - 1]]);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     newValue = newValue as number[];
@@ -25,13 +25,13 @@ const SlidingBar = (props: SlidingBarProps) => {
     <Slider
         getAriaLabel={() => 'Timeframe slider'}
         value={value}
-        step={props.time[1] - props.time[0]}
-        marks={props.time.map((t) => ({ value: t }))}
+        step={props.array[1] - props.array[0]}
+        marks={props.array.map((t) => ({ value: t }))}
         onChange={handleChange}
         valueLabelDisplay="auto"
         onMouseDown={handleMouseDown}
-        min={props.time[0]}
-        max={props.time[props.time.length - 1]}
+        min={props.array[0]}
+        max={props.array[props.array.length - 1]}
       />
   );
 };
