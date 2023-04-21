@@ -4,6 +4,7 @@ from scipy.io import loadmat
 from coherence import coherence_time_frame
 from flask_sqlalchemy import SQLAlchemy
 from consts import bcolors
+import json
 
 
 app = Flask(__name__)
