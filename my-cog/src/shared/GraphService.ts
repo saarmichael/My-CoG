@@ -3,7 +3,7 @@ import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
 import { interpolate } from 'd3-interpolate'
 import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
-import { CoherenceResponse, TimeInterval } from './requests';
+import { CoherenceResponse, TimeInterval } from './Requests';
 import { apiGET } from './ServerRequests';
 import { getBasicGraph } from './RequestsService';
 
