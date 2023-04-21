@@ -1,5 +1,6 @@
 import axios from "axios"
 
+
 export const simpleGetRequest = async () => {
     fetch('http://localhost:5000/')
     .then(response => response.text())
@@ -66,3 +67,22 @@ export const registerRequest = async (username: string, data: string, onRegister
         console.log(error);
     }
 };
+
+export const getBasicGraphInfo = async () => {
+  fetch('http://localhost:5000/graph')
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error(error))
+}
+
+export async function apiGET<T>(url: string): Promise<T> {
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.statusText)
+      }
+      return response.json() as Promise<T>;
+    })
+}
+
+
