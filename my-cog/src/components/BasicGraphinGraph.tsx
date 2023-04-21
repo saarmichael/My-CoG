@@ -10,6 +10,7 @@ import { BasicGraphResponse, TimeInterval } from '../shared/Requests';
 
 
 
+
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
     const { electrode, setElectrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
