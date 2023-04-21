@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { registerRequest } from '../../shared/ServerRequests';
 
 interface RegisterProps {
@@ -24,7 +23,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
       </label>
       <label>
         Data:
-        <input type="text" value={data} onChange={(e) => setData(e.target.value)} />
+        <input type="file" onChange={(e) => setData(e.target.value)} />
       </label>
       <button type="submit">Register</button>
     </form>

@@ -22,26 +22,38 @@ export const simplePostRequest = async () => {
     .catch(error => console.error(error))
 }
 
-export const loginRequest = async (username: string, onLogin: () => void) => {
-    try {
-      const response = await axios.get('http://localhost:5000/users');
-
-      if (response.status === 200) {
-        console.log(response.data);
-        onLogin();
-      } else {
-        console.log('Login failed');
+export const getCoherenceWindowRequest = async (start: string) => {
+  const url = 'http://localhost:5000/time?start=' + parseFloat(start) + '&end=' + (parseFloat(start) + 20);
+  try {
+      const response = await fetch(url);
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    } catch (error) {
-      console.log(error);
-    }
+      const data = await response.text();
+      console.log(data);
+      } catch (error) {
+      console.error(error);
+      }
 };
 
-export const registerRequest = async (username: string, auth_code: string, onRegister: () => void) => {
+export const loginRequest = async (username: string, onLogin: () => void) => {
+    axios({
+      method: 'GET',
+      url: 'http://localhost:5000/users?username=' + username,
+    })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+};
+
+export const registerRequest = async (username: string, data: string, onRegister: () => void) => {
     try {
       const response = await axios.post('http://localhost:5000/users', {
         username,
-        auth_code,
+        data,
       });
 
       if (response.status === 200) {
