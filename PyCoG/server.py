@@ -3,6 +3,7 @@ from flask_cors import CORS
 from scipy.io import loadmat
 from coherence import coherence_time_frame
 import json
+from consts import bcolors
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
@@ -38,7 +39,9 @@ def get_coherence_matrices():
     end = request.args.get("end")
     f, CM = coherence_time_frame(data, 1000, start, end)
     result = {"f": f.tolist(), "CM": CM.tolist()}
-    print(f"CM returned with {len(f)} frequencies and {len(CM)} electrodes")
+    print(
+        f"{bcolors.GETREQUEST} CM returned with {len(f)} frequencies and {len(CM)} electrodes {bcolors.ENDC}"
+    )
     return jsonify(result)
 
 
@@ -73,7 +76,9 @@ def get_graph_basic_info():
             )
     layout = "circular"
     # return the result
-    print(f"graph returned with {num_nodes} nodes and {len(edges)} edges")
+    print(
+        f"{bcolors.GETREQUEST}graph returned with {num_nodes} nodes and {len(edges)} edges{bcolors.ENDC}"
+    )
     return jsonify({"layout": layout, "nodes": nodes, "edges": edges})
 
 

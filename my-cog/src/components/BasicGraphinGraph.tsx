@@ -6,7 +6,8 @@ import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { Checkbox } from '@mui/material';
 import { apiGET } from '../shared/ServerRequests';
-import { BasicGraphResponse, TimeInterval } from '../shared/Requests'
+import { BasicGraphResponse, TimeInterval } from '../shared/Requests';
+
 
 
 
