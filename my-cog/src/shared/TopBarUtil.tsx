@@ -1,3 +1,5 @@
+import { logoutRequest } from "./ServerRequests";
+
 export function handleNew() {
     console.log("New");
 }
@@ -35,5 +37,5 @@ export function handleOptions() {
 }
 
 export function handleLogout() {
-    window.close();
+    logoutRequest();
 }

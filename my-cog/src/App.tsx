@@ -1,11 +1,9 @@
 import './App.css';
 import Tabbing from './scenes/main/Tabs';
 import { ElectrodeFocusProvider } from './contexts/ElectrodeFocusContext';
-import DataContainer from './components/DataContainer';
 import { menuItems, TopBar } from './scenes/main/TopBar';
 import Sidebar from './components/SideBar';
 import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
-import { simpleGetRequest, simplePostRequest } from './shared/ServerRequests';
 import { useState } from 'react';
 import Login from './scenes/global/Login';
 import Register from './scenes/global/Register';
