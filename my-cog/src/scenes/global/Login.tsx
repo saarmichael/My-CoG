@@ -24,8 +24,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           value={username}
           onChange={(event) => setUsername(event.target.value)}
         />
+        <button type="submit">Login</button>
       </div>
-      <button type="submit">Login</button>
     </form>
   );
 };

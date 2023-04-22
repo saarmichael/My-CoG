@@ -50,6 +50,19 @@ export const loginRequest = async (username: string, onLogin: () => void) => {
       });
 };
 
+export const logoutRequest = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/logout');
+      if (response.status === 200) {
+        console.log('Logout successful');
+      } else {
+        console.log('Logout failed');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+};
+
 export const registerRequest = async (username: string, data: string, onRegister: () => void) => {
     try {
       const response = await axios.post('http://localhost:5000/users', {
@@ -59,10 +72,10 @@ export const registerRequest = async (username: string, data: string, onRegister
 
       if (response.status === 200) {
         console.log('Registration successful');
+        loginRequest(username, onRegister);
       } else {
         console.log('Registration failed');
       }
-      loginRequest(username, onRegister);
     } catch (error) {
         console.log(error);
     }
@@ -73,7 +86,7 @@ export const getBasicGraphInfo = async () => {
     .then(response => response.json())
     .then(data => console.log(data))
     .catch(error => console.error(error))
-}
+};
 
 export async function apiGET<T>(url: string): Promise<T> {
   return fetch(url)
@@ -83,6 +96,6 @@ export async function apiGET<T>(url: string): Promise<T> {
       }
       return response.json() as Promise<T>;
     })
-}
+};
 
 
