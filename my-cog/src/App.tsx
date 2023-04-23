@@ -8,8 +8,6 @@ import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
 import { simpleGetRequest, simplePostRequest } from './shared/ServerRequests';
 
 function App() {
-  simpleGetRequest()
-  simplePostRequest()
 
   return (
     <div>

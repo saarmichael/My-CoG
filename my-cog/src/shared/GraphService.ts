@@ -1,16 +1,30 @@
-import { getCoherenceByTime, getCoherenceMatrix, getFrequencies, getFrequenciesTime, getTimeWindows } from './getters'
+import { getCoherenceByTime, getCoherenceMatrix, getFrequenciesTime, getTimeWindows } from './getters'
+
 import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
 import { interpolate } from 'd3-interpolate'
 import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
 import { CoherenceResponse, TimeInterval } from './Requests';
 import { apiGET } from './ServerRequests';
-import { getBasicGraph } from './RequestsService';
+import { getBasicGraph, getFrequencies } from './RequestsService';
 
 let singletonGraph: GraphinData;
 const coherenceMap = new Map<string, Promise<CoherenceResponse>>();
 let singletonFrequencies: number[];
 
+const getSingletonGraph = async () => {
+    if (!singletonGraph) {
+        singletonGraph = await getBasicGraph();
+    }
+    return singletonGraph;
+}
+
+const getSingletonFreqList = async () => {
+    if (!singletonFrequencies) {
+        singletonFrequencies = await getFrequencies();
+    }
+    return singletonFrequencies;
+}
 
 // function that creates circular positions (x, y)[] for the nodes
 export const circularPositions = (n: number, radius: number): number[][] => {
@@ -183,7 +197,7 @@ export const changeEdgeWidthGraphin = (graph: GraphinData, settings: IVisSetting
         });
     }
     graph.edges = newEdges;
-    return {...graph};
+    return { ...graph };
 }
 
 
@@ -211,7 +225,7 @@ export const edgeWidthGraphinDefault = (graph: GraphinData, settings: IVisSettin
         });
     }
     graph.edges = newEdges;
-    return {...graph};
+    return { ...graph };
 }
 
 
@@ -232,7 +246,7 @@ export const showEdgeWeight = (graph: GraphinData, settings?: IVisSettings) => {
         });
     }
     graph.edges = newEdges;
-    return {...graph};
+    return { ...graph };
 }
 
 export const colorCodeEdgesDefault = (graph: GraphinData, settings: IVisSettings) => {
@@ -260,7 +274,7 @@ export const colorCodeEdgesDefault = (graph: GraphinData, settings: IVisSettings
         });
     }
     graph.edges = newEdges;
-    return {...graph};
+    return { ...graph };
 };
 
 const sigmoid = (x: number) => {
@@ -303,7 +317,7 @@ export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
         });
     }
     graph.edges = newEdges;
-    return {...graph};
+    return { ...graph };
 }
 
 export const colorCodeNodes = (graph: GraphinData, settings: IVisSettings) => {
@@ -332,7 +346,7 @@ export const colorCodeNodes = (graph: GraphinData, settings: IVisSettings) => {
             }
         }
     }
-    return {...graph};
+    return { ...graph };
 }
 
 export const colorCodeNodesDefault = (graph: GraphinData, settings: IVisSettings) => {
@@ -352,7 +366,7 @@ export const colorCodeNodesDefault = (graph: GraphinData, settings: IVisSettings
             }
         }
     }
-    return {...graph};
+    return { ...graph };
 }
 
 export const changeNodeOpacity = (graph: GraphinData, settings: IVisSettings) => {
@@ -369,7 +383,7 @@ export const changeNodeOpacity = (graph: GraphinData, settings: IVisSettings) =>
             }
         }
     }
-    return {...graph};
+    return { ...graph };
 }
 
 export const nodeOpacityDefault = (graph: GraphinData, settings: IVisSettings) => {
@@ -382,7 +396,7 @@ export const nodeOpacityDefault = (graph: GraphinData, settings: IVisSettings) =
             }
         }
     }
-    return {...graph};
+    return { ...graph };
 }
 
 // export const thresholdGraphCarry = (threshold: number) => (edges: IUserEdge[]) => {
@@ -401,7 +415,7 @@ export const thresholdGraph = (graph: GraphinData, settings: IVisSettings) => {
         }
     }
     graph.edges = newEdges;
-    return {...graph};
+    return { ...graph };
 }
 
 
@@ -441,7 +455,7 @@ const applyCMOnGraph = (graph: GraphinData, CM: number[][]) => {
         const value = CM[sourceIndex][targetIndex];
         graph.edges[index].value = value;
     });
-    return {...graph};
+    return { ...graph };
 }
 
 export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, time?: TimeInterval)
@@ -453,7 +467,7 @@ export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, 
     }
     response = await coherenceMap.get(url);
     if (response === undefined) {
-        return {...graph};
+        return { ...graph };
     }
     const CM = getAverageCMbyCM(response.CM, response.f, freq);
     const newGraph = applyCMOnGraph(graph, CM);
@@ -462,7 +476,7 @@ export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, 
 
 export const getGraphBase = async (): Promise<GraphinData> => {
     // if the singleton doesnt exists, ask the server for the data
-    if(!singletonGraph) { 
+    if (!singletonGraph) {
         singletonGraph = await getBasicGraph();
     }
     return singletonGraph;
@@ -479,47 +493,15 @@ export const getSimpleGraphinData = (): GraphinData => {
 }
 
 
-
-
-export const getFrequencyList = (): number[] => {
-    return getFrequencies();
+export const getFrequencyList = async (): Promise<number[]> => {
+    if (!singletonFrequencies) {
+        singletonFrequencies = await getFrequencies();
+    }
+    return singletonFrequencies;
 }
 
 export const getTimeIntervals = (): number[] => {
     return getTimeWindows();
-}
-
-
-/*!! THIS FUNCTION IS BETTER OFF BE WRITTEN IN PYTHON DUE TO MEANINGFUL CALCULATIONS OVER FLOATS !!*/
-const getAverageCM = (freq: FreqRange): number[][] => {
-    // special case: minRange = maxRange: return the coherence matrix of that frequency or the one that is closest to it
-    const minRange = freq.min;
-    const maxRange = freq.max;
-    if (minRange === maxRange) {
-        return getCoherenceMatrix(minRange);
-    }
-    // get the average coherence matrix over the range [minRange, maxRange]
-    const freqList = getFrequencies();
-    let CM = getCoherenceMatrix(freqList[0]);
-    let numOfMatrices = 0;
-    for (let i = 1; i < freqList.length; i++) {
-        if (freqList[i] >= minRange && freqList[i] <= maxRange) {
-            numOfMatrices++;
-            const newCM = getCoherenceMatrix(freqList[i]);
-            for (let j = 0; j < CM.length; j++) {
-                for (let k = 0; k < CM.length; k++) {
-                    CM[j][k] += newCM[j][k];
-                }
-            }
-        }
-    }
-    // divide the sum by the number of matrices in the range
-    for (let j = 0; j < CM.length; j++) {
-        for (let k = 0; k < CM.length; k++) {
-            CM[j][k] /= numOfMatrices;
-        }
-    }
-    return CM;
 }
 
 const getAverageCMbyCM = (CM: number[][][], freqs: number[], range: FreqRange): number[][] => {
@@ -556,20 +538,6 @@ const getAverageCMbyCM = (CM: number[][][], freqs: number[], range: FreqRange): 
     return averageCM;
 };
 
-
-export const getAverageGraphinData = (freq: FreqRange,
-    getPositions?: (n: number, radius: number) => number[][], time?: number): GraphinData => {
-    if (time !== undefined) {
-        // get the CM at the given time
-        const timeCMs = getCoherenceByTime(time);
-        const frequencies = getFrequenciesTime();
-        return getGraphinDataByCM(getAverageCMbyCM(timeCMs, frequencies, freq), getPositions);
-    } else {
-        const CM = getAverageCM(freq);
-        return getGraphinDataByCM(CM, getPositions);
-    }
-}
-
 export interface FreqRange {
     min: number;
     max: number;
@@ -596,7 +564,7 @@ export const changeNodeSize = (graph: GraphinData, settings: IVisSettings) => {
             }
         };
     }
-    return {...graph};
+    return { ...graph };
 }
 
 export const nodeSizeDefault = (graph: GraphinData, settings: IVisSettings) => {
@@ -623,7 +591,7 @@ export const nodeSizeDefault = (graph: GraphinData, settings: IVisSettings) => {
         });
     }
     graph.nodes = newNodes;
-    return {...graph};
+    return { ...graph };
 }
 
 
@@ -659,7 +627,7 @@ export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
 
 
     }
-    return {...graph};
+    return { ...graph };
 }
 
 export const hideNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
@@ -673,5 +641,5 @@ export const hideNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
         };
 
     }
-    return {...graph};
+    return { ...graph };
 }
