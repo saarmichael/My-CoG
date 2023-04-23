@@ -57,15 +57,24 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { electrode, setElectrodeList, freqRange, setFreqRange } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { electrode, setElectrodeList, freqRange, setFreqRange, } = useContext(GlobalDataContext) as IElectrodeFocusContext;
     const { options, settings, generalOptions, setGeneralOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
     const timeRef = React.useRef<HTMLSelectElement>(null);
 
-    const createGraphData = async () => {
+    const createGraph = async () => {
         // create the nodes and edges using GraphService module
         let graph: GraphinData = { nodes: [{ id: "1" }], edges: [] };
+
+        // call getGraphBase to get the base graph data
+        graph = await getGraphBase();
+
+        console.log(`base-graph:`, graph);
+        return { ...graph };
+    }
+
+    const applyConnectivity = async (graph: GraphinData) => {
         let time: TimeInterval | undefined = undefined;
         let option = generalOptions.find(option => option.label === "time windows");
         if (option) {
@@ -73,9 +82,6 @@ const BasicGraphinGraph = () => {
                 time = { start: parseFloat(option.value), end: parseFloat(option.value) + 20 };
             }
         }
-        // call getGraphBase to get the base graph data
-        graph = await getGraphBase();
-
         graph = await updateGraphCoherence(graph, freqRange, time);
         graph = options.reduce((acc, option) => {
             if (option.checked) {
@@ -87,17 +93,20 @@ const BasicGraphinGraph = () => {
             }
             return acc;
         }, graph);
-
-        console.log(`graph:`, graph);
+        console.log(`connectivity-graph:`, graph);
         return { ...graph };
     }
+
     const [state, setState] = React.useState<GraphinData>({ nodes: [{ id: "1" }], edges: [] });
+
 
     // change the graph data according to the user's selections
     useEffect(() => {
-        createGraphData().then((data) => {
-            console.log(`data:`, data);
+        createGraph().then((data) => {
             setState({ ...data });
+            applyConnectivity(data).then((data) => {
+                setState({ ...data });
+            });
         });
     }, [freqRange, options, settings, generalOptions]);
 
@@ -187,7 +196,7 @@ const BasicGraphinGraph = () => {
     );
 
 
-    createGraphData();
+    createGraph();
     // set the electrode list according to the current graph
     useEffect(() => {
         setElectrodeList(state.nodes.map((node) => node.id));

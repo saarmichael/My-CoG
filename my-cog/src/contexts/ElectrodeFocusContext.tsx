@@ -12,6 +12,8 @@ export interface IElectrodeFocusContext {
     setFreqRange: (freqRange: FreqRange) => void;
     timeRange: TimeInterval
     setTimeRange: (timeRange: TimeInterval) => void;
+    projectName: string;
+    setProjectName: (projectName: string) => void;
 }
 
 interface IElectrodeFocusProviderProps {
@@ -25,12 +27,14 @@ export const GlobalDataProvider: React.FC<IElectrodeFocusProviderProps> = ({ chi
     const [electrodeList, setElectrodeList] = useState<string[]>([]);
     const [freqRange, setFreqRange] = useState<FreqRange>({ min: 0, max: 0 });
     const [timeRange, setTimeRange] = useState<TimeInterval>({ start: 0, end: 0 });
+    const[projectName, setProjectName] = useState<string>("myProject");
     return (
         <GlobalDataContext.Provider value={{
             electrode, setElectrode,
             electrodeList, setElectrodeList,
             freqRange, setFreqRange,
-            timeRange, setTimeRange
+            timeRange, setTimeRange,
+            projectName, setProjectName
         }}>
             {children}
         </GlobalDataContext.Provider>
