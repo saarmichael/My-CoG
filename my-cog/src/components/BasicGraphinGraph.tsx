@@ -5,7 +5,6 @@ import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/Electrode
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { Checkbox } from '@mui/material';
-import { getCoherenceWindowRequest } from '../shared/ServerRequests';
 import { apiGET } from '../shared/ServerRequests';
 import { BasicGraphResponse, TimeInterval } from '../shared/Requests';
 import { getFrequenciesFromFile } from '../shared/getters';
@@ -131,7 +130,6 @@ const BasicGraphinGraph = () => {
                         }
                         return option;
                     }));
-                    getCoherenceWindowRequest(e.target.value)
                 }}>
                 {times.map((time, index) => {
                     return <option key={index} value={time.toFixed(2)}>{time.toFixed(2)}</option>
