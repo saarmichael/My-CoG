@@ -14,7 +14,7 @@ import {
 } from '@arction/lcjs';
 import { getSpectrogramData, SpectrogramData } from '../shared/getters';
 import * as elec1_spectrogram from '../shared/ecog_data/elec1_spectrogram.json'
-import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
+import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 
 interface Basic3DSpectogramProps {
     data: number[][];
@@ -22,7 +22,7 @@ interface Basic3DSpectogramProps {
 
 
 const Basic3DSpectogram = () => {
-    const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
     const elec1SpecData = elec1_spectrogram as SpectrogramData
     /* asynchronous function that generate resolutionX over resolutionY matrix of random numbers */
     const getData = async (electrodeID: string): Promise<SpectrogramData> => {

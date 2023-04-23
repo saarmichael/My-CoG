@@ -18,13 +18,13 @@ import {
     HeatmapGridSeriesIntensityValues
 } from '@arction/lcjs';
 import { getSpectrogramData, SpectrogramData } from '../shared/getters';
-import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
+import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { getData, getDataSync } from '../shared/SpectrogramService';
 
 
 
 const Spectrogram = () => {
-    const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
     let dashboard: Dashboard | null = null;
     let chart2D:  ChartXY<PointMarker, UIBackground> | null = null;
     let heatmapSeries2D: HeatmapGridSeriesIntensityValues | null = null;

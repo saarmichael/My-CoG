@@ -1,6 +1,7 @@
 import './App.css';
 import Tabbing from './scenes/main/Tabs';
-import { ElectrodeFocusProvider } from './contexts/ElectrodeFocusContext';
+import { GlobalDataProvider } from './contexts/ElectrodeFocusContext';
+import DataContainer from './components/DataContainer';
 import { menuItems, TopBar } from './scenes/main/TopBar';
 import Sidebar from './components/SideBar';
 import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
@@ -28,10 +29,10 @@ function App() {
       />
       <div className="app-container">
         <VisGraphOptionsProvider >
-          <ElectrodeFocusProvider>
+          <GlobalDataProvider>
             <Sidebar />
             <Tabbing />
-          </ElectrodeFocusProvider>
+          </GlobalDataProvider>
         </VisGraphOptionsProvider>
       </div>
     </div>

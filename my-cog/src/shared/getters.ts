@@ -43,7 +43,7 @@ export const getCoherenceMatrices = () => {
     return coherence_matrices;
 };
 
-export const getFrequencies = () : number[] => {
+export const getFrequenciesFromFile = () : number[] => {
     return coherence_matrices.f;
 };
 

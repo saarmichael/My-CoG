@@ -1,18 +1,21 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getAverageGraphinData, getFrequencyList, getGraphBase, getTimeIntervals, thresholdGraph, updateGraphCoherence } from '../shared/GraphService';
-import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
+import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getFrequencyList, getGraphBase, getTimeIntervals, thresholdGraph, updateGraphCoherence } from '../shared/GraphService';
+import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { Checkbox } from '@mui/material';
 import { getCoherenceWindowRequest } from '../shared/ServerRequests';
 import { apiGET } from '../shared/ServerRequests';
 import { BasicGraphResponse, TimeInterval } from '../shared/Requests';
+import { getFrequenciesFromFile } from '../shared/getters';
+
+
 
 
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
-    const { electrode, setElectrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { electrode, setElectrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
 
     useEffect(() => {
 
@@ -55,12 +58,11 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { electrode, setElectrodeList } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { electrode, setElectrodeList, freqRange, setFreqRange } = useContext(GlobalDataContext) as IElectrodeFocusContext;
     const { options, settings, generalOptions, setGeneralOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
     const timeRef = React.useRef<HTMLSelectElement>(null);
-    const [freqRange, setFreqRange] = React.useState<FreqRange>({ min: 0, max: 0 });
 
     const createGraphData = async () => {
         // create the nodes and edges using GraphService module
@@ -88,19 +90,19 @@ const BasicGraphinGraph = () => {
         }, graph);
 
         console.log(`graph:`, graph);
-        return {...graph};
+        return { ...graph };
     }
     const [state, setState] = React.useState<GraphinData>({ nodes: [{ id: "1" }], edges: [] });
-    
+
     // change the graph data according to the user's selections
     useEffect(() => {
         createGraphData().then((data) => {
             console.log(`data:`, data);
-            setState({...data});
+            setState({ ...data });
         });
     }, [freqRange, options, settings, generalOptions]);
 
-    const freqs: number[] = getFrequencyList();
+    const freqs: number[] = getFrequenciesFromFile();
     // create a dropdown menu that consists of the frequencies and the user can select one
     // when the user selects a frequency, the graph is updated accordingly
     // make sure each child has a unique key

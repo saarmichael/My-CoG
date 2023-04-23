@@ -4,7 +4,7 @@ import BasicGraphinGraph from "../../components/BasicGraphinGraph";
 import DataContainer from "../../components/DataContainer";
 import { BasicHeatMap } from "../../components/BasicHeatMap";
 import Spectrogram from "../../components/Spectrogram";
-import { ElectrodeFocusContext, IElectrodeFocusContext } from "../../contexts/ElectrodeFocusContext";
+import { GlobalDataContext, IElectrodeFocusContext } from "../../contexts/ElectrodeFocusContext";
 import './GridStyle.css';
 import { GraphContainer } from "../../components/GraphContainer";
 import { GraphVisToggles } from "../../components/GraphVisToggles";
@@ -31,7 +31,7 @@ export function Box() {
 }
 
 export function Box1() {
-  const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+  const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
 
   const data = getSpectrogramDataSync(0);
 
@@ -42,7 +42,7 @@ export function Box1() {
   return (
     <div id="box1" className="box">
       <Spectrogram />
-      <SlidingBar time={data.t} onChange={handleChange} />
+      <SlidingBar array={data.t} onChange={handleChange} />
     </div>
   );
 }
