@@ -32,7 +32,6 @@ export const getSingletonDuration = async (): Promise<number> => {
     return singletonDuration;
 }
 
-// TODO: why different min max result in `infinity` weights?
 export const getCoherenceResponse =
     async (time?: TimeInterval): Promise<CoherenceResponse | undefined> => {
         let url = `${baseAddress}/time`;
