@@ -1,12 +1,7 @@
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 
 
-export const simpleGetRequest = async () => {
-    fetch('http://localhost:5000/')
-    .then(response => response.text())
-    .then(data => console.log(data))
-    .catch(error => console.error(error))
-}
+
   
 export const simplePostRequest = async () => {
   const data = { message: 'Hello, server!' }
@@ -22,20 +17,6 @@ export const simplePostRequest = async () => {
     .then(data => console.log(data))
     .catch(error => console.error(error))
 }
-
-export const getCoherenceWindowRequest = async (start: string) => {
-  const url = 'http://localhost:5000/time?start=' + parseFloat(start) + '&end=' + (parseFloat(start) + 20);
-  try {
-      const response = await fetch(url);
-      if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.text();
-      console.log(data);
-      } catch (error) {
-      console.error(error);
-      }
-};
 
 export const loginRequest = async (username: string, onLogin: () => void) => {
     axios({
@@ -88,6 +69,10 @@ export const getBasicGraphInfo = async () => {
     .catch(error => console.error(error))
 };
 
+
+/* 
+  * This is a generic function for making GET requests to the server.
+*/
 export async function apiGET<T>(url: string): Promise<T> {
   return fetch(url)
     .then(response => {
@@ -98,4 +83,19 @@ export async function apiGET<T>(url: string): Promise<T> {
     })
 };
 
-
+/* 
+  * This is a generic function for making POST requests to the server.
+*/
+export async function apiPOST<T>(url: string, data: T): Promise<AxiosResponse<any, any>> {
+  return axios({
+    method: 'POST',
+    url: url,
+    data: data,
+  })
+    .then(response => {
+      if (response.status !== 200) {
+        throw new Error(response.statusText)
+      }
+      return response;
+    })
+}

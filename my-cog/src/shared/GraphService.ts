@@ -6,25 +6,9 @@ import { interpolate } from 'd3-interpolate'
 import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
 import { CoherenceResponse, TimeInterval } from './Requests';
 import { apiGET } from './ServerRequests';
-import { getBasicGraph, getFrequencies } from './RequestsService';
+import { getBasicGraph, getCoherenceResponse, getFrequencies, getSingletonFreqList, getSingletonGraph, } from './RequestsService';
 
-let singletonGraph: GraphinData;
-const coherenceMap = new Map<string, Promise<CoherenceResponse>>();
-let singletonFrequencies: number[];
 
-const getSingletonGraph = async () => {
-    if (!singletonGraph) {
-        singletonGraph = await getBasicGraph();
-    }
-    return singletonGraph;
-}
-
-const getSingletonFreqList = async () => {
-    if (!singletonFrequencies) {
-        singletonFrequencies = await getFrequencies();
-    }
-    return singletonFrequencies;
-}
 
 // function that creates circular positions (x, y)[] for the nodes
 export const circularPositions = (n: number, radius: number): number[][] => {
@@ -461,13 +445,9 @@ const applyCMOnGraph = (graph: GraphinData, CM: number[][]) => {
 export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, time?: TimeInterval)
     : Promise<GraphinData> => {
     const url = buildRequest(time);
-    let response: CoherenceResponse | undefined;
-    if (!coherenceMap.has(url)) {
-        coherenceMap.set(url, apiGET<CoherenceResponse>(url));
-    }
-    response = await coherenceMap.get(url);
-    if (response === undefined) {
-        return { ...graph };
+    let response: CoherenceResponse | undefined = await getCoherenceResponse(freq, time);
+    if(!response) {
+        return graph;
     }
     const CM = getAverageCMbyCM(response.CM, response.f, freq);
     const newGraph = applyCMOnGraph(graph, CM);
@@ -475,11 +455,7 @@ export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, 
 }
 
 export const getGraphBase = async (): Promise<GraphinData> => {
-    // if the singleton doesnt exists, ask the server for the data
-    if (!singletonGraph) {
-        singletonGraph = await getBasicGraph();
-    }
-    return singletonGraph;
+    return getSingletonGraph();
 }
 
 export const getSimpleGraphinData = (): GraphinData => {
@@ -494,10 +470,7 @@ export const getSimpleGraphinData = (): GraphinData => {
 
 
 export const getFrequencyList = async (): Promise<number[]> => {
-    if (!singletonFrequencies) {
-        singletonFrequencies = await getFrequencies();
-    }
-    return singletonFrequencies;
+    return getSingletonFreqList();
 }
 
 export const getTimeIntervals = (): number[] => {
