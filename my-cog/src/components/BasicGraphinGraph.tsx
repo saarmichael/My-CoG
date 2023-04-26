@@ -1,13 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, colorCodeEdges, FreqRange, getFrequencyList, getGraphBase, getTimeIntervals, thresholdGraph, updateGraphCoherence } from '../shared/GraphService';
+import { changeEdgeWidthGraphin, colorCodeEdges, getFrequencyList, getGraphBase, getTimeIntervals, thresholdGraph, updateGraphCoherence } from '../shared/GraphService';
+import { FreqRange, TimeInterval } from '../shared/GraphRelated';
 import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { Checkbox } from '@mui/material';
 import { apiGET } from '../shared/ServerRequests';
-import { BasicGraphResponse, TimeInterval } from '../shared/Requests';
+import { BasicGraphResponse } from '../shared/Requests';
+
 import { getFrequenciesFromFile } from '../shared/getters';
+import { getSingletonFreqList, getSingletonDuration } from '../shared/RequestsService';
 
 
 
@@ -57,26 +60,26 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { electrode, setElectrodeList, freqRange, setFreqRange } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IElectrodeFocusContext;
     const { options, settings, generalOptions, setGeneralOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
     const timeRef = React.useRef<HTMLSelectElement>(null);
 
+
+    const getFrequencyAndTime = async () => {
+        let frequencyListAsync = await getSingletonFreqList();
+        let durationAsync = await getSingletonDuration();
+        return { frequencyListAsync, durationAsync };
+    }
+
     const createGraphData = async () => {
+
         // create the nodes and edges using GraphService module
         let graph: GraphinData = { nodes: [{ id: "1" }], edges: [] };
-        let time: TimeInterval | undefined = undefined;
-        let option = generalOptions.find(option => option.label === "time windows");
-        if (option) {
-            if (option.checked && option.value) {
-                time = { start: parseFloat(option.value), end: parseFloat(option.value) + 20 };
-            }
-        }
         // call getGraphBase to get the base graph data
         graph = await getGraphBase();
-
-        graph = await updateGraphCoherence(graph, freqRange, time);
+        graph = await updateGraphCoherence(graph, freqRange, timeRange);
         graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, settings);
@@ -93,13 +96,23 @@ const BasicGraphinGraph = () => {
     }
     const [state, setState] = React.useState<GraphinData>({ nodes: [{ id: "1" }], edges: [] });
 
+    useEffect(() => {
+
+    }, []);
+
     // change the graph data according to the user's selections
     useEffect(() => {
-        createGraphData().then((data) => {
-            console.log(`data:`, data);
-            setState({ ...data });
+        getFrequencyAndTime().then(({ frequencyListAsync, durationAsync }) => {
+            setFreqList(frequencyListAsync);
+            setDuration(durationAsync);
+        }).then(() => {
+            createGraphData().then((data) => {
+                console.log(`data:`, data);
+                setState(data);
+            });
         });
-    }, [freqRange, options, settings, generalOptions]);
+    }, [freqRange, timeRange, options, settings, generalOptions]);
+
 
     const freqs: number[] = getFrequenciesFromFile();
     // create a dropdown menu that consists of the frequencies and the user can select one
@@ -108,7 +121,8 @@ const BasicGraphinGraph = () => {
     const freqDropdown = (
         <select onChange={(e) => {
             const freq = parseFloat(e.target.value);
-            setFreqRange({ min: freq, max: freq });
+            // change only min and max and not frequencyList
+            setFreqRange({ ...freqRange, min: freq, max: freq });
         }}>
             {freqs.map((freq, index) => {
                 return <option key={index} value={freq.toFixed(2)}>{freq.toFixed(2)}</option>
@@ -172,7 +186,7 @@ const BasicGraphinGraph = () => {
             if (min > freqs[freqs.length - 1]) {
                 minRef.current.value = "0";
             }
-            setFreqRange({ min: min, max: max });
+            setFreqRange({ ...freqRange, min: min, max: max });
         }
         // update the edges width of the current frequency range
     }

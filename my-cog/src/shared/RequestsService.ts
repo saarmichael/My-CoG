@@ -1,7 +1,7 @@
 import { GraphinData } from "@antv/graphin";
+import { FreqRange, TimeInterval } from './GraphRelated';
+import { BasicGraphResponse, CoherenceResponse } from "./Requests";
 import { apiGET } from "./ServerRequests";
-import { BasicGraphResponse, CoherenceResponse, TimeInterval } from "./Requests";
-import { FreqRange } from "./GraphService";
 
 const baseAddress = "http://localhost:5000";
 
@@ -9,6 +9,7 @@ const baseAddress = "http://localhost:5000";
 let singletonGraph: GraphinData;
 const coherenceMap = new Map<string, Promise<CoherenceResponse>>();
 let singletonFrequencies: number[];
+let singletonDuration: number;
 
 export const getSingletonGraph = async (): Promise<GraphinData> => {
     if (!singletonGraph) {
@@ -24,8 +25,15 @@ export const getSingletonFreqList = async (): Promise<number[]> => {
     return { ...singletonFrequencies };
 }
 
+export const getSingletonDuration = async (): Promise<number> => {
+    if (!singletonDuration) {
+        singletonDuration = await getDuration();
+    }
+    return singletonDuration;
+}
+
 export const getCoherenceResponse =
-    async (freq: FreqRange, time?: TimeInterval): Promise<CoherenceResponse | undefined> => {
+    async (time?: TimeInterval): Promise<CoherenceResponse | undefined> => {
         let url = `${baseAddress}/time`;
         if (time) {
             url += `?start=${time.start}&end=${time.end}`;
@@ -45,6 +53,11 @@ export const getBasicGraph = async (): Promise<BasicGraphResponse> => {
 export const getFrequencies = async (): Promise<number[]> => {
     const url = `${baseAddress}/frequencies`;
     return apiGET<number[]>(url);
+}
+
+export const getDuration = async (): Promise<number> => {
+    const url = `${baseAddress}/duration`;
+    return apiGET<number>(url);
 }
 
 export const simpleGetRequest = async () => {

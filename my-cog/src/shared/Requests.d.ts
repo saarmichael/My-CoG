@@ -11,7 +11,3 @@ export interface CoherenceResponse {
     CM: number[][][]; // coherence matrices for each frequency
 }
 
-export interface TimeInterval {
-    start: number;
-    end: number;
-}

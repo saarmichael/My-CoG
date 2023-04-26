@@ -1,13 +1,12 @@
-import { getCoherenceByTime, getCoherenceMatrix, getFrequenciesTime, getTimeWindows } from './getters'
+import { getCoherenceMatrix, getTimeWindows } from './getters';
 
-import { GraphData, NodeConfig, EdgeConfig } from '@antv/g6';
+import { EdgeConfig, GraphData, NodeConfig } from '@antv/g6';
 import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
-import { interpolate } from 'd3-interpolate'
+import { interpolate } from 'd3-interpolate';
 import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
-import { CoherenceResponse, TimeInterval } from './Requests';
-import { apiGET } from './ServerRequests';
-import { getBasicGraph, getCoherenceResponse, getFrequencies, getSingletonFreqList, getSingletonGraph, } from './RequestsService';
-
+import { FreqRange, TimeInterval } from './GraphRelated';
+import { CoherenceResponse } from './Requests';
+import { getCoherenceResponse, getSingletonFreqList, getSingletonGraph } from './RequestsService';
 
 
 // function that creates circular positions (x, y)[] for the nodes
@@ -445,7 +444,7 @@ const applyCMOnGraph = (graph: GraphinData, CM: number[][]) => {
 export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, time?: TimeInterval)
     : Promise<GraphinData> => {
     const url = buildRequest(time);
-    let response: CoherenceResponse | undefined = await getCoherenceResponse(freq, time);
+    let response: CoherenceResponse | undefined = await getCoherenceResponse(time);
     if(!response) {
         return graph;
     }
@@ -510,12 +509,6 @@ const getAverageCMbyCM = (CM: number[][][], freqs: number[], range: FreqRange): 
     }
     return averageCM;
 };
-
-export interface FreqRange {
-    min: number;
-    max: number;
-}
-
 
 export const changeNodeSize = (graph: GraphinData, settings: IVisSettings) => {
     const nodes = graph.nodes;

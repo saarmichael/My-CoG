@@ -1,7 +1,7 @@
 import exp from "constants";
 import React, { createContext, useState, ReactNode } from "react";
-import { FreqRange } from "../shared/GraphService";
-import { TimeInterval } from "../shared/Requests";
+import { FreqRange } from '../shared/GraphRelated';
+import { TimeInterval } from "../shared/GraphRelated";
 
 export interface IElectrodeFocusContext {
     electrode: string;
@@ -10,8 +10,12 @@ export interface IElectrodeFocusContext {
     setElectrodeList: (electrodeList: string[]) => void;
     freqRange: FreqRange
     setFreqRange: (freqRange: FreqRange) => void;
+    freqList: number[];
+    setFreqList: (freqList: number[]) => void;
     timeRange: TimeInterval
     setTimeRange: (timeRange: TimeInterval) => void;
+    duration: number;
+    setDuration: (timeList: number) => void;
 }
 
 interface IElectrodeFocusProviderProps {
@@ -24,13 +28,17 @@ export const GlobalDataProvider: React.FC<IElectrodeFocusProviderProps> = ({ chi
     const [electrode, setElectrode] = useState<string>("electrode1");
     const [electrodeList, setElectrodeList] = useState<string[]>([]);
     const [freqRange, setFreqRange] = useState<FreqRange>({ min: 0, max: 0 });
-    const [timeRange, setTimeRange] = useState<TimeInterval>({ start: 0, end: 0 });
+    const [freqList, setFreqList] = useState<number[]>([0,1]);
+    const [timeRange, setTimeRange] = useState<TimeInterval>({ resolution: 's', start: 0, end: 0 });
+    const [duration, setDuration] = useState<number>(1);
     return (
         <GlobalDataContext.Provider value={{
             electrode, setElectrode,
             electrodeList, setElectrodeList,
             freqRange, setFreqRange,
-            timeRange, setTimeRange
+            freqList, setFreqList,
+            timeRange, setTimeRange,
+            duration, setDuration
         }}>
             {children}
         </GlobalDataContext.Provider>
