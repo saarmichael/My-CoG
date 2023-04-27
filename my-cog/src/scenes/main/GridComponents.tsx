@@ -42,7 +42,7 @@ export function Box1() {
   return (
     <div id="box1" className="box">
       <Spectrogram />
-      <SlidingBar array={data.t} onChange={handleChange} />
+      <SlidingBar range={data.t} onChange={handleChange} toSubmit={false}/>
     </div>
   );
 }

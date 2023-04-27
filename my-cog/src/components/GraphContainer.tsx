@@ -10,15 +10,20 @@ import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsSe
 
 export const GraphContainer = () => {
 
-    const { freqList, setFreqList, setFreqRange, duration, setDuration } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { freqList, setFreqList, setFreqRange, duration, setDuration, setTimeRange } = useContext(GlobalDataContext) as IElectrodeFocusContext;
 
     const handleFreqChange = (event: Event, newValue: number[]) => {
         setFreqRange({ min: newValue[0], max: newValue[1] })
     }
 
+    const handleDurationChange = (val1: number, val2: number) => {
+        setTimeRange({ resolution: 's', start: val1, end: val2 })
+    }
+
     const [fList, setFList] = useState<number[]>([0, 1]);
 
     useEffect(() => {
+        console.log("GraphContainer: useEffect: getFrequencyAndTime");
         const getFrequencyAndTime = async () => {
             let frequencyListAsync = await getSingletonFreqList();
             let durationAsync = await getSingletonDuration();
@@ -34,9 +39,14 @@ export const GraphContainer = () => {
         setFList(freqList);
     }, [freqList]);
 
+    useEffect(() => {
+        setTimeRange({ resolution: 's', start: 0, end: duration });
+    }, [duration]);
+
     return (
         <>
-            <SlidingBar array={fList} onChange={handleFreqChange} />
+            <SlidingBar range={fList} onChange={handleFreqChange} toSubmit={false} />
+            {<SlidingBar range={duration} onChange={() => { }} toSubmit={true} onSubmit={handleDurationChange}/>}
             <BasicGraphinGraph />
         </>
     );
