@@ -61,7 +61,7 @@ const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
     const { electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IElectrodeFocusContext;
-    const { options, settings, generalOptions, setGeneralOptions } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
     const timeRef = React.useRef<HTMLSelectElement>(null);
@@ -111,7 +111,7 @@ const BasicGraphinGraph = () => {
                 setState(data);
             });
         });
-    }, [freqRange, timeRange, options, settings, generalOptions]);
+    }, [freqRange, timeRange, options, settings]);
 
 
     const freqs: number[] = getFrequenciesFromFile();
@@ -131,27 +131,6 @@ const BasicGraphinGraph = () => {
     );
 
     const times: number[] = getTimeIntervals();
-    const timesDropdown = (
-        <>
-            <label>Time: </label>
-            <select
-                ref={timeRef}
-                onChange={async (e) => {
-                    setGeneralOptions(generalOptions.map(option => {
-                        if (option.label === "time windows") {
-                            // return the option with the new value
-                            return { ...option, checked: true, value: e.target.value };
-                        }
-                        return option;
-                    }));
-                }}>
-                {times.map((time, index) => {
-                    return <option key={index} value={time.toFixed(2)}>{time.toFixed(2)}</option>
-                })}
-            </select>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-        </>
-    );
 
     // two input fields: min and max.
     // the user can enter a min and max value for the frequency range
@@ -210,22 +189,7 @@ const BasicGraphinGraph = () => {
     return (
         <>
             <div id="mountNode">
-                <Checkbox onChange={(e) => {
-                    // set the general options with the label "time windows" to be the opposite of the current value
-                    let isChecked = generalOptions.find((option) => option.label == "time windows")?.checked;
-                    setGeneralOptions(generalOptions.map((option) => {
-                        if (option.label == "time windows") {
-                            return { ...option, checked: !isChecked }
-                        }
-                        return option;
-                    }));
-                }}
-                    checked={generalOptions.find((option) => option.label == "time windows")?.checked}
-                    value={"time windows"}
-                />
 
-                {generalOptions.find((option) => option.label == "time windows")?.checked ? timesDropdown : null}
-                Frequency: {freqDropdown}
                 {minMaxInput}
                 <Graphin data={data} layout={{ type: 'circular', center: [275, 300] }} style={{ width: "75%" }}>
                     <ActivateRelations trigger="click" />

@@ -445,7 +445,7 @@ export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, 
     : Promise<GraphinData> => {
     const url = buildRequest(time);
     let response: CoherenceResponse | undefined = await getCoherenceResponse(time);
-    if(!response) {
+    if (!response) {
         return graph;
     }
     const CM = getAverageCMbyCM(response.CM, response.f, freq);
