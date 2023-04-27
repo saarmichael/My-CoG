@@ -91,7 +91,7 @@ const BasicGraphinGraph = () => {
             return acc;
         }, graph);
 
-        console.log(`graph:`, graph);
+        //console.log(`graph:`, graph);
         return { ...graph };
     }
     const [state, setState] = React.useState<GraphinData>({ nodes: [{ id: "1" }], edges: [] });
@@ -107,7 +107,7 @@ const BasicGraphinGraph = () => {
             setDuration(durationAsync);
         }).then(() => {
             createGraphData().then((data) => {
-                console.log(`data:`, data);
+                //console.log(`data:`, data);
                 setState(data);
             });
         });

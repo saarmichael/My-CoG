@@ -22,7 +22,7 @@ export const getSingletonFreqList = async (): Promise<number[]> => {
     if (!singletonFrequencies) {
         singletonFrequencies = await getFrequencies();
     }
-    return { ...singletonFrequencies };
+    return [ ...singletonFrequencies ];
 }
 
 export const getSingletonDuration = async (): Promise<number> => {
