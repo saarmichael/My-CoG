@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios"
 
 
 
-  
+
 export const simplePostRequest = async () => {
   const data = { message: 'Hello, server!' }
 
@@ -19,47 +19,47 @@ export const simplePostRequest = async () => {
 }
 
 export const loginRequest = async (username: string, onLogin: () => void) => {
-    axios({
-      method: 'GET',
-      url: 'http://localhost:5000/users?username=' + username,
+  axios({
+    method: 'GET',
+    url: 'http://localhost:5000/users?username=' + username,
+  })
+    .then(response => {
+      console.log(response.data);
     })
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    .catch(error => {
+      console.log(error);
+    });
 };
 
 export const logoutRequest = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/logout');
-      if (response.status === 200) {
-        console.log('Logout successful');
-      } else {
-        console.log('Logout failed');
-      }
-    } catch (error) {
-      console.log(error);
+  try {
+    const response = await axios.post('http://localhost:5000/logout');
+    if (response.status === 200) {
+      console.log('Logout successful');
+    } else {
+      console.log('Logout failed');
     }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const registerRequest = async (username: string, data: string, onRegister: () => void) => {
-    try {
-      const response = await axios.post('http://localhost:5000/users', {
-        username,
-        data,
-      });
+  try {
+    const response = await axios.post('http://localhost:5000/users', {
+      username,
+      data,
+    });
 
-      if (response.status === 200) {
-        console.log('Registration successful');
-        loginRequest(username, onRegister);
-      } else {
-        console.log('Registration failed');
-      }
-    } catch (error) {
-        console.log(error);
+    if (response.status === 200) {
+      console.log('Registration successful');
+      loginRequest(username, onRegister);
+    } else {
+      console.log('Registration failed');
     }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getBasicGraphInfo = async () => {

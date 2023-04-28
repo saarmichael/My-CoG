@@ -26,8 +26,8 @@ export const ColorPicker = () => {
             />
             {
                 // if color-coding is enabled, show the second color picker
-                ((options.find((option) => option.label === "Color Coded View")?.checked) 
-                || (options.find((option) => option.label === "Color coded nodes")?.checked))
+                ((options.find((option) => option.label === "Color Coded View")?.checked)
+                    || (options.find((option) => option.label === "Color coded nodes")?.checked))
                 &&
                 <GithubPicker
                     color={settings.edgeColor?.secondColor ? (settings.edgeColor?.secondColor) : "#000000"}

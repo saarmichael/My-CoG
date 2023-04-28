@@ -3,22 +3,31 @@ import React, { useState } from "react";
 import { getSpectrogramDataSync } from "../shared/getters";
 
 interface SlidingBarProps {
-  array: number[];
+  range: number[] | number;
   onChange: (event: Event, newValue: number[]) => void;
+  toSubmit: boolean;
+  onSubmit?: (val1: number, val2: number) => void;
 }
 
-const  SlidingBar = (props: SlidingBarProps) => {
+const SlidingBar = (props: SlidingBarProps) => {
 
   let minDistance = 1;
-  if(Array.isArray(props.array)) {
-    minDistance = props.array[1] - props.array[0];
+  let array: number[] = [];
+  if (Array.isArray(props.range)) {
+    minDistance = props.range[1] - props.range[0];
+    array = props.range;
+  } else {
+    // fill the array with values from 0 to duration with step 1
+    for (let i = 0; i < props.range; i++) {
+      array.push(i);
+    }
   }
   const handleMouseDown = (event: React.MouseEvent<HTMLInputElement>) => {
     event.stopPropagation();
   };
-  const [value, setValue] = React.useState<number[]>([props.array[0], props.array[props.array.length - 1]]);
+  const [value, setValue] = React.useState<number[]>([array[0], array[array.length - 1]]);
 
-  const handleChange = (event: Event, newValue: number | number[], activeThumb:number) => {
+  const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
     newValue = newValue as number[];
     newValue = newValue.map((num: number) => Math.round(num * 1000) / 1000);
     if (activeThumb === 0) {
@@ -30,19 +39,27 @@ const  SlidingBar = (props: SlidingBarProps) => {
   };
 
   return (
-    
-    <Slider
+    <>
+      <Slider
         getAriaLabel={() => 'Timeframe slider'}
         value={value}
-        step={props.array[1] - props.array[0]}
+        step={array[1] - array[0]}
         marks={true}
         onChange={handleChange}
         valueLabelDisplay="auto"
         onMouseDown={handleMouseDown}
-        min={props.array[0]}
-        max={props.array[props.array.length - 1]}
+        min={array[0]}
+        max={array[array.length - 1]}
         disableSwap={true}
       />
+      {props.toSubmit && <button onClick={() => {
+        if (props.onSubmit) {
+          props.onSubmit(value[0], value[1]);
+        }
+      }
+      }
+      >Submit</button>}
+    </>
   );
 };
 

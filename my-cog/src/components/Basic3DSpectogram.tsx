@@ -1,20 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
 import {
-    lightningChart,
-    LUT,
     ColorRGBA,
-    PalettedFill,
-    emptyLine,
     ColorShadingStyles,
+    LUT,
     LegendBoxBuilders,
+    PalettedFill,
+    Themes,
+    UIDraggingModes,
     UIElementBuilders,
     UIOrigins,
-    UIDraggingModes,
-    Themes
+    emptyLine,
+    lightningChart
 } from '@arction/lcjs';
-import { getSpectrogramData, SpectrogramData } from '../shared/getters';
-import * as elec1_spectrogram from '../shared/ecog_data/elec1_spectrogram.json'
+import { useContext, useEffect } from 'react';
 import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
+import * as elec1_spectrogram from '../shared/ecog_data/elec1_spectrogram.json';
+import { SpectrogramData, getSpectrogramData } from '../shared/getters';
 
 interface Basic3DSpectogramProps {
     data: number[][];

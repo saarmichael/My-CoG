@@ -1,14 +1,10 @@
+import React, { useState } from "react";
+import { Rnd } from 'react-rnd';
+import { DataOptions } from "../../components/DataOptions";
+import { GraphVisToggles } from "../../components/GraphVisToggles";
+import "../../components/SideBar.css";
 import { Box, Box1, Box2 } from "./GridComponents";
 import "./Tabs.css";
-import "../../components/SideBar.css"
-import { Rnd } from 'react-rnd';
-import React from "react";
-import { useState } from "react";
-import { DataOptions } from "../../components/DataOptions";
-import { GlobalDataProvider } from "../../contexts/ElectrodeFocusContext";
-import { GraphVisToggles } from "../../components/GraphVisToggles";
-import { VisGraphOptionsProvider } from "../../contexts/VisualGraphOptionsContext";
-import TimeframeSlider from "../../components/SlidingBar";
 
 
 

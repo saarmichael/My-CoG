@@ -22,7 +22,7 @@ export const getSingletonFreqList = async (): Promise<number[]> => {
     if (!singletonFrequencies) {
         singletonFrequencies = await getFrequencies();
     }
-    return { ...singletonFrequencies };
+    return [...singletonFrequencies];
 }
 
 export const getSingletonDuration = async (): Promise<number> => {
@@ -63,7 +63,7 @@ export const getDuration = async (): Promise<number> => {
 export const simpleGetRequest = async () => {
     const url = `${baseAddress}/`;
     apiGET<Response>(url)
-    .then(response => response.text())
-    .then(data => console.log(data))
-    .catch(error => console.error(error))
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error(error))
 }

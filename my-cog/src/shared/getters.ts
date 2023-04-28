@@ -22,7 +22,7 @@ export const getSpectrogramDataSync = (elecNum: number): SpectrogramData => {
     let f = data.f;
     let t = data.t;
     let Sxx = data.spectrograms;
-    return {f:f, t:t, Sxx:Sxx[elecNum]};
+    return { f: f, t: t, Sxx: Sxx[elecNum] };
 }
 
 export const getSpectrogramData = async (elecNum: number): Promise<SpectrogramData> => {
@@ -32,7 +32,7 @@ export const getSpectrogramData = async (elecNum: number): Promise<SpectrogramDa
     let f = json.f;
     let t = json.t;
     let Sxx = json.spectrograms;
-    return {f:f, t:t, Sxx:Sxx[elecNum]};
+    return { f: f, t: t, Sxx: Sxx[elecNum] };
 }
 
 
@@ -43,11 +43,11 @@ export const getCoherenceMatrices = () => {
     return coherence_matrices;
 };
 
-export const getFrequenciesFromFile = () : number[] => {
+export const getFrequenciesFromFile = (): number[] => {
     return coherence_matrices.f;
 };
 
-export const getFrequenciesTime = () : number[] => {
+export const getFrequenciesTime = (): number[] => {
     return coherence_over_time.f;
 };
 
