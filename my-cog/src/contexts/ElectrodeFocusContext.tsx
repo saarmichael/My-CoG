@@ -30,7 +30,7 @@ export const GlobalDataProvider: React.FC<IElectrodeFocusProviderProps> = ({ chi
     const [freqRange, setFreqRange] = useState<FreqRange>({ min: 0, max: 0 });
     const [freqList, setFreqList] = useState<number[]>([0,1]);
     const [timeRange, setTimeRange] = useState<TimeInterval>({ resolution: 's', start: 0, end: 0 });
-    const [duration, setDuration] = useState<number>(1);
+    const [duration, setDuration] = useState<number>(10);
     return (
         <GlobalDataContext.Provider value={{
             electrode, setElectrode,

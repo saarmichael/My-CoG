@@ -21,6 +21,7 @@ export const GraphContainer = () => {
     }
 
     const [fList, setFList] = useState<number[]>([0, 1]);
+    const [timeToSubmit, setTimeToSubmit] = useState<boolean>(false);
 
     useEffect(() => {
         console.log("GraphContainer: useEffect: getFrequencyAndTime");
@@ -32,6 +33,7 @@ export const GraphContainer = () => {
         getFrequencyAndTime().then((data) => {
             setFreqList(data.frequencyListAsync);
             setDuration(data.durationAsync);
+            setTimeToSubmit(true);
         });
     }, []);
 
@@ -46,7 +48,7 @@ export const GraphContainer = () => {
     return (
         <>
             <SlidingBar range={fList} onChange={handleFreqChange} toSubmit={false} />
-            {<SlidingBar range={duration} onChange={() => { }} toSubmit={true} onSubmit={handleDurationChange}/>}
+            {<SlidingBar range={duration} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />}
             <BasicGraphinGraph />
         </>
     );
