@@ -492,7 +492,7 @@ const getAverageCMbyCM = (CM: number[][][], freqs: number[], range: FreqRange): 
     let averageCM = CM[0];
     let numOfMatrices = 0;
     for (let i = 1; i < freqs.length; i++) {
-        if (freqs[i] >= minRange && freqs[i] <= maxRange) {
+        if (freqs[i] >= (minRange - 0.2) && freqs[i] <= (maxRange + 0.2)) {
             numOfMatrices++;
             for (let j = 0; j < averageCM.length; j++) {
                 for (let k = 0; k < averageCM.length; k++) {
