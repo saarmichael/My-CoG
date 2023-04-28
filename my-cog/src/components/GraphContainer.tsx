@@ -48,7 +48,7 @@ export const GraphContainer = () => {
     return (
         <>
             <SlidingBar range={fList} onChange={handleFreqChange} toSubmit={false} />
-            {<SlidingBar range={duration} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />}
+            <SlidingBar range={duration} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
             <BasicGraphinGraph />
         </>
     );
