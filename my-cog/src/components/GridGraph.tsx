@@ -19,7 +19,7 @@ export const GridGraph = () => {
                 return <option key={index} value={index}>{img.title}</option>
             })}
         </select>
-    )
+    );
 
     const createGraphData = () => {
         // create the nodes and edges using GraphService module

@@ -34,7 +34,6 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                 label={props.label}
             />
             {(thisOption?.needValue && thisOption.checked) ? <> {props.label}
-
                 <>
                     <input
                         type='number'

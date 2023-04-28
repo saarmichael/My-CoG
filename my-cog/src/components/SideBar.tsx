@@ -1,9 +1,9 @@
+import { FormGroup } from "@mui/material";
 import { useContext, useState } from "react";
-import { IVisGraphOption, IVisGraphOptionsContext, VisGraphOptionsContext } from "../contexts/VisualGraphOptionsContext";
-import './SideBar.css';
-import { Checkbox, FormGroup } from "@mui/material";
-import { GraphVisCheckbox } from "./GraphVisCheckbox";
+import { IVisGraphOptionsContext, VisGraphOptionsContext } from "../contexts/VisualGraphOptionsContext";
 import { ColorPicker } from "./ColorPicker";
+import { GraphVisCheckbox } from "./GraphVisCheckbox";
+import './SideBar.css';
 
 
 const Sidebar = () => {

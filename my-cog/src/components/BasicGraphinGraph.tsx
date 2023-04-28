@@ -1,16 +1,12 @@
-import React, { useContext, useEffect } from 'react';
-import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
-import { changeEdgeWidthGraphin, colorCodeEdges, getFrequencyList, getGraphBase, getTimeIntervals, thresholdGraph, updateGraphCoherence } from '../shared/GraphService';
-import { FreqRange, TimeInterval } from '../shared/GraphRelated';
-import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { INode, NodeConfig } from '@antv/g6';
+import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
+import React, { useContext, useEffect } from 'react';
+import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
-import { Checkbox } from '@mui/material';
-import { apiGET } from '../shared/ServerRequests';
-import { BasicGraphResponse } from '../shared/Requests';
+import { getGraphBase, getTimeIntervals, updateGraphCoherence } from '../shared/GraphService';
 
 import { getFrequenciesFromFile } from '../shared/getters';
-import { getSingletonFreqList, getSingletonDuration } from '../shared/RequestsService';
+import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
 
 
 

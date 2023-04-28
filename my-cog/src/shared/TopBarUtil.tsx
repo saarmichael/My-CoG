@@ -27,9 +27,9 @@ export function handleRedo() {
 export function handleFullscreen() {
     if (document.fullscreenElement) {
         document.exitFullscreen();
-      } else {
+    } else {
         document.documentElement.requestFullscreen();
-      }
+    }
 }
 
 export function handleOptions() {

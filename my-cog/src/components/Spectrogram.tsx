@@ -1,23 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
 import {
-    lightningChart,
-    LUT,
+    ChartXY,
     ColorRGBA,
-    PalettedFill,
-    emptyLine,
-    ColorShadingStyles,
+    Dashboard,
+    HeatmapGridSeriesIntensityValues,
+    LUT,
     LegendBoxBuilders,
+    PalettedFill,
+    PointMarker,
+    Themes,
+    UIBackground,
+    UIDraggingModes,
     UIElementBuilders,
     UIOrigins,
-    UIDraggingModes,
-    Themes,
-    Dashboard,
-    ChartXY,
-    PointMarker,
-    UIBackground,
-    HeatmapGridSeriesIntensityValues
+    emptyLine,
+    lightningChart
 } from '@arction/lcjs';
-import { getSpectrogramData, SpectrogramData } from '../shared/getters';
+import { useContext, useEffect } from 'react';
 import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { getData, getDataSync } from '../shared/SpectrogramService';
 

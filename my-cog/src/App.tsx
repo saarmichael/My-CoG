@@ -1,13 +1,12 @@
-import './App.css';
-import Tabbing from './scenes/main/Tabs';
-import { GlobalDataProvider } from './contexts/ElectrodeFocusContext';
-import DataContainer from './components/DataContainer';
-import { menuItems, TopBar } from './scenes/main/TopBar';
-import Sidebar from './components/SideBar';
-import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
 import { useState } from 'react';
+import './App.css';
+import Sidebar from './components/SideBar';
+import { GlobalDataProvider } from './contexts/ElectrodeFocusContext';
+import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
 import Login from './scenes/global/Login';
 import Register from './scenes/global/Register';
+import Tabbing from './scenes/main/Tabs';
+import { menuItems, TopBar } from './scenes/main/TopBar';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -15,15 +14,15 @@ function App() {
   return (
     <div>
       <div>
-      {loggedIn ? (
-        <p>You are logged in!</p>
-      ) : (
-        <>
-          <Login onLogin={() => setLoggedIn(true)} />
-          <Register onRegister={() => setLoggedIn(true)} />
-        </>
-      )}
-    </div>
+        {loggedIn ? (
+          <p>You are logged in!</p>
+        ) : (
+          <>
+            <Login onLogin={() => setLoggedIn(true)} />
+            <Register onRegister={() => setLoggedIn(true)} />
+          </>
+        )}
+      </div>
       <TopBar
         menuItems={menuItems}
       />
