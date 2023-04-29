@@ -20,7 +20,7 @@ export const GraphContainer = () => {
         setTimeRange({ resolution: 's', start: val1, end: val2 })
     }
 
-    const [fList, setFList] = useState<number[]>([0, 1]);
+    const [fList, setFList] = useState<number[]>([0, 5]);
     const [timeToSubmit, setTimeToSubmit] = useState<boolean>(false);
 
     useEffect(() => {
@@ -47,8 +47,8 @@ export const GraphContainer = () => {
 
     return (
         <>
-            <SlidingBar range={fList} onChange={handleFreqChange} toSubmit={false} />
-            <SlidingBar range={duration} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
+            <SlidingBar range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
+            <SlidingBar range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
             <BasicGraphinGraph />
         </>
     );

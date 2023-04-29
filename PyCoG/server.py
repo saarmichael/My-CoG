@@ -104,7 +104,14 @@ def get_coherence_matrices():
     data = bp_data
     start = request.args.get("start")
     end = request.args.get("end")
+    print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
+    # error handling
+    if start is None or end is None:
+        start = 0
+        # end will be the last time frame
+        end = get_recording_duration(data, 1000)
     f, CM = coherence_time_frame(data, 1000, start, end)
+    print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
     print(
         f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM)} electrodes {bcolors.ENDC}"
