@@ -36,7 +36,7 @@ export function Box1() {
   return (
     <div id="box1" className="box">
       <Spectrogram />
-      <SlidingBar range={data.t} onChange={handleChange} toSubmit={false}/>
+      <SlidingBar range={data.t} keepDistance={false} onChange={handleChange} toSubmit={false}/>
     </div>
   );
 }
