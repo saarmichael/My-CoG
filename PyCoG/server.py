@@ -14,27 +14,27 @@ app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
 app.secret_key = "mysecretkey"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CogDb.db'
 db = SQLAlchemy(app)
-
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     data_dir = db.Column(db.String(50), nullable=False)
-
+    settings = db.Column(db.JSON, nullable=True)
 
 class Calculation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    data_dir = db.Column(db.String(50), nullable=False)
-    coherence_calculation = db.Column(db.JSON, nullable=False)
+    file_name = db.Column(db.String(50), nullable=False)
+    url = db.Column(db.String(50), nullable=False)
+    data = db.Column(db.JSON, nullable=False)
+    created_by = db.Column(db.String(50), nullable=False)
 
 
 @app.before_first_request
 def create_tables():
     db.create_all()
-
+    
 
 @app.route("/login", methods=["GET"])
 def login():
@@ -55,6 +55,7 @@ def register():
     new_user = User(
         username=data["username"],
         data_dir="users_data/" + data["data"].split("\\")[-1],
+        settings=None
     )
     db.session.add(new_user)
     db.session.commit()
@@ -136,9 +137,9 @@ def get_graph_basic_info():
     if not "user_data_dir" in session:
         session["username"] = "test"
         session["user_data_dir"] = "users_data/bp_fingerflex.mat"
-    user_data_dir = session["user_data_dir"].split("/")[-1]
+    file_name = session["user_data_dir"].split('/')[-1]
     cals = Calculation.query
-    if not cals.filter_by(data_dir=user_data_dir).first():
+    if not cals.filter_by(file_name=file_name).first():
         finger_bp = loadmat(session["user_data_dir"])
         bp_data = finger_bp["data"]
         bp_data = bp_data[:, 0:10]
@@ -150,12 +151,13 @@ def get_graph_basic_info():
             "CM": CM.tolist(),
         }
         db_cal = Calculation(
-            data_dir="bp_fingerflex.mat", coherence_calculation=calculation
+            file_name=file_name, url=request.url, data=calculation, created_by=session["username"]
         )
         db.session.add(db_cal)
         db.session.commit()
-    cals = cals.filter_by(data_dir=user_data_dir)[0]
-    CM = cals.coherence_calculation["CM"]
+    cals = cals.filter_by(file_name=file_name)[0]    
+    CM = cals.data['CM']
+
     num_nodes = len(CM[0][0][0])
     # create the ids and labels.
     nodes = []
