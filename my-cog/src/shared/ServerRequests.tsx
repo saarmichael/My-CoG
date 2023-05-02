@@ -21,7 +21,7 @@ export const simplePostRequest = async () => {
 export const loginRequest = async (username: string, onLogin: () => void) => {
   axios({
     method: 'GET',
-    url: 'http://localhost:5000/users?username=' + username,
+    url: 'http://localhost:5000/login?username=' + username,
   })
     .then(response => {
       console.log(response.data);
@@ -46,7 +46,7 @@ export const logoutRequest = async () => {
 
 export const registerRequest = async (username: string, data: string, onRegister: () => void) => {
   try {
-    const response = await axios.post('http://localhost:5000/users', {
+    const response = await axios.post('http://localhost:5000/register', {
       username,
       data,
     });

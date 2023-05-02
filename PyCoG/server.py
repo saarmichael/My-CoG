@@ -36,33 +36,35 @@ def create_tables():
     db.create_all()
 
 
-@app.route("/users", methods=["GET", "POST"])
-def users():
-    if request.method == "POST":
-        data = request.get_json()
-        new_user = User(
-            username=data["username"],
-            data_dir="users_data/" + data["data"].split("\\")[-1],
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        return jsonify({"message": "User created successfully!"})
-    else:
-        user = request.args.get("username")
-        # get user from db
-        users = User.query.filter_by(username=user).all()
-        if not users:
-            return jsonify({"message": "No user found!"})
-        # return user's data directory
-        session["user_data_dir"] = users[0].data_dir
-        session["username"] = users[0].username
-        return jsonify({"data_dir": users[0].data_dir})
+@app.route("/login", methods=["GET"])
+def login():
+    name = request.args.get("username")
+    # get user from db
+    user = User.query.filter_by(username=name).all()
+    if not user:
+        return jsonify({"message": "No user found!"})
+    # return user's data directory
+    session["user_data_dir"] = user[0].data_dir
+    session["username"] = user[0].username
+    return jsonify({"data_dir": user[0].data_dir})
+
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    new_user = User(
+        username=data["username"],
+        data_dir="users_data/" + data["data"].split("\\")[-1],
+    )
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User created successfully!"})
 
 
 # load the data
 finger_bp = loadmat("users_data/bp_fingerflex.mat")
 bp_data = finger_bp["data"]
-bp_data = bp_data[:, 0:10]
+# bp_data = bp_data[:, 0:10]
 
 
 ###############################################
