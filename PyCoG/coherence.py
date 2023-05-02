@@ -95,8 +95,17 @@ def coherence_time_frame(data, fs, start=None, end=None, time_overlap=0.5):
         start = 0
     if end is None:
         end = data.shape[0] / fs
+    if start == end or start > end:
+        end = data.shape[0] / fs
     start = float(start) * fs
     end = float(end) * fs
-    f, CM = get_coherence_matrices(data[int(start):int(end), :], fs, 'hann', time_overlap)
+    f, CM = get_coherence_matrices(
+        data[int(start) : int(end), :], fs, "hann", time_overlap
+    )
 
     return f, CM
+
+
+def get_recording_duration(data, fs):
+    duration = data.shape[0] / fs
+    return duration

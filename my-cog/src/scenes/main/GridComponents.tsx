@@ -1,17 +1,11 @@
-import { useContext, useState } from "react";
-import Basic3DSpectogram from "../../components/Basic3DSpectogram";
-import BasicGraphinGraph from "../../components/BasicGraphinGraph";
-import DataContainer from "../../components/DataContainer";
-import { BasicHeatMap } from "../../components/BasicHeatMap";
-import Spectrogram from "../../components/Spectrogram";
-import { ElectrodeFocusContext, IElectrodeFocusContext } from "../../contexts/ElectrodeFocusContext";
-import './GridStyle.css';
+import { useContext } from "react";
 import { GraphContainer } from "../../components/GraphContainer";
-import { GraphVisToggles } from "../../components/GraphVisToggles";
-import SlidingBar from "../../components/SlidingBar";
-import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
-import React from "react";
 import { GridGraph } from "../../components/GridGraph";
+import SlidingBar from "../../components/SlidingBar";
+import Spectrogram from "../../components/Spectrogram";
+import { GlobalDataContext, IElectrodeFocusContext } from "../../contexts/ElectrodeFocusContext";
+import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
+import './GridStyle.css';
 
 export function Box() {
   const data = getCoherenceByTime(0);
@@ -31,7 +25,7 @@ export function Box() {
 }
 
 export function Box1() {
-  const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+  const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
 
   const data = getSpectrogramDataSync(0);
 
@@ -42,7 +36,7 @@ export function Box1() {
   return (
     <div id="box1" className="box">
       <Spectrogram />
-      <SlidingBar time={data.t} onChange={handleChange} />
+      <SlidingBar range={data.t} keepDistance={false} onChange={handleChange} toSubmit={false}/>
     </div>
   );
 }

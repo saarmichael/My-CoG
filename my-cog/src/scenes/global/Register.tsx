@@ -12,7 +12,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     registerRequest(username, data, onRegister);
-    
+
   };
 
   return (

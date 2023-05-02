@@ -1,4 +1,4 @@
-import { getCoherenceMatrix, getFrequencies, getSpectrogramData, getSpectrogramDataSync, SpectrogramData } from './getters'
+import { getSpectrogramData, getSpectrogramDataSync, SpectrogramData } from './getters'
 
 
 export const getData = async (electrodeID: string): Promise<SpectrogramData> => {

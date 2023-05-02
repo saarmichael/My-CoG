@@ -6,13 +6,13 @@ type LoginProps = {
 };
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
-    const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('');
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        loginRequest(username, onLogin);
-      
-    };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    loginRequest(username, onLogin);
+
+  };
 
   return (
     <form onSubmit={handleSubmit}>

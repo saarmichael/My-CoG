@@ -4,7 +4,7 @@ from flask_cors import CORS
 from scipy.io import loadmat
 from coherence import coherence_over_time
 from output import write_coherence_over_time
-from coherence import coherence_time_frame
+from coherence import coherence_time_frame, get_recording_duration
 from flask_sqlalchemy import SQLAlchemy
 from consts import bcolors
 import json
@@ -12,10 +12,9 @@ import json
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
-app.secret_key = 'mysecretkey'
+app.secret_key = "mysecretkey"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CogDb.db'
-
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -23,7 +22,7 @@ class User(db.Model):
     username = db.Column(db.String(50), nullable=False)
     data_dir = db.Column(db.String(50), nullable=False)
     settings = db.Column(db.JSON, nullable=True)
-    
+
 class Calculation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     file_name = db.Column(db.String(50), nullable=False)
@@ -31,34 +30,42 @@ class Calculation(db.Model):
     data = db.Column(db.JSON, nullable=False)
     created_by = db.Column(db.String(50), nullable=False)
 
+
 @app.before_first_request
 def create_tables():
     db.create_all()
+    
 
-@app.route('/users', methods=['GET', 'POST'])
-def users():
-    if request.method == 'POST':
-        data = request.get_json()
-        new_user = User(username=data['username'], data_dir='users_data/' + data['data'].split('\\')[-1], settings=None)
-        db.session.add(new_user)
-        db.session.commit()
-        return jsonify({'message': 'User created successfully!'})
-    else:
-        user = request.args.get('username')
-        # get user from db
-        users = User.query.filter_by(username=user).all()
-        if not users:
-            return jsonify({'message': 'No user found!'})
-        # return user's data directory
-        session["user_data_dir"] = users[0].data_dir
-        session["username"] = users[0].username
-        return jsonify({'data_dir': users[0].data_dir})
+@app.route("/login", methods=["GET"])
+def login():
+    name = request.args.get("username")
+    # get user from db
+    user = User.query.filter_by(username=name).all()
+    if not user:
+        return jsonify({"message": "No user found!"})
+    # return user's data directory
+    session["user_data_dir"] = user[0].data_dir
+    session["username"] = user[0].username
+    return jsonify({"data_dir": user[0].data_dir})
+
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    new_user = User(
+        username=data["username"],
+        data_dir="users_data/" + data["data"].split("\\")[-1],
+        settings=None
+    )
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User created successfully!"})
+
 
 # load the data
-finger_bp = loadmat('users_data/bp_fingerflex.mat')
-bp_data = finger_bp['data']
-bp_data = bp_data[:, 0:10]
-
+finger_bp = loadmat("users_data/bp_fingerflex.mat")
+bp_data = finger_bp["data"]
+# bp_data = bp_data[:, 0:10]
 
 
 ###############################################
@@ -71,7 +78,23 @@ def hello():
     return "Hello, World!"
 
 
-# get_time_frame
+@app.route("/frequencies", methods=["GET"])
+def getFrequencies():
+    f, _ = coherence_time_frame(bp_data, 1000, 0, 1)
+    print(
+        f"{bcolors.GETREQUEST}frequencies returned with {len(f)} frequencies{bcolors.ENDC}"
+    )
+    return jsonify(f.tolist())
+
+
+@app.route("/duration", methods=["GET"])
+def get_time_range():
+    result = get_recording_duration(bp_data, 1000)
+    print(f"{bcolors.GETREQUEST}returned duration: {result}{bcolors.ENDC}")
+    return jsonify(result)
+
+
+# get_coherence_matrices
 #   Parameters:
 #       start: start time of the time frame
 #       end: end time of the time frame
@@ -84,10 +107,17 @@ def get_coherence_matrices():
     data = bp_data
     start = request.args.get("start")
     end = request.args.get("end")
+    print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
+    # error handling
+    if start is None or end is None:
+        start = 0
+        # end will be the last time frame
+        end = get_recording_duration(data, 1000)
     f, CM = coherence_time_frame(data, 1000, start, end)
+    print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
     print(
-        f"{bcolors.GETREQUEST} CM returned with {len(f)} frequencies and {len(CM)} electrodes {bcolors.ENDC}"
+        f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM)} electrodes {bcolors.ENDC}"
     )
     return jsonify(result)
 
@@ -103,7 +133,7 @@ def get_coherence_matrices():
 def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
-    
+
     if not "user_data_dir" in session:
         session["username"] = "test"
         session["user_data_dir"] = "users_data/bp_fingerflex.mat"
@@ -111,15 +141,23 @@ def get_graph_basic_info():
     cals = Calculation.query
     if not cals.filter_by(file_name=file_name).first():
         finger_bp = loadmat(session["user_data_dir"])
-        bp_data = finger_bp['data']
+        bp_data = finger_bp["data"]
         bp_data = bp_data[:, 0:10]
         f, window_time, t, CM = coherence_over_time(bp_data, 1000, 10, 0.5)
-        calculation = {'f': f.tolist(), 'window_time': window_time, 't': t.tolist(), 'CM': CM.tolist()}
-        db_cal = Calculation(file_name=file_name, url=request.url, data=calculation, created_by=session["username"])
+        calculation = {
+            "f": f.tolist(),
+            "window_time": window_time,
+            "t": t.tolist(),
+            "CM": CM.tolist(),
+        }
+        db_cal = Calculation(
+            file_name=file_name, url=request.url, data=calculation, created_by=session["username"]
+        )
         db.session.add(db_cal)
         db.session.commit()
     cals = cals.filter_by(file_name=file_name)[0]    
     CM = cals.data['CM']
+
     num_nodes = len(CM[0][0][0])
     # create the ids and labels.
     nodes = []
@@ -143,13 +181,15 @@ def get_graph_basic_info():
     )
     return jsonify({"layout": layout, "nodes": nodes, "edges": edges})
 
+
 @app.route("/logout", methods=["GET"])
 def logout():
     if "user" in session:
         session.pop("username", None)
         session.pop("user_data_dir", None)
-        return jsonify({'message': 'Logged out successfully!'})
-    return jsonify({'message': 'No user logged in!'})
+        return jsonify({"message": "Logged out successfully!"})
+    return jsonify({"message": "No user logged in!"})
+
 
 ###############################################
 ############### POST REQUESTS #################

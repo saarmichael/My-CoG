@@ -1,30 +1,28 @@
-import { useContext, useEffect, useState } from 'react';
 import {
-    lightningChart,
-    LUT,
+    ChartXY,
     ColorRGBA,
-    PalettedFill,
-    emptyLine,
-    ColorShadingStyles,
+    Dashboard,
+    HeatmapGridSeriesIntensityValues,
+    LUT,
     LegendBoxBuilders,
+    PalettedFill,
+    PointMarker,
+    Themes,
+    UIBackground,
+    UIDraggingModes,
     UIElementBuilders,
     UIOrigins,
-    UIDraggingModes,
-    Themes,
-    Dashboard,
-    ChartXY,
-    PointMarker,
-    UIBackground,
-    HeatmapGridSeriesIntensityValues
+    emptyLine,
+    lightningChart
 } from '@arction/lcjs';
-import { getSpectrogramData, SpectrogramData } from '../shared/getters';
-import { ElectrodeFocusContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
+import { useContext, useEffect } from 'react';
+import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
 import { getData, getDataSync } from '../shared/SpectrogramService';
 
 
 
 const Spectrogram = () => {
-    const { electrode } = useContext(ElectrodeFocusContext) as IElectrodeFocusContext;
+    const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
     let dashboard: Dashboard | null = null;
     let chart2D:  ChartXY<PointMarker, UIBackground> | null = null;
     let heatmapSeries2D: HeatmapGridSeriesIntensityValues | null = null;

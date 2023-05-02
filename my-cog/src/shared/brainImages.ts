@@ -7,7 +7,6 @@ export interface BrainImage {
     elevation: number;
 }
 
-
 export const brainImages: BrainImage[] =
     [
         {
