@@ -14,14 +14,16 @@ app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
 app.secret_key = "mysecretkey"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CogDb.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///CogDb.db"
 db = SQLAlchemy(app)
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     data_dir = db.Column(db.String(50), nullable=False)
     settings = db.Column(db.JSON, nullable=True)
+
 
 class Calculation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,7 +36,7 @@ class Calculation(db.Model):
 @app.before_first_request
 def create_tables():
     db.create_all()
-    
+
 
 @app.route("/login", methods=["GET"])
 def login():
@@ -55,7 +57,7 @@ def register():
     new_user = User(
         username=data["username"],
         data_dir="users_data/" + data["data"].split("\\")[-1],
-        settings=None
+        settings=None,
     )
     db.session.add(new_user)
     db.session.commit()
@@ -112,7 +114,7 @@ def get_coherence_matrices():
     if start is None or end is None:
         start = 0
         # end will be the last time frame
-        end = get_recording_duration(data, 1000)
+        end = 1
     f, CM = coherence_time_frame(data, 1000, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
@@ -137,7 +139,7 @@ def get_graph_basic_info():
     if not "user_data_dir" in session:
         session["username"] = "test"
         session["user_data_dir"] = "users_data/bp_fingerflex.mat"
-    file_name = session["user_data_dir"].split('/')[-1]
+    file_name = session["user_data_dir"].split("/")[-1]
     cals = Calculation.query
     if not cals.filter_by(file_name=file_name).first():
         finger_bp = loadmat(session["user_data_dir"])
@@ -151,12 +153,15 @@ def get_graph_basic_info():
             "CM": CM.tolist(),
         }
         db_cal = Calculation(
-            file_name=file_name, url=request.url, data=calculation, created_by=session["username"]
+            file_name=file_name,
+            url=request.url,
+            data=calculation,
+            created_by=session["username"],
         )
         db.session.add(db_cal)
         db.session.commit()
-    cals = cals.filter_by(file_name=file_name)[0]    
-    CM = cals.data['CM']
+    cals = cals.filter_by(file_name=file_name)[0]
+    CM = cals.data["CM"]
 
     num_nodes = len(CM[0][0][0])
     # create the ids and labels.

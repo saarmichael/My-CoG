@@ -67,12 +67,15 @@ const BasicGraphinGraph = () => {
         return { frequencyListAsync, durationAsync };
     }
 
-    const createGraphData = async () => {
-        // create the nodes and edges using GraphService module
+    const createBasicGraph = async () => {
         let graph: GraphinData = { nodes: [{ id: "1" }], edges: [] };
         // call getGraphBase to get the base graph data
         graph = await getGraphBase();
-        graph = await updateGraphCoherence(graph, freqRange, timeRange);
+        return { ...graph };
+    }
+
+    const applyVisualizationOptions = async () => {
+        let graph = { ...state };
         graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, settings);
@@ -83,26 +86,54 @@ const BasicGraphinGraph = () => {
             }
             return acc;
         }, graph);
+        return { ...graph };
+    }
 
+    const createGraphData = async () => {
+        // create the nodes and edges using GraphService module
+        let graph = { ...state };
+        graph = await updateGraphCoherence(graph, freqRange, timeRange);
         //console.log(`graph:`, graph);
         return { ...graph };
     }
+
     const [state, setState] = React.useState<GraphinData>({ nodes: [{ id: "1" }], edges: [] });
+    const [changeVis, setChangeVis] = React.useState<number[]>([1]);
+
+    useEffect(() => {
+        console.log(`useEffect`, `createBasicGraph`)
+        createBasicGraph().then((data) => {
+            setState(data);
+            setChangeVis([...changeVis])
+        });
+    }, []);
 
     // change the graph data according to the user's selections
     useEffect(() => {
+        console.log(`useEffect`, `getFrequencyAndTime`)
         getFrequencyAndTime().then(({ frequencyListAsync, durationAsync }) => {
             setFreqList(frequencyListAsync);
             setDuration(durationAsync);
-        }).then(() => {
-            createGraphData().then((data) => {
-                //console.log(`data:`, data);
-                setState(data);
-            });
         });
-    }, [freqRange, timeRange, options, settings]);
+    }, []);
 
-    createGraphData();
+    useEffect(() => {
+        console.log(`useEffect`, `createGraphData`)
+        createGraphData().then((data) => {
+            //console.log(`data:`, data);
+            setState(data);
+            setChangeVis([...changeVis])
+        });
+    }, [freqRange, timeRange]);
+
+    useEffect(() => {
+        console.log(`useEffect`, `applyVisualizationOptions`)
+        applyVisualizationOptions().then((data) => {
+            setState(data);
+        });
+    }, [options, settings, changeVis]);
+
+    // createGraphData();
     // set the electrode list according to the current graph
     useEffect(() => {
         setElectrodeList(state.nodes.map((node) => node.id));

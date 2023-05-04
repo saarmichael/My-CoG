@@ -221,7 +221,7 @@ export const showEdgeWeight = (graph: GraphinData, settings?: IVisSettings) => {
             style: {
                 ...edges[i].style,
                 label: {
-                    value: edges[i].value.toFixed(2),
+                    value: edges[i].value?.toFixed(2),
                     fontSize: 10,
                     fill: '#000000',
                 }
