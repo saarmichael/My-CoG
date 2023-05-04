@@ -490,7 +490,7 @@ const getAverageCMbyCM = (CM: number[][][], freqs: number[], range: FreqRange): 
     }
     // get the average coherence matrix over the range [minRange, maxRange]
     let averageCM = CM[0];
-    let numOfMatrices = 0;
+    let numOfMatrices = 1;
     for (let i = 1; i < freqs.length; i++) {
         if (freqs[i] >= (minRange - 0.2) && freqs[i] <= (maxRange + 0.2)) {
             numOfMatrices++;
