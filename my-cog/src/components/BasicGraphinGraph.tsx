@@ -90,23 +90,14 @@ const BasicGraphinGraph = () => {
     }
 
     const createGraphData = async () => {
-        // create the nodes and edges using GraphService module
+        // get the coherence values for the selected frequency and time ranges
         let graph = { ...state };
         graph = await updateGraphCoherence(graph, freqRange, timeRange);
-        //console.log(`graph:`, graph);
         return { ...graph };
     }
 
-    const [state, setState] = React.useState<GraphinData>({ nodes: [{ id: "1" }], edges: [] });
+    const [state, setState] = React.useState<GraphinData>({ nodes: [], edges: [] });
     const [changeVis, setChangeVis] = React.useState<number[]>([1]);
-
-    useEffect(() => {
-        console.log(`useEffect`, `createBasicGraph`)
-        createBasicGraph().then((data) => {
-            setState(data);
-            setChangeVis([...changeVis])
-        });
-    }, []);
 
     // change the graph data according to the user's selections
     useEffect(() => {
@@ -115,16 +106,22 @@ const BasicGraphinGraph = () => {
             setFreqList(frequencyListAsync);
             setDuration(durationAsync);
         });
+        console.log(`useEffect`, `createBasicGraph`)
+        createBasicGraph().then((data) => {
+            setState(data);
+            setChangeVis([...changeVis])
+        });
     }, []);
 
     useEffect(() => {
+        if(!state.nodes.length || !state.edges.length) return;
         console.log(`useEffect`, `createGraphData`)
         createGraphData().then((data) => {
             //console.log(`data:`, data);
             setState(data);
             setChangeVis([...changeVis])
         });
-    }, [freqRange, timeRange]);
+    }, [freqRange, timeRange]); // TODO: make this more generic
 
     useEffect(() => {
         console.log(`useEffect`, `applyVisualizationOptions`)

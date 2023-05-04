@@ -111,10 +111,10 @@ def get_coherence_matrices():
     end = request.args.get("end")
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
     # error handling
-    if start is None or end is None:
-        start = 0
+    if ((start is None) or (start == "0")) or ((end is None) or (end == "0")):
+        start = "0"
         # end will be the last time frame
-        end = 1
+        end = "1"
     f, CM = coherence_time_frame(data, 1000, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}

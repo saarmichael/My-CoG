@@ -120,7 +120,7 @@ const Tabbing = () => {
         </Rnd>
 
         <Rnd default={{
-          x: 615,
+          x: 10,
           y: 100,
           width: 320,
           height: 200,
