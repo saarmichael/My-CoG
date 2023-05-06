@@ -86,7 +86,7 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
         },
         {
             label: "Show weights",
-            checked: false,
+            checked: true,
             onChange: showEdgeWeight,
             needValue: false
         },

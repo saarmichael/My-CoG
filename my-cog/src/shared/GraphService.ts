@@ -454,7 +454,21 @@ export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, 
 }
 
 export const getGraphBase = async (): Promise<GraphinData> => {
-    return getSingletonGraph();
+    let graph = await getSingletonGraph();
+    graph.edges.forEach((edge, index) => {
+        // set arrow path to 0
+        graph.edges[index].style = {
+            ...graph.edges[index].style,
+            keyshape: {
+                ...graph.edges[index].style?.keyshape,
+                endArrow: {
+                    ...graph.edges[index].style?.keyshape?.endArrow,
+                    path: '0',
+                }
+            }
+        }
+    });
+    return graph;
 }
 
 export const getSimpleGraphinData = (): GraphinData => {
