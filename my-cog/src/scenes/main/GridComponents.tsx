@@ -6,6 +6,7 @@ import Spectrogram from "../../components/Spectrogram";
 import { GlobalDataContext, IElectrodeFocusContext } from "../../contexts/ElectrodeFocusContext";
 import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
 import './GridStyle.css';
+import { EditablesContainer } from "../../components/EditablesContainer";
 
 export function Box() {
   const data = getCoherenceByTime(0);
@@ -27,18 +28,11 @@ export function Box() {
 export function Box1() {
   const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
 
-  const data = getSpectrogramDataSync(0);
-
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    console.log(newValue);
-  };
-
-  return (
-    <div id="box1" className="box">
-      <Spectrogram />
-      <SlidingBar range={data.t} keepDistance={false} onChange={handleChange} toSubmit={false}/>
-    </div>
-  );
+  return(
+    <>
+      <EditablesContainer />
+    </>
+  )
 }
 
 export function Box2() {

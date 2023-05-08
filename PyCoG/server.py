@@ -119,7 +119,7 @@ def get_coherence_matrices():
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
     print(
-        f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM)} electrodes {bcolors.ENDC}"
+        f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
     )
     return jsonify(result)
 
