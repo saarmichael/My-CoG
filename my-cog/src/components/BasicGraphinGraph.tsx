@@ -67,12 +67,15 @@ const BasicGraphinGraph = () => {
         return { frequencyListAsync, durationAsync };
     }
 
-    const createGraphData = async () => {
-        // create the nodes and edges using GraphService module
+    const createBasicGraph = async () => {
         let graph: GraphinData = { nodes: [{ id: "1" }], edges: [] };
         // call getGraphBase to get the base graph data
         graph = await getGraphBase();
-        graph = await updateGraphCoherence(graph, freqRange, timeRange);
+        return { ...graph };
+    }
+
+    const applyVisualizationOptions = async () => {
+        let graph = { ...state };
         graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, settings);
@@ -83,26 +86,51 @@ const BasicGraphinGraph = () => {
             }
             return acc;
         }, graph);
-
-        //console.log(`graph:`, graph);
         return { ...graph };
     }
-    const [state, setState] = React.useState<GraphinData>({ nodes: [{ id: "1" }], edges: [] });
+
+    const createGraphData = async () => {
+        // get the coherence values for the selected frequency and time ranges
+        let graph = { ...state };
+        graph = await updateGraphCoherence(graph, freqRange, timeRange);
+        return { ...graph };
+    }
+
+    const [state, setState] = React.useState<GraphinData>({ nodes: [], edges: [] });
+    const [changeVis, setChangeVis] = React.useState<number[]>([1]);
 
     // change the graph data according to the user's selections
     useEffect(() => {
+        console.log(`useEffect`, `getFrequencyAndTime`)
         getFrequencyAndTime().then(({ frequencyListAsync, durationAsync }) => {
             setFreqList(frequencyListAsync);
             setDuration(durationAsync);
-        }).then(() => {
-            createGraphData().then((data) => {
-                //console.log(`data:`, data);
-                setState(data);
-            });
         });
-    }, [freqRange, timeRange, options, settings]);
+        console.log(`useEffect`, `createBasicGraph`)
+        createBasicGraph().then((data) => {
+            setState(data);
+            setChangeVis([...changeVis])
+        });
+    }, []);
 
-    createGraphData();
+    useEffect(() => {
+        if(!state.nodes.length || !state.edges.length) return;
+        console.log(`useEffect`, `createGraphData`)
+        createGraphData().then((data) => {
+            //console.log(`data:`, data);
+            setState(data);
+            setChangeVis([...changeVis])
+        });
+    }, [freqRange, timeRange]); // TODO: make this more generic
+
+    useEffect(() => {
+        console.log(`useEffect`, `applyVisualizationOptions`)
+        applyVisualizationOptions().then((data) => {
+            setState(data);
+        });
+    }, [options, settings, changeVis]);
+
+    // createGraphData();
     // set the electrode list according to the current graph
     useEffect(() => {
         setElectrodeList(state.nodes.map((node) => node.id));

@@ -75,12 +75,12 @@ const SlidingBar = (props: SlidingBarProps) => {
       <TextField inputRef={lowerThumbRef} defaultValue={value[0]} type="number" size="small" label={"lowerThumb"}
         onChange={(event) => {
           // set the value of the slider to the value of the input field
-          setValue([Number(event.target.value), value[1]]);
+          setValue([Math.max(Number(event.target.value), 0), value[1]]);
         }} />
       <TextField inputRef={upperThumbRef} defaultValue={value[1]} type="number" size="small" label={"upperThumb"}
         onChange={(event) => {
           // set the value of the slider to the value of the input field  
-          setValue([value[0], Number(event.target.value)]);
+          setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
         }} />
 
 

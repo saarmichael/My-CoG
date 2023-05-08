@@ -10,7 +10,7 @@ import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsSe
 
 export const GraphContainer = () => {
 
-    const { freqList, setFreqList, setFreqRange, duration, setDuration, setTimeRange } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { freqList, setFreqList, setFreqRange, duration, setDuration,timeRange ,setTimeRange } = useContext(GlobalDataContext) as IElectrodeFocusContext;
 
     const handleFreqChange = (event: Event, newValue: number[]) => {
         setFreqRange({ min: newValue[0], max: newValue[1] })
@@ -41,9 +41,6 @@ export const GraphContainer = () => {
         setFList(freqList);
     }, [freqList]);
 
-    useEffect(() => {
-        setTimeRange({ resolution: 's', start: 0, end: duration });
-    }, [duration]);
 
     return (
         <>

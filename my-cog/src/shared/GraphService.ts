@@ -221,7 +221,7 @@ export const showEdgeWeight = (graph: GraphinData, settings?: IVisSettings) => {
             style: {
                 ...edges[i].style,
                 label: {
-                    value: edges[i].value.toFixed(2),
+                    value: edges[i].value?.toFixed(2),
                     fontSize: 10,
                     fill: '#000000',
                 }
@@ -454,7 +454,21 @@ export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, 
 }
 
 export const getGraphBase = async (): Promise<GraphinData> => {
-    return getSingletonGraph();
+    let graph = await getSingletonGraph();
+    graph.edges.forEach((edge, index) => {
+        // set arrow path to 0
+        graph.edges[index].style = {
+            ...graph.edges[index].style,
+            keyshape: {
+                ...graph.edges[index].style?.keyshape,
+                endArrow: {
+                    ...graph.edges[index].style?.keyshape?.endArrow,
+                    path: '0',
+                }
+            }
+        }
+    });
+    return graph;
 }
 
 export const getSimpleGraphinData = (): GraphinData => {
@@ -490,7 +504,7 @@ const getAverageCMbyCM = (CM: number[][][], freqs: number[], range: FreqRange): 
     }
     // get the average coherence matrix over the range [minRange, maxRange]
     let averageCM = CM[0];
-    let numOfMatrices = 0;
+    let numOfMatrices = 1;
     for (let i = 1; i < freqs.length; i++) {
         if (freqs[i] >= (minRange - 0.2) && freqs[i] <= (maxRange + 0.2)) {
             numOfMatrices++;
