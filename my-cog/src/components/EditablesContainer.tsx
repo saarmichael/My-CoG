@@ -2,11 +2,12 @@ import { useContext, useState } from "react";
 
 import { GridProvider, GridContext, IGridFocusContext } from "../contexts/GridContext";
 import { EditableGrid } from "./EditableGrid";
+import { TextField } from "@mui/material";
 
 const Container = () => {
 
     const [applyMove, setApplyMove] = useState<any>([]);
-    const { anchorNode, setAnchorNode, selectedNode, setSelectedNode } = useContext(GridContext) as IGridFocusContext;
+    const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, setAngle } = useContext(GridContext) as IGridFocusContext;
 
     return (
         <>
@@ -28,9 +29,15 @@ const Container = () => {
             <span>Selected Node: {selectedNode}</span>
             &nbsp;&nbsp;&nbsp;&nbsp;
 
+            <TextField type="number" size="small" label={"angle"}
+                onChange={(event) => {
+                    const inputAngle = Number(event.target.value) % 360;
+                    setAngle(inputAngle);
+                }} />
 
+            &nbsp;&nbsp;&nbsp;&nbsp;
 
-            <EditableGrid N={5} M={5} anchorTrigger={anchorNode} applyMove={applyMove}/>
+            <EditableGrid N={5} M={5} anchorTrigger={anchorNode} applyMove={applyMove} />
         </>
     )
 }

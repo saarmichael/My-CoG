@@ -26,7 +26,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
 
     // consume the Graphin instance via GraphinContext
     const { graph } = useContext(GraphinContext);
-    const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, anchorsLastPosition, setAnchorsLastPosition } = useContext(GridContext) as IGridFocusContext;
+    const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, anchorsLastPosition, setAnchorsLastPosition, angle } = useContext(GridContext) as IGridFocusContext;
 
 
     useEffect(() => {
@@ -41,11 +41,11 @@ const GridBehavior = (props: GridBehaviorProps) => {
             // if the dragged node is the anchor node, update the anchor node position
             const node = e.item as INode;
             const model = node.getModel() as NodeConfig;
-            if(!model){ 
+            if (!model) {
                 return;
             }
             if (model.id === anchorNode) {
-                if(!model.x || !model.y){
+                if (!model.x || !model.y) {
                     return;
                 }
                 const anchorNodePosition = { x: model.x, y: model.y };
@@ -92,6 +92,24 @@ const GridBehavior = (props: GridBehaviorProps) => {
         );
         setAnchorNode('');
     }, [props.applyMove]);
+
+    useEffect(() => {
+        // rotate the grid by `angle` degrees`
+        const nodes = graph.getNodes();
+        nodes.forEach(node => {
+            const model = node.getModel();
+            if (!model) {
+                return;
+            }
+            if (model.x && model.y) {
+                const x = model.x;
+                const y = model.y;
+                const newX = x * Math.cos(angle) - y * Math.sin(angle);
+                const newY = x * Math.sin(angle) + y * Math.cos(angle);
+                node.updatePosition({ x: newX, y: newY });
+            }
+        });
+    }, [angle]);
 
     return null;
 }
