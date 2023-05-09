@@ -90,6 +90,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
             }
         }
         );
+        setAnchorNode('');
     }, [props.applyMove]);
 
     return null;

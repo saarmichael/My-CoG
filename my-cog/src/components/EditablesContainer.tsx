@@ -15,12 +15,19 @@ const Container = () => {
                 setAnchorNode(selectedNode);
             }}>Select Node</button>
 
-
+            &nbsp;&nbsp;&nbsp;&nbsp;
 
 
             <button title="apply move" onClick={() => {
                 setApplyMove([...applyMove]);
             }}>Move</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+
+            <span>Anchor Node: {anchorNode}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span>Selected Node: {selectedNode}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+
 
 
             <EditableGrid N={5} M={5} anchorTrigger={anchorNode} applyMove={applyMove}/>
