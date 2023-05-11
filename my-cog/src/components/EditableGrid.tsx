@@ -96,18 +96,20 @@ const GridBehavior = (props: GridBehaviorProps) => {
     useEffect(() => {
         // rotate the grid by `angle` degrees`
         const nodes = graph.getNodes();
+        // get the center coordinates of the graph
+        const center = graph.getGraphCenterPoint();
         nodes.forEach(node => {
             const model = node.getModel();
-            if (!model) {
+            if (!model.x || !model.y) {
                 return;
             }
-            if (model.x && model.y) {
-                const x = model.x;
-                const y = model.y;
-                const newX = x * Math.cos(angle) - y * Math.sin(angle);
-                const newY = x * Math.sin(angle) + y * Math.cos(angle);
-                node.updatePosition({ x: newX, y: newY });
-            }
+            const distance = Math.sqrt(Math.pow(model.x - center.x, 2) + Math.pow(model.y - center.y, 2));
+            const angleRad = Math.atan2(model.y - center.y, model.x - center.x);
+            const appliedAngleRad = angle * Math.PI / 180;
+            const newAngleRad = angleRad + appliedAngleRad;
+            const newX = center.x + (distance * Math.cos(newAngleRad));
+            const newY = center.y + (distance * Math.sin(newAngleRad));
+            node.updatePosition({ x: newX, y: newY });
         });
     }, [angle]);
 
@@ -129,9 +131,19 @@ export const EditableGrid = (props: EditableGridProps) => {
         graph = { nodes: [], edges: [] };
         for (let i = 0; i < props.N; i++) {
             for (let j = 0; j < props.M; j++) {
-                graph.nodes.push({ id: i + "," + j, label: i + "," + j });
+                graph.nodes.push({
+                    id: i + "," + j, label: i + "," + j,
+                    style: {
+                        keyshape: {
+                            fill: '#fff',
+                            stroke: '#000',
+                            lineWidth: 1,
+                        },
+                    },
+                });
             }
         }
+        // update nodes color 
         return { ...graph };
     }
     const [state, setState] = useState<GraphinData>(createGrid());
@@ -145,7 +157,7 @@ export const EditableGrid = (props: EditableGridProps) => {
 
     return (
         <>
-            <Graphin data={data} layout={{ type: 'grid', center: [275, 300] }} style={{ width: "100%" }}>
+            <Graphin data={data} layout={{ type: 'grid', center: [275, 300], 'rows':props.N, 'cols':props.M }} style={{ width: "100%" }}>
                 <GridBehavior applyMove={props.applyMove} trigger={props.anchorTrigger} />
                 <ZoomCanvas disabled={true} />
                 <DragCanvas disabled={true} />

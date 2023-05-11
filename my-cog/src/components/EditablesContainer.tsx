@@ -37,7 +37,7 @@ const Container = () => {
 
             &nbsp;&nbsp;&nbsp;&nbsp;
 
-            <EditableGrid N={5} M={5} anchorTrigger={anchorNode} applyMove={applyMove} />
+            <EditableGrid N={4} M={1} anchorTrigger={anchorNode} applyMove={applyMove} />
         </>
     )
 }
