@@ -31,7 +31,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
     const { graph } = useContext(GraphinContext);
     const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, anchorsLastPosition, setAnchorsLastPosition, angle } = useContext(GridContext) as IGridFocusContext;
     const [originalNodes, setOriginalNodes] = useState<IUserNode[]>([]);
-    const graphCenter = graph.getGraphCenterPoint();
+    const [graphCenter, setGraphCenter] = useState<{ x: number, y: number }>(graph.getGraphCenterPoint());
 
 
     useEffect(() => {
@@ -43,6 +43,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
             }
             )
         );
+        setGraphCenter(graph.getGraphCenterPoint());
     }, [props.rotationReady]);
 
     useEffect(() => {
@@ -110,11 +111,14 @@ const GridBehavior = (props: GridBehaviorProps) => {
     }, [props.applyMove]);
 
     useEffect(() => {
+        if(!props.rotationReady){
+            return;
+        }
         // rotate the grid by `angle` degrees`
         const angleRad = angle * Math.PI / 180;
         const nodes = graph.getNodes();
         // get the center coordinates of the graph
-        const center = graph.getGraphCenterPoint();
+        const center = graphCenter;
         nodes.forEach(node => {
             const model = node.getModel();
             if (!model.x || !model.y) {
