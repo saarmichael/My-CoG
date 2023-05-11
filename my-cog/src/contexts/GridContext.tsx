@@ -12,6 +12,8 @@ export interface IGridFocusContext {
     setAnchorsLastPosition: (position: {x: number, y:number}) => void;
     angle: number;
     setAngle: (angle: number) => void;
+    rotationReady: any;
+    setRotationReady: (rotationReady: any) => void;
 }
 
 interface IGridProviderProps {
@@ -25,12 +27,14 @@ export const GridProvider: React.FC<IGridProviderProps> = ({ children }) => {
     const [selectedNode, setSelectedNode] = useState<string>("1");
     const [anchorsLastPosition, setAnchorsLastPosition] = useState<{x: number, y:number}>({ x: 0, y: 0});
     const [angle, setAngle] = useState<number>(0);
+    const [rotationReady, setRotationReady] = useState<any>([]);
     return (
         <GridContext.Provider value={{
             anchorNode, setAnchorNode,
             selectedNode, setSelectedNode,
             anchorsLastPosition, setAnchorsLastPosition,
-            angle, setAngle
+            angle, setAngle,
+            rotationReady, setRotationReady,
         }}>
             {children}
         </GridContext.Provider>

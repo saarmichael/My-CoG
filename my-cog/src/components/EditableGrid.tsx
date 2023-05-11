@@ -1,11 +1,11 @@
-import Graphin, { Behaviors, GraphinContext, GraphinData } from "@antv/graphin"
+import Graphin, { Behaviors, GraphinContext, GraphinData, IUserNode } from "@antv/graphin"
 import { getSimpleGraphinData } from "../shared/GraphService";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { type } from "os";
 import { brainImages } from "../shared/brainImages";
 import { GridContext, IGridFocusContext } from "../contexts/GridContext";
-import { INode, NodeConfig } from "@antv/g6";
+import { IGraph, INode, NodeConfig } from "@antv/g6";
 
 
 export interface EditableGridProps {
@@ -13,11 +13,14 @@ export interface EditableGridProps {
     M: number; // N x M grid
     applyMove: any;
     anchorTrigger: any;
+    rotationReady: any;
 }
 
 export interface GridBehaviorProps {
     applyMove: any;
     trigger: any;
+    rotationReady: any;
+    originalGraph: GraphinData;
 }
 
 // ------------------ GridBehavior ------------------
@@ -27,7 +30,20 @@ const GridBehavior = (props: GridBehaviorProps) => {
     // consume the Graphin instance via GraphinContext
     const { graph } = useContext(GraphinContext);
     const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, anchorsLastPosition, setAnchorsLastPosition, angle } = useContext(GridContext) as IGridFocusContext;
+    const [originalNodes, setOriginalNodes] = useState<IUserNode[]>([]);
+    const graphCenter = graph.getGraphCenterPoint();
 
+
+    useEffect(() => {
+        // update original nodes positions
+        setOriginalNodes(
+            graph.getNodes().map(node => {
+                const model = node.getModel() as IUserNode;
+                return { ...model };
+            }
+            )
+        );
+    }, [props.rotationReady]);
 
     useEffect(() => {
         // when triggered, sets the first clicked node as the anchor node
@@ -95,6 +111,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
 
     useEffect(() => {
         // rotate the grid by `angle` degrees`
+        const angleRad = angle * Math.PI / 180;
         const nodes = graph.getNodes();
         // get the center coordinates of the graph
         const center = graph.getGraphCenterPoint();
@@ -103,12 +120,20 @@ const GridBehavior = (props: GridBehaviorProps) => {
             if (!model.x || !model.y) {
                 return;
             }
-            const distance = Math.sqrt(Math.pow(model.x - center.x, 2) + Math.pow(model.y - center.y, 2));
-            const angleRad = Math.atan2(model.y - center.y, model.x - center.x);
-            const appliedAngleRad = angle * Math.PI / 180;
-            const newAngleRad = angleRad + appliedAngleRad;
-            const newX = center.x + (distance * Math.cos(newAngleRad));
-            const newY = center.y + (distance * Math.sin(newAngleRad));
+            // find in original nodes the node with the same id
+            const originalNode = originalNodes.find(n => n.id === model.id);
+            // find the node radius and angle
+            if (!originalNode) {
+                return;
+            }
+            if (!originalNode.x || !originalNode.y) {
+                return;
+            }
+            const originalRadius = Math.sqrt(Math.pow(originalNode.x - graphCenter.x, 2) + Math.pow(originalNode.y - graphCenter.y, 2));
+            const originalAngle = Math.atan2(originalNode.y - graphCenter.y, originalNode.x - graphCenter.x);
+            const newAngleRad = angleRad + originalAngle;
+            const newX = center.x + (originalRadius * Math.cos(newAngleRad));
+            const newY = center.y + (originalRadius * Math.sin(newAngleRad));
             node.updatePosition({ x: newX, y: newY });
         });
     }, [angle]);
@@ -157,10 +182,10 @@ export const EditableGrid = (props: EditableGridProps) => {
 
     return (
         <>
-            <Graphin data={data} layout={{ type: 'grid', center: [275, 300], 'rows':props.N, 'cols':props.M }} style={{ width: "100%" }}>
-                <GridBehavior applyMove={props.applyMove} trigger={props.anchorTrigger} />
+            <Graphin data={data} layout={{ type: 'grid', center: [275, 300], 'rows': props.N, 'cols': props.M }} style={{ width: "100%" }}>
                 <ZoomCanvas disabled={true} />
                 <DragCanvas disabled={true} />
+                <GridBehavior applyMove={props.applyMove} trigger={props.anchorTrigger} originalGraph={createGrid()} rotationReady={props.rotationReady} />
             </Graphin>
         </>
     )

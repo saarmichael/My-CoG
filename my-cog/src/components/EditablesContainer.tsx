@@ -7,7 +7,7 @@ import { TextField } from "@mui/material";
 const Container = () => {
 
     const [applyMove, setApplyMove] = useState<any>([]);
-    const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, setAngle } = useContext(GridContext) as IGridFocusContext;
+    const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, setAngle, setRotationReady, rotationReady } = useContext(GridContext) as IGridFocusContext;
 
     return (
         <>
@@ -24,11 +24,16 @@ const Container = () => {
             }}>Move</button>
             &nbsp;&nbsp;&nbsp;&nbsp;
 
+            <button title="set for rotation" onClick={() => {
+                setRotationReady([...[]]);
+            }}>Ready to rotate</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            
             <span>Anchor Node: {anchorNode}</span>
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span>Selected Node: {selectedNode}</span>
             &nbsp;&nbsp;&nbsp;&nbsp;
-
+            
             <TextField type="number" size="small" label={"angle"}
                 onChange={(event) => {
                     const inputAngle = Number(event.target.value) % 360;
@@ -37,7 +42,7 @@ const Container = () => {
 
             &nbsp;&nbsp;&nbsp;&nbsp;
 
-            <EditableGrid N={4} M={1} anchorTrigger={anchorNode} applyMove={applyMove} />
+            <EditableGrid N={4} M={1} anchorTrigger={anchorNode} applyMove={applyMove} rotationReady={rotationReady} />
         </>
     )
 }
