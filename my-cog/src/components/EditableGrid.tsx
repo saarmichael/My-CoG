@@ -173,7 +173,7 @@ export const EditableGrid = (props: EditableGridProps) => {
 
     useEffect(() => {
         setGridState(createGrid());
-    }, []);
+    }, [state]);
 
     createGrid();
     const data = gridState;
