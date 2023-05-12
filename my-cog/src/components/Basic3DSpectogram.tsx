@@ -12,7 +12,7 @@ import {
     lightningChart
 } from '@arction/lcjs';
 import { useContext, useEffect } from 'react';
-import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
+import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import * as elec1_spectrogram from '../shared/ecog_data/elec1_spectrogram.json';
 import { SpectrogramData, getSpectrogramData } from '../shared/getters';
 
@@ -22,7 +22,7 @@ interface Basic3DSpectogramProps {
 
 
 const Basic3DSpectogram = () => {
-    const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { electrode } = useContext(GlobalDataContext) as IGlobalDataContext;
     const elec1SpecData = elec1_spectrogram as SpectrogramData
     /* asynchronous function that generate resolutionX over resolutionY matrix of random numbers */
     const getData = async (electrodeID: string): Promise<SpectrogramData> => {

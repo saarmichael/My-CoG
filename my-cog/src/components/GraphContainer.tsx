@@ -3,14 +3,14 @@ import { VisGraphOptionsProvider } from "../contexts/VisualGraphOptionsContext";
 import BasicGraphinGraph from "./BasicGraphinGraph";
 import { DataOptions } from "./DataOptions";
 import { GraphVisToggles } from "./GraphVisToggles";
-import { GlobalDataContext, IElectrodeFocusContext } from "../contexts/ElectrodeFocusContext";
+import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
 import SlidingBar from "./SlidingBar";
 import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsService";
 
 
 export const GraphContainer = () => {
 
-    const { freqList, setFreqList, setFreqRange, duration, setDuration,timeRange ,setTimeRange } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { freqList, setFreqList, setFreqRange, duration, setDuration,timeRange ,setTimeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const handleFreqChange = (event: Event, newValue: number[]) => {
         setFreqRange({ min: newValue[0], max: newValue[1] })

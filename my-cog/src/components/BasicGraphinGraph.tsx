@@ -1,7 +1,7 @@
 import { INode, NodeConfig } from '@antv/g6';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
 import React, { useContext, useEffect } from 'react';
-import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
+import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { getGraphBase, updateGraphCoherence } from '../shared/GraphService';
 import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
@@ -11,7 +11,7 @@ import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsSe
 
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
-    const { electrode, setElectrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { electrode, setElectrode } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     useEffect(() => {
 
@@ -54,7 +54,7 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { state, setState, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
@@ -96,7 +96,6 @@ const BasicGraphinGraph = () => {
         return { ...graph };
     }
 
-    const [state, setState] = React.useState<GraphinData>({ nodes: [], edges: [] });
     const [changeVis, setChangeVis] = React.useState<number[]>([1]);
 
     // change the graph data according to the user's selections

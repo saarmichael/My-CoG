@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { GlobalDataContext, IElectrodeFocusContext } from "../contexts/ElectrodeFocusContext";
+import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
 
 
 export const DataOptions = () => {
     // return a selection of electrodes from the electrode list context
-    const { electrode, setElectrode, electrodeList } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { electrode, setElectrode, electrodeList } = useContext(GlobalDataContext) as IGlobalDataContext;
     // make sure all the electrodes appear in the selection
 
     const selection = (
