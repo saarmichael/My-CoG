@@ -1,0 +1,100 @@
+.full-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    background-color: #f8f8f8;
+  }
+  
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+  
+  .input-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-bottom: 5px;
+    font-family: Arial, sans-serif;
+    align-items: center;
+  }
+  
+  .input-field label {
+    margin-bottom: 5px;
+  }
+  
+  .input-field input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .submit-button {
+  padding: 10px 20px;
+  width: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  border-radius: 25px;
+  background-color: #321248;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover,
+.file-upload-button:hover {
+  background-color: #561f7b;
+}
+
+.submit-button:active,
+.file-upload-button:active {
+  background-color: #180922;
+}
+
+.file-upload-button {
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    border-radius: 50%; /* This makes the button a circle */
+    background-color: #321248;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 30px; /* Vertically centers the text */
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    overflow: hidden; /* To ensure nothing spills out of the circular button */
+  }
+  
+  .file-upload-label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.error-message {
+    color: #ff0000; /* red color for the error message */
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    text-align: center; /* center the text horizontally */
+    margin-top: 20px; /* add some space above the error message */
+    padding: 10px;
+    border: 1px solid #ff0000; /* red border */
+    border-radius: 5px; /* round the corners of the border */
+  }

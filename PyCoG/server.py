@@ -42,10 +42,11 @@ def login():
     # get user from db
     user = User.query.filter_by(username=name).all()
     if not user:
-        return jsonify({"message": "No user found!"})
+        return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session["user_data_dir"] = user[0].data_dir
     session["username"] = user[0].username
+    print(f"{bcolors.GETREQUEST}user logged in: {user[0].username}{bcolors.ENDC}")
     return jsonify({"data_dir": user[0].data_dir})
 
 
@@ -185,6 +186,7 @@ def get_graph_basic_info():
 @app.route("/logout", methods=["GET"])
 def logout():
     if "user" in session:
+        print('d')
         session.pop("username", None)
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})
