@@ -18,24 +18,27 @@ export const simplePostRequest = async () => {
     .catch(error => console.error(error))
 }
 
-export const loginRequest = async (username: string, onLogin: () => void) => {
+export const loginRequest = async (username: string, onLogin: () => void): Promise<string> => {
   axios({
     method: 'GET',
     url: 'http://localhost:5000/login?username=' + username,
   })
     .then(response => {
       console.log(response.data);
+      onLogin();
     })
     .catch(error => {
       console.log(error);
     });
+    return('User Not Found')
 };
 
 export const logoutRequest = async () => {
   try {
-    const response = await axios.post('http://localhost:5000/logout');
+    const response = await axios.get('http://localhost:5000/logout');
     if (response.status === 200) {
       console.log('Logout successful');
+      window.location.reload();
     } else {
       console.log('Logout failed');
     }

@@ -7,27 +7,30 @@ import Login from './scenes/global/Login';
 import Register from './scenes/global/Register';
 import Tabbing from './scenes/main/Tabs';
 import { menuItems, TopBar } from './scenes/main/TopBar';
+import './scenes/global/StartPage.css'
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    console.log('logged in');
+    setIsLoggedIn(true);
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className='full-form' >
+        <Login onLogin={handleLogin} />
+        <Register onRegister={handleLogin} />
+      </div>
+    );
+  }
 
   return (
     <div>
-      <div>
-        {loggedIn ? (
-          <p>You are logged in!</p>
-        ) : (
-          <>
-            <Login onLogin={() => setLoggedIn(true)} />
-            <Register onRegister={() => setLoggedIn(true)} />
-          </>
-        )}
-      </div>
-      <TopBar
-        menuItems={menuItems}
-      />
+      <TopBar menuItems={menuItems} />
       <div className="app-container">
-        <VisGraphOptionsProvider >
+        <VisGraphOptionsProvider>
           <GlobalDataProvider>
             <Sidebar />
             <Tabbing />
@@ -36,6 +39,7 @@ function App() {
       </div>
     </div>
   );
-}
+};
+
 
 export default App;

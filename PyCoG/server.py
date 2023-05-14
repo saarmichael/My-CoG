@@ -20,7 +20,7 @@ def login():
     # get user from db
     user = user_in_db(name, User.query)
     if not user:
-        return jsonify({"message": "No user found!"})
+        return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session["user_data_dir"] = user.data_dir
     session["username"] = user.username
@@ -164,6 +164,7 @@ def get_graph_basic_info():
 @app.route("/logout", methods=["GET"])
 def logout():
     if "user" in session:
+        print("d")
         session.pop("username", None)
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})
