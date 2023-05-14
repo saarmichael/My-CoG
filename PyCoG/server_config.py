@@ -14,6 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(50), nullable=False)
     data_dir = db.Column(db.String(50), nullable=False)
     settings = db.Column(db.JSON, nullable=True)
+    load_instance = True
 
 class Calculation(db.Model):
     id = db.Column(db.Integer, primary_key=True)

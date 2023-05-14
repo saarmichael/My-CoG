@@ -22,6 +22,7 @@ def login():
     if not user:
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
+    print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
     session["user_data_dir"] = user.data_dir
     session["username"] = user.username
     return jsonify({"data_dir": user.data_dir})
