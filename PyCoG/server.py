@@ -1,36 +1,12 @@
-import os
-from flask import Flask, request, jsonify, session
-from flask_cors import CORS
+from flask import request, jsonify, session
 from scipy.io import loadmat
+from cache_check import data_in_db, user_in_db
+from db_write import write_calculation, write_user
 from coherence import coherence_over_time
-from output import write_coherence_over_time
 from coherence import coherence_time_frame, get_recording_duration
 from flask_sqlalchemy import SQLAlchemy
 from consts import bcolors
-import json
-
-
-app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])
-app.secret_key = "mysecretkey"
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///CogDb.db"
-db = SQLAlchemy(app)
-
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False)
-    data_dir = db.Column(db.String(50), nullable=False)
-    settings = db.Column(db.JSON, nullable=True)
-
-
-class Calculation(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    file_name = db.Column(db.String(50), nullable=False)
-    url = db.Column(db.String(50), nullable=False)
-    data = db.Column(db.JSON, nullable=False)
-    created_by = db.Column(db.String(50), nullable=False)
+from server_config import User, Calculation, db, app
 
 
 @app.before_first_request
@@ -42,25 +18,19 @@ def create_tables():
 def login():
     name = request.args.get("username")
     # get user from db
-    user = User.query.filter_by(username=name).all()
+    user = user_in_db(name, User.query)
     if not user:
         return jsonify({"message": "No user found!"})
     # return user's data directory
-    session["user_data_dir"] = user[0].data_dir
-    session["username"] = user[0].username
-    return jsonify({"data_dir": user[0].data_dir})
+    session["user_data_dir"] = user.data_dir
+    session["username"] = user.username
+    return jsonify({"data_dir": user.data_dir})
 
 
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
-    new_user = User(
-        username=data["username"],
-        data_dir="users_data/" + data["data"].split("\\")[-1],
-        settings=None,
-    )
-    db.session.add(new_user)
-    db.session.commit()
+    new_user = write_user(data["username"], data["data"], None)
     return jsonify({"message": "User created successfully!"})
 
 
@@ -106,10 +76,18 @@ def get_time_range():
 #       the CM that corresponds to the time frame specified by the start and end parameters
 @app.route("/time", methods=["GET"])
 def get_coherence_matrices():
+    if not "user_data_dir" in session:
+        session["username"] = "test"
+        session["user_data_dir"] = "users_data/bp_fingerflex.mat"
+
     data = bp_data
     start = request.args.get("start")
     end = request.args.get("end")
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
+    file_name = session["user_data_dir"].split("/")[-1]
+    cal = data_in_db(file_name, request.url, Calculation.query)
+    if cal:
+        return jsonify(cal.data)
     # error handling
     if ((start is None) or (start == "0")) or ((end is None) or (end == "0")):
         start = "0"
@@ -118,6 +96,7 @@ def get_coherence_matrices():
     f, CM = coherence_time_frame(data, 1000, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
+    db_cal = write_calculation(file_name, request.url, result, session["username"])
     print(
         f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
     )
@@ -140,8 +119,10 @@ def get_graph_basic_info():
         session["username"] = "test"
         session["user_data_dir"] = "users_data/bp_fingerflex.mat"
     file_name = session["user_data_dir"].split("/")[-1]
-    cals = Calculation.query
-    if not cals.filter_by(file_name=file_name).first():
+    cal = data_in_db(file_name, request.url, Calculation.query)
+    if cal:
+        CM = cal.data["CM"]
+    else:
         finger_bp = loadmat(session["user_data_dir"])
         bp_data = finger_bp["data"]
         bp_data = bp_data[:, 0:10]
@@ -152,16 +133,9 @@ def get_graph_basic_info():
             "t": t.tolist(),
             "CM": CM.tolist(),
         }
-        db_cal = Calculation(
-            file_name=file_name,
-            url=request.url,
-            data=calculation,
-            created_by=session["username"],
+        cal = write_calculation(
+            file_name, request.url, calculation, session["username"]
         )
-        db.session.add(db_cal)
-        db.session.commit()
-    cals = cals.filter_by(file_name=file_name)[0]
-    CM = cals.data["CM"]
 
     num_nodes = len(CM[0][0][0])
     # create the ids and labels.
