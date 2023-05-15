@@ -157,6 +157,7 @@ export const EditableGrid = (props: EditableGridProps) => {
 
     const { ZoomCanvas, DragCanvas } = Behaviors;
     const { state } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { backgroundImg } = useContext(GridContext) as IGridFocusContext;
 
     const createGrid = () => {
         // create the nodes and edges using GraphService module
@@ -180,7 +181,8 @@ export const EditableGrid = (props: EditableGridProps) => {
 
     return (
         <>
-            <Graphin data={data} layout={{ type: 'grid', center: [275, 300], 'rows': props.N, 'cols': props.M }} style={{ width: "100%" }}>
+            <Graphin data={data} layout={{ type: 'grid', center: [275, 300], 'rows': props.N, 'cols': props.M }}
+                style={{ width: "100%", backgroundImage: backgroundImg }}>
                 <ZoomCanvas disabled={true} />
                 <DragCanvas disabled={true} />
                 <GridBehavior applyMove={props.applyMove} trigger={props.anchorTrigger} originalGraph={createGrid()} rotationReady={props.rotationReady} />
