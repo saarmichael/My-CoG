@@ -6,6 +6,7 @@ import { type } from "os";
 import { brainImages } from "../shared/brainImages";
 import { GridContext, IGridFocusContext } from "../contexts/GridContext";
 import { IGraph, INode, NodeConfig } from "@antv/g6";
+import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
 
 
 export interface EditableGridProps {
@@ -33,6 +34,8 @@ const GridBehavior = (props: GridBehaviorProps) => {
     const [originalNodes, setOriginalNodes] = useState<IUserNode[]>([]);
     const [graphCenter, setGraphCenter] = useState<{ x: number, y: number }>(graph.getGraphCenterPoint());
 
+    const { setElectrode } = useContext(GlobalDataContext) as IGlobalDataContext;
+
 
     useEffect(() => {
         // update original nodes positions
@@ -52,6 +55,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
             const node = e.item as INode;
             const model = node.getModel() as NodeConfig;
             setSelectedNode(model.id);
+            setElectrode(model.id);
         });
 
         graph.on('node:dragend', (e) => {
@@ -111,7 +115,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
     }, [props.applyMove]);
 
     useEffect(() => {
-        if(!props.rotationReady){
+        if (!props.rotationReady) {
             return;
         }
         // rotate the grid by `angle` degrees`
@@ -152,37 +156,27 @@ const GridBehavior = (props: GridBehaviorProps) => {
 export const EditableGrid = (props: EditableGridProps) => {
 
     const { ZoomCanvas, DragCanvas } = Behaviors;
+    const { state } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const createGrid = () => {
         // create the nodes and edges using GraphService module
         let graph: GraphinData;
         // create the graph with N x M nodes
         graph = { nodes: [], edges: [] };
-        for (let i = 0; i < props.N; i++) {
-            for (let j = 0; j < props.M; j++) {
-                graph.nodes.push({
-                    id: i + "," + j, label: i + "," + j,
-                    style: {
-                        keyshape: {
-                            fill: '#fff',
-                            stroke: '#000',
-                            lineWidth: 1,
-                        },
-                    },
-                });
-            }
-        }
+        state.nodes.forEach(node => {
+            graph.nodes.push({ id: node.id, label: node.label, style: { keyshape: { fill: node.color } } });
+        });
         // update nodes color 
         return { ...graph };
     }
-    const [state, setState] = useState<GraphinData>(createGrid());
+    const [gridState, setGridState] = useState<GraphinData>(createGrid());
 
     useEffect(() => {
-        setState(createGrid());
-    }, []);
+        setGridState(createGrid());
+    }, [state]);
 
     createGrid();
-    const data = state;
+    const data = gridState;
 
     return (
         <>
@@ -192,6 +186,5 @@ export const EditableGrid = (props: EditableGridProps) => {
                 <GridBehavior applyMove={props.applyMove} trigger={props.anchorTrigger} originalGraph={createGrid()} rotationReady={props.rotationReady} />
             </Graphin>
         </>
-    )
-
+    );
 }

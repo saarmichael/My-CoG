@@ -16,13 +16,13 @@ import {
     lightningChart
 } from '@arction/lcjs';
 import { useContext, useEffect } from 'react';
-import { GlobalDataContext, IElectrodeFocusContext } from '../contexts/ElectrodeFocusContext';
+import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { getData, getDataSync } from '../shared/SpectrogramService';
 
 
 
 const Spectrogram = () => {
-    const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+    const { electrode } = useContext(GlobalDataContext) as IGlobalDataContext;
     let dashboard: Dashboard | null = null;
     let chart2D:  ChartXY<PointMarker, UIBackground> | null = null;
     let heatmapSeries2D: HeatmapGridSeriesIntensityValues | null = null;

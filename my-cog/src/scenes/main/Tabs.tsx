@@ -115,8 +115,10 @@ const Tabbing = () => {
         }}
           bounds="parent"
           minWidth={600}
-          minHeight={650}>
-          <Box2 />
+          minHeight={650}
+          disableDragging={true}
+          >
+          <Box1 />
         </Rnd>
 
         <Rnd default={{
@@ -128,6 +130,7 @@ const Tabbing = () => {
           bounds="parent"
           minWidth={600}
           minHeight={650}>
+
           <Box />
         </Rnd>
 
@@ -148,8 +151,8 @@ const Tabbing = () => {
           minWidth={500}
           minHeight={190}
           disableDragging={true}
-          >
-          <Box1 />
+        >
+          <Box2 />
         </Rnd>
         <></>
       </div>,

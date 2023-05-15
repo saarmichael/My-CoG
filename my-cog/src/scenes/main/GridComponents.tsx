@@ -3,7 +3,7 @@ import { GraphContainer } from "../../components/GraphContainer";
 import { GridGraph } from "../../components/GridGraph";
 import SlidingBar from "../../components/SlidingBar";
 import Spectrogram from "../../components/Spectrogram";
-import { GlobalDataContext, IElectrodeFocusContext } from "../../contexts/ElectrodeFocusContext";
+import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
 import './GridStyle.css';
 import { EditablesContainer } from "../../components/EditablesContainer";
@@ -26,7 +26,7 @@ export function Box() {
 }
 
 export function Box1() {
-  const { electrode } = useContext(GlobalDataContext) as IElectrodeFocusContext;
+  const { electrode } = useContext(GlobalDataContext) as IGlobalDataContext;
 
   return(
     <>
