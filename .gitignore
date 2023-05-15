@@ -1,3 +1,8 @@
 .vscode
 *.pyc
 *.db
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp

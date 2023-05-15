@@ -1,4 +1,4 @@
-from flask import request, jsonify, session
+from flask import request, jsonify, session, send_file
 from scipy.io import loadmat
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
@@ -7,6 +7,8 @@ from coherence import coherence_time_frame, get_recording_duration
 from flask_sqlalchemy import SQLAlchemy
 from consts import bcolors
 from server_config import User, Calculation, db, app
+from image_generator import get_brain_image
+import os
 
 
 @app.before_first_request
@@ -170,6 +172,35 @@ def logout():
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})
     return jsonify({"message": "No user logged in!"})
+
+
+import threading
+
+
+def get_brain_image_async(file_name, azimuth=0, elevation=90, distance=360, **kwargs):
+    get_brain_image(
+        file_name, azimuth=azimuth, elevation=elevation, distance=distance, **kwargs
+    )
+
+
+@app.route("/brainImage", methods=["GET"])
+def brain_image():
+    # the fields are azimuth, elevation, and distance
+    azi = request.args.get("azimuth")
+    ele = request.args.get("elevation")
+    dis = request.args.get("distance")
+    print(f"{bcolors.DEBUG}azi: {azi}, ele: {ele}, dis: {dis}{bcolors.ENDC}")
+    # build file name
+    file_name = "brain_images/" + "brain_image_" + azi + "_" + ele + "_" + dis + ".png"
+    # check if the file exists
+    if not os.path.isfile(file_name):
+        t = threading.Thread(
+            target=get_brain_image_async, args=(file_name, azi, ele, dis)
+        )
+        t.start()
+        t.join()
+    # return the png file to the client side
+    return send_file(file_name, mimetype="image/gif")
 
 
 ###############################################
