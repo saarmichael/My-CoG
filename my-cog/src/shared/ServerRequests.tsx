@@ -30,7 +30,7 @@ export const loginRequest = async (username: string, onLogin: () => void): Promi
     .catch(error => {
       console.log(error);
     });
-    return('User Not Found')
+  return ('User Not Found')
 };
 
 export const logoutRequest = async () => {
@@ -81,6 +81,9 @@ export async function apiGET<T>(url: string): Promise<T> {
     .then(response => {
       if (!response.ok) {
         throw new Error(response.statusText)
+      }
+      if (response.headers.get("content-type")?.includes("image")) {
+        return response.blob() as Promise<T>;
       }
       return response.json() as Promise<T>;
     })
