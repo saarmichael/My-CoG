@@ -109,13 +109,13 @@ const Tabbing = () => {
         <GraphVisToggles />
         <Rnd default={{
           x: 15,
-          y: 100,
+          y: 0,
           width: 320,
           height: 200,
         }}
           bounds="parent"
           minWidth={600}
-          minHeight={650}
+          minHeight={550}
           disableDragging={true}
           >
           <Box1 />

@@ -182,8 +182,10 @@ export const EditableGrid = (props: EditableGridProps) => {
     return (
         <>
             <Graphin data={data} layout={{ type: 'grid', center: [275, 300], 'rows': props.N, 'cols': props.M }}
-                style={{ width: "100%", backgroundImage: backgroundImg }}>
-                <ZoomCanvas disabled={true} />
+                style={{  background: `${backgroundImg} no-repeat center center fixed`,
+                backgroundSize: 'cover',
+                width: '100%' }}>
+                <ZoomCanvas disabled={false} />
                 <DragCanvas disabled={true} />
                 <GridBehavior applyMove={props.applyMove} trigger={props.anchorTrigger} originalGraph={createGrid()} rotationReady={props.rotationReady} />
             </Graphin>

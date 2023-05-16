@@ -3,6 +3,7 @@ import React, { createContext, useState, ReactNode } from "react";
 import { FreqRange } from '../shared/GraphRelated';
 import { TimeInterval } from "../shared/GraphRelated";
 
+
 export interface IGridFocusContext {
     anchorNode: string;
     setAnchorNode: (electrode: string) => void;
@@ -16,8 +17,8 @@ export interface IGridFocusContext {
     setRotationReady: (rotationReady: boolean) => void;
     backgroundImg: string;
     setBackgroundImg: (backgroundImg: string) => void;
-    backImgList: string[];
-    setBackImgList: (backImgList: string[]) => void;
+    backImgList: Map<string, string>; // <image name, image url>
+    setBackImgList: (backImgList: Map<string, string>) => void;
 }
 
 interface IGridProviderProps {
@@ -33,7 +34,7 @@ export const GridProvider: React.FC<IGridProviderProps> = ({ children }) => {
     const [angle, setAngle] = useState<number>(0);
     const [rotationReady, setRotationReady] = useState<boolean>(false);
     const [backgroundImg, setBackgroundImg] = useState<string>("");
-    const [backImgList, setBackImgList] = useState<string[]>([]);
+    const [backImgList, setBackImgList] = useState<Map<string, string>>(new Map());
     return (
         <GridContext.Provider value={{
             anchorNode, setAnchorNode,

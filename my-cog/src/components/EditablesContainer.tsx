@@ -5,6 +5,7 @@ import { EditableGrid } from "./EditableGrid";
 import { TextField } from "@mui/material";
 import SlidingBar from "./SlidingBar";
 import { fetchImage } from "../shared/RequestsService";
+import "./EditableContainer.css";
 
 
 const ImageSelector = () => {
@@ -17,27 +18,28 @@ const ImageSelector = () => {
     const refDistance = useRef<HTMLInputElement>(null);
 
 
-    useEffect(() => {
-        // get the initial basic image and initialize the list with it
-        const getImage = async () => {
-            const image = await fetchImage(0, 0, 360);
-            setBackImgList([...backImgList, image]);
-            setBackgroundImg("url(" + image + ")");
-        }
-        getImage();
-    }, []);
+    // useEffect(() => {
+    //     // get the initial basic image and initialize the list with it
+    //     const getImage = async () => {
+    //         const image = await fetchImage(0, 0, 360);
+    //         const imageName = "azimuth: 0, elevation: 0, distance: 360";
+    //         setBackImgList(backImgList.set(imageName, image));
+    //     }
+    //     getImage();
+    // }, []);
 
 
     // return a select element with all the images
     return (
         <>
             <select onChange={(e) => {
-                setBackgroundImg("url(" + backImgList[Number(e.target.value)] + ")");
+                const selectedImage = e.target.value;
+                setBackgroundImg("url(" + selectedImage + ")");
             }}>
-                {backImgList.map((img, index) => {
-                    return <option key={index} value={index}>{img}</option>
-                }
-                )}
+                {Array.from(backImgList.keys()).map((imageName) => {
+                    return <option value={backImgList.get(imageName)}>{imageName}</option>
+                })}
+
             </select>
 
             <TextField inputRef={refAzimuth} type="number" size="small" label={"azimuth"} />
@@ -50,7 +52,10 @@ const ImageSelector = () => {
                     Number(refElevation.current?.value),
                     Number(refDistance.current?.value)
                 );
-                setBackImgList([...backImgList, image]);
+                const imageName = "azimuth: " + refAzimuth.current?.value +
+                    ", elevation: " + refElevation.current?.value +
+                    ", distance: " + refDistance.current?.value;
+                setBackImgList(backImgList.set(imageName, image));
                 setBackgroundImg("url(" + image + ")");
             }}>Add Image</button>
 
@@ -72,51 +77,74 @@ const Container = () => {
 
     return (
         <>
+
             <h1>Editable Grid</h1>
 
-            <div>
+            <div className="image-selector">
                 <ImageSelector />
             </div>
 
-            <div>
-                <SlidingBar range={360} onChange={(event, newValue) => {
-                    const inputAngle = newValue[0] % 360;
-                    setAngle(inputAngle);
-                }}
+            <div className="sliding-bar-container">
+                <SlidingBar
+                    range={360}
+                    onChange={(event, newValue) => {
+                        const inputAngle = newValue[0] % 360;
+                        setAngle(inputAngle);
+                    }}
                     toSubmit={false}
                     keepDistance={false}
                 />
-
-                <TextField type="number" size="small" label={"angle"}
+                <TextField
+                    type="number"
+                    size="small"
+                    label="Angle"
                     onChange={(event) => {
                         const inputAngle = Number(event.target.value) % 360;
                         setAngle(inputAngle);
-                    }} />
+                    }}
+                />
             </div>
-            <div>
-                <button title="set anchor node" onClick={() => {
-                    setAnchorNode(selectedNode);
-                }}>Select Node</button>
 
-                &nbsp;&nbsp;&nbsp;&nbsp;
+            <div className="button-container">
+                <button
+                    className="select-button"
+                    title="Set Anchor Node"
+                    onClick={() => {
+                        setAnchorNode(selectedNode);
+                    }}
+                >
+                    Select Node
+                </button>
 
-                <button title="apply move" onClick={() => {
-                    setApplyMove([...applyMove]);
-                }}>Move</button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button
+                    className="move-button"
+                    title="Apply Move"
+                    onClick={() => {
+                        setApplyMove([...applyMove]);
+                    }}
+                >
+                    Move
+                </button>
 
-                <button title="set for rotation" onClick={() => {
-                    setRotationReady(true);
-                }}>Ready to rotate</button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button
+                    className="rotate-button"
+                    title="Set for Rotation"
+                    onClick={() => {
+                        setRotationReady(true);
+                    }}
+                >
+                    Ready to Rotate
+                </button>
 
-                <span>Anchor Node: {anchorNode}</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <span>Selected Node: {selectedNode}</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                <span className="node-info">
+                    Anchor Node: {anchorNode}
+                </span>
+                <span className="node-info">
+                    Selected Node: {selectedNode}
+                </span>
             </div>
+
+
 
             <EditableGrid N={4} M={3} anchorTrigger={anchorNode} applyMove={applyMove} rotationReady={rotationReady} />
         </>

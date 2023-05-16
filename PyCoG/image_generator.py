@@ -1,10 +1,9 @@
 import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
-
-matplotlib.use("Agg")
-
 import mne
 from mne.datasets import sample
 
