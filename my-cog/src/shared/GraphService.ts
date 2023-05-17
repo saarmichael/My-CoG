@@ -304,6 +304,7 @@ export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
 }
 
 export const colorCodeNodes = (graph: GraphinData, settings: IVisSettings) => {
+    console.log('colorCodeNodes', settings.nodeColor?.firstColor, settings.nodeColor?.secondColor);
     let edgeSum = getEdgesSum(graph.edges);
     const nodesWeighSum = getNodesWeighSum(graph);
     let weakColor = 'rgb(108,99,255)';

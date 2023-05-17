@@ -31,6 +31,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
     // consume the Graphin instance via GraphinContext
     const { graph } = useContext(GraphinContext);
     const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, anchorsLastPosition, setAnchorsLastPosition, angle } = useContext(GridContext) as IGridFocusContext;
+    const { sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [originalNodes, setOriginalNodes] = useState<IUserNode[]>([]);
     const [graphCenter, setGraphCenter] = useState<{ x: number, y: number }>(graph.getGraphCenterPoint());
 
@@ -146,6 +147,22 @@ const GridBehavior = (props: GridBehaviorProps) => {
         });
     }, [angle]);
 
+    useEffect(() => {
+        // when `sharedGraph` changes, update the graph style but leave the nodes positions as they are
+        const nodes = graph.getNodes();
+        sharedGraph.nodes.forEach(node => {
+            const graphNode = nodes.find(n => n.getModel().id === node.id);
+            if (!graphNode) {
+                return;
+            }
+            // update the node style
+            const nodeStyle = { ...node.style };
+            const updatedNode = { ...graphNode.getModel(), style: nodeStyle };
+            graphNode.update(updatedNode);
+        });
+    }, [sharedGraph]);
+
+
     return null;
 }
 
@@ -156,35 +173,60 @@ const GridBehavior = (props: GridBehaviorProps) => {
 export const EditableGrid = (props: EditableGridProps) => {
 
     const { ZoomCanvas, DragCanvas } = Behaviors;
-    const { state } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { backgroundImg } = useContext(GridContext) as IGridFocusContext;
+
+    const initGrid = () => {
+        // create only the nodes without any style at all
+        let graph: GraphinData;
+        // create the graph with N x M nodes
+        graph = { nodes: [], edges: [] };
+        // create the nodes
+        graph.nodes = sharedGraph.nodes.map(node => {
+            return { id: node.id };
+        }
+        );
+        return { ...graph };
+    }
 
     const createGrid = () => {
         // create the nodes and edges using GraphService module
         let graph: GraphinData;
         // create the graph with N x M nodes
         graph = { nodes: [], edges: [] };
-        state.nodes.forEach(node => {
-            graph.nodes.push({ id: node.id, label: node.label, style: { keyshape: { fill: node.color } } });
-        });
-        // update nodes color 
+        // copy all nodes from the original graph including their styles
+        graph.nodes = sharedGraph.nodes.map(node => {
+            return { ...node };
+        }
+        );
         return { ...graph };
     }
-    const [gridState, setGridState] = useState<GraphinData>(createGrid());
+    const [gridGraph, setGridGraph] = useState<GraphinData>({ nodes: [], edges: [] });
 
     useEffect(() => {
-        setGridState(createGrid());
-    }, [state]);
+        if (sharedGraph && sharedGraph.nodes.length > 0 && !gridGraph.nodes.length) {
+            setGridGraph(initGrid());
+        }
+    }, [sharedGraph]);
 
-    createGrid();
-    const data = gridState;
+    //createGrid();
+    const data = gridGraph;
+
+    const backgroundStyle = {
+        backgroundImage: `${backgroundImg}`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+        backgroundAttachment: 'fixed',
+        backgroundSize: 'cover',
+        width: '100%'
+    };
 
     return (
         <>
             <Graphin data={data} layout={{ type: 'grid', center: [275, 300], 'rows': props.N, 'cols': props.M }}
-                style={{  background: `${backgroundImg} no-repeat center center fixed`,
-                backgroundSize: 'cover',
-                width: '100%' }}>
+                style={
+                    backgroundStyle
+                }>
                 <ZoomCanvas disabled={false} />
                 <DragCanvas disabled={true} />
                 <GridBehavior applyMove={props.applyMove} trigger={props.anchorTrigger} originalGraph={createGrid()} rotationReady={props.rotationReady} />

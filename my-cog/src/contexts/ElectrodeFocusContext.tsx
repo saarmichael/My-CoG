@@ -19,6 +19,8 @@ export interface IGlobalDataContext {
     setTimeRange: (timeRange: TimeInterval) => void;
     duration: number;
     setDuration: (timeList: number) => void;
+    sharedGraph: GraphinData;
+    setSharedGraph: (sharedGraph: GraphinData) => void;
 }
 
 interface IGlobalDataProviderProps {
@@ -35,6 +37,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
     const [freqList, setFreqList] = useState<number[]>([0,1]);
     const [timeRange, setTimeRange] = useState<TimeInterval>({ resolution: 's', start: 0, end: 0 });
     const [duration, setDuration] = useState<number>(2);
+    const [sharedGraph, setSharedGraph] = useState<GraphinData>({ nodes: [], edges: [] });
     return (
         <GlobalDataContext.Provider value={{
             state, setState,
@@ -44,6 +47,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
             freqList, setFreqList,
             timeRange, setTimeRange,
             duration, setDuration,
+            sharedGraph, setSharedGraph,
         }}>
             {children}
         </GlobalDataContext.Provider>

@@ -54,7 +54,7 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, setState, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
@@ -78,10 +78,10 @@ const BasicGraphinGraph = () => {
         let graph = { ...state };
         graph = options.reduce((acc, option) => {
             if (option.checked) {
-                return option.onChange(acc, settings);
+                return option.onChange(acc, {...settings});
             } else {
                 if (option.defaultBehavior) {
-                    return option.defaultBehavior(acc, settings);
+                    return option.defaultBehavior(acc, {...settings});
                 }
             }
             return acc;
@@ -108,6 +108,7 @@ const BasicGraphinGraph = () => {
         console.log(`useEffect`, `createBasicGraph`)
         createBasicGraph().then((data) => {
             setState(data);
+            setSharedGraph({... data});
             setChangeVis([...changeVis])
         });
     }, []);
@@ -118,6 +119,7 @@ const BasicGraphinGraph = () => {
         createGraphData().then((data) => {
             //console.log(`data:`, data);
             setState(data);
+            setSharedGraph({... data});
             setChangeVis([...changeVis])
         });
     }, [freqRange, timeRange]); // TODO: make this more generic
@@ -126,6 +128,7 @@ const BasicGraphinGraph = () => {
         console.log(`useEffect`, `applyVisualizationOptions`)
         applyVisualizationOptions().then((data) => {
             setState(data);
+            setSharedGraph({... data});
         });
     }, [options, settings, changeVis]);
 

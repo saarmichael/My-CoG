@@ -63,6 +63,7 @@ export const VisGraphOptionsContext = createContext<IVisGraphOptionsContext | nu
 export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = ({ children }) => {
 
     const [options, setOptions] = useState<IVisGraphOption[]>([
+        
         {
             label: "Width View",
             checked: false,
@@ -91,13 +92,6 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             needValue: false
         },
         {
-            label: "Node Size View",
-            checked: false,
-            onChange: changeNodeSize,
-            defaultBehavior: nodeSizeDefault,
-            needValue: false
-        },
-        {
             label: "Show Node Label",
             checked: true,
             onChange: showNodeLabel,
@@ -117,7 +111,14 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             onChange: changeNodeOpacity,
             defaultBehavior: nodeOpacityDefault,
             needValue: false
-        }
+        },
+        {
+            label: "Node Size View",
+            checked: false,
+            onChange: changeNodeSize,
+            defaultBehavior: nodeSizeDefault,
+            needValue: false
+        },
     ]);
     const [settings, setSettings] = useState<IVisSettings>({
         edgeColor: {

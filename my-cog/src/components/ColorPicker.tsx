@@ -15,11 +15,13 @@ export const ColorPicker = () => {
                         ...settings,
                         edgeColor: {
                             ...settings.edgeColor,
-                            firstColor: c.hex
+                            firstColor: c.hex,
+                            secondColor: settings.edgeColor?.secondColor
                         },
                         nodeColor: {
                             ...settings.nodeColor,
-                            firstColor: c.hex
+                            firstColor: c.hex,
+                            secondColor: settings.nodeColor?.secondColor
                         }
                     });
                 }}
@@ -32,17 +34,22 @@ export const ColorPicker = () => {
                 <GithubPicker
                     color={settings.edgeColor?.secondColor ? (settings.edgeColor?.secondColor) : "#000000"}
                     onChange={(c) => {
-                        setSettings({
-                            ...settings,
-                            edgeColor: {
-                                ...settings.edgeColor,
-                                secondColor: c.hex
-                            },
-                            nodeColor: {
-                                ...settings.nodeColor,
-                                secondColor: c.hex
-                            }
-                        });
+                        if (c.hex !== settings.edgeColor?.secondColor) {
+                            setSettings({
+                                ...settings,
+                                edgeColor: {
+                                    ...settings.edgeColor,
+                                    firstColor: settings.edgeColor?.firstColor,
+                                    secondColor: c.hex
+                                },
+                                nodeColor: {
+                                    ...settings.nodeColor,
+                                    firstColor: settings.nodeColor?.firstColor,
+                                    secondColor: c.hex
+                                }
+
+                            });
+                        }
                     }}
                 />}
         </>
