@@ -19,18 +19,20 @@ export const simplePostRequest = async () => {
 }
 
 export const loginRequest = async (username: string, onLogin: () => void): Promise<string> => {
-  axios({
+  await axios({
     method: 'GET',
     url: 'http://localhost:5000/login?username=' + username,
   })
     .then(response => {
       console.log(response.data);
       onLogin();
+      return ('');
     })
     .catch(error => {
       console.log(error);
+      return ('User Not Found');
     });
-  return ('User Not Found')
+    return('');
 };
 
 export const logoutRequest = async () => {
