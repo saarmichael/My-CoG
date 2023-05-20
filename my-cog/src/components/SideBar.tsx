@@ -5,11 +5,15 @@ import { ColorPicker } from "./ColorPicker";
 import { GraphVisCheckbox } from "./GraphVisCheckbox";
 import './SideBar.css';
 
+interface SidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
 
-const Sidebar = () => {
+
+const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
-    const [isOpen, setIsOpen] = useState(true);
     const [showPicker, setShowPicker] = useState(false);
 
     const colorPickDiv = (
@@ -18,7 +22,7 @@ const Sidebar = () => {
                 // make it like a rectangle with rounded corners, and quite small
                 borderRadius: "5px",
                 border: "1px solid black",
-                width: "100%",
+                width: "95%",
                 height: "20px",
                 // make it look like a button
                 backgroundColor: settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#000000",
@@ -44,28 +48,29 @@ const Sidebar = () => {
 
     return (
         <div id="sidebar-container">
-            <button style={{ fontSize: '20px' }} onClick={
-                () => setIsOpen(!isOpen)}>{isOpen ? "⬅️" : "➡️"}</button>
-            <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-                <h2>Visual Options</h2>
-                <FormGroup >
-                    {options.map((option, index) => {
-                        return (
-                            <GraphVisCheckbox
-                                key={index}
-                                label={option.label}
-                                checked={option.checked}
-                            />
-                        );
-                    })
-                    }
-                </FormGroup>
-                <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                    {colorPickDiv}
-                    {showPicker ? <ColorPicker /> : null}
-                </div>
-            </div>
-        </div >
+    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <button className="toggle-button" onClick={onClose}>
+            {isOpen ? "⬅" : "➡"}
+        </button>
+        <h2>Visual Options</h2>
+        <FormGroup>
+            {options.map((option, index) => {
+                return (
+                    <GraphVisCheckbox
+                        key={index}
+                        label={option.label}
+                        checked={option.checked}
+                    />
+                );
+            })}
+        </FormGroup>
+        <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+            {colorPickDiv}
+            {showPicker ? <ColorPicker /> : null}
+        </div>
+    </div>
+</div>
+
     );
 };
 

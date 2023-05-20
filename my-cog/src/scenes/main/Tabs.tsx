@@ -5,6 +5,7 @@ import { GraphVisToggles } from "../../components/GraphVisToggles";
 import "../../components/SideBar.css";
 import { Box, Box1, Box2 } from "./GridComponents";
 import "./Tabs.css";
+import Sidebar from "../../components/SideBar";
 
 
 
@@ -58,41 +59,49 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
     });
   };
 
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+  
 
   return (
-    <div className="container main-content">
-      <div className="bloc-tabs">
-        {tabs.map((tab, index) => (
-          <button
-            key={index}
-            onClick={() => handleTabClick(index)}
-            className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
-          >
-            {tab.label}
-          </button>
-        ))}
-        {onAddTab && (
-          <button className="plus" onClick={handleAddTabClick}>➕</button>
-        )}
-      </div>
-      <select value="" onChange={handleComponentSelect}>
-        <option value="" disabled>
-          Select a component to hide
-        </option>
-        {renderComponentOptions()}
-      </select>
-      &nbsp;
-      <DataOptions />
-      <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
-        {tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => (
-          hiddenComponentIndex.includes(index)
-            ? null
-            : (
-              <>
-                {component}
-              </>
-            )
-        ))}
+    <div className="container">
+      <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar}/>
+      <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+        <div className="bloc-tabs">
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              onClick={() => handleTabClick(index)}
+              className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
+            >
+              {tab.label}
+            </button>
+          ))}
+          {onAddTab && (
+            <button className="plus" onClick={handleAddTabClick}>➕</button>
+          )}
+        </div>
+        <select value="" onChange={handleComponentSelect}>
+          <option value="" disabled>
+            Select a component to hide
+          </option>
+          {renderComponentOptions()}
+        </select>
+        &nbsp;
+        <DataOptions />
+        <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
+          {tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => (
+            hiddenComponentIndex.includes(index)
+              ? null
+              : (
+                <>
+                  {component}
+                </>
+              )
+          ))}
+        </div>
       </div>
     </div>
   );
