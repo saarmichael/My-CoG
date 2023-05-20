@@ -32,7 +32,6 @@ function App() {
       <div className="app-container">
         <VisGraphOptionsProvider>
           <GlobalDataProvider>
-            <Sidebar />
             <Tabbing />
           </GlobalDataProvider>
         </VisGraphOptionsProvider>
