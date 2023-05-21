@@ -64,13 +64,7 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
 
     const [options, setOptions] = useState<IVisGraphOption[]>([
         
-        {
-            label: "Width View",
-            checked: false,
-            onChange: changeEdgeWidthGraphin,
-            defaultBehavior: edgeWidthGraphinDefault,
-            needValue: false
-        },
+        
         {
             label: "Color Coded View",
             checked: false,
@@ -84,6 +78,13 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             onChange: thresholdGraph,
             needValue: true,
             settingName: "threshold"
+        },
+        {
+            label: "Width View",
+            checked: false,
+            onChange: changeEdgeWidthGraphin,
+            defaultBehavior: edgeWidthGraphinDefault,
+            needValue: false
         },
         {
             label: "Show weights",
@@ -126,8 +127,8 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             secondColor: "#A9A9A9"
         },
         edgeWidth: {
-            min: 1,
-            max: 30
+            min: 2,
+            max: 45
         },
         nodeSize: {
             min: 20,

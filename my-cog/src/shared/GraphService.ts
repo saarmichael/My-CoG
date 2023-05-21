@@ -172,9 +172,7 @@ export const changeEdgeWidthGraphin = (graph: GraphinData, settings: IVisSetting
 
                 keyshape: {
                     ...edges[i].style?.keyshape,
-                    lineWidth: min + (max - min) * (edges[i].value / edgeSum),
-                    stroke: '#000000',
-                    strokeOpacity: 0.8,
+                    lineWidth: min + ((1.5 * max) - min) * (edges[i].value / edgeSum),
                 },
             }
         });
@@ -541,7 +539,7 @@ export const changeNodeSize = (graph: GraphinData, settings: IVisSettings) => {
             ...graph.nodes[i].style,
             keyshape: {
                 ...graph.nodes[i].style?.keyshape,
-                size: min + (max - min) * (nodesWeighSum[nodes[i].id] / edgeSum),
+                size: min + ((1.5 * max) - min) * (nodesWeighSum[nodes[i].id] / edgeSum),
             }
         };
     }

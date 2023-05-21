@@ -37,6 +37,7 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                 <>
                     <input
                         type='number'
+                        step='0.1'
                         defaultValue={thisOption.value}
                         ref={inputRef}
                     />
