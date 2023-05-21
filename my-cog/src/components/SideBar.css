@@ -2,13 +2,13 @@
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  height: 100%; /* Make sure it spans the full height */
+  height: 100%;
 }
 
 
 .sidebar {
   display: flex;
-  position: absolute; /* or absolute depending on your layout needs */
+  position: absolute;
   z-index: 1;
   flex-direction: column;
   left: -300px;
@@ -47,8 +47,6 @@
   background-color: #ddd;
 }
 
-/* Set the width of the main content area based on the sidebar state */
-
 .main-content {
   margin-left: 0;
   width: calc(100% - 300px);
@@ -64,9 +62,9 @@
 .toggle-button {
   font-size: 15px;
   position: absolute;
-  right: -15px;  /* width of the button */
+  right: -15px;
   top: 0;
-  width: 15px; /* set width as per your requirement */
+  width: 15px;
   height: 50px;
   z-index: 2;
   align-self: stretch;
@@ -82,9 +80,9 @@
 }
 
 .toggle-button:hover {
-  background-color: rgba(51, 51, 51); /* Darken color on hover */
+  background-color: rgba(51, 51, 51);
 }
 
 .toggle-button:focus {
-  outline: none; /* Remove focus outline */
+  outline: none; 
 }

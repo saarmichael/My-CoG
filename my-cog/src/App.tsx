@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useNavigate, Navigate } from 'react-router-dom';
 import './App.css';
 import Sidebar from './components/SideBar';
 import { GlobalDataProvider } from './contexts/ElectrodeFocusContext';
@@ -9,36 +10,47 @@ import Tabbing from './scenes/main/Tabs';
 import { menuItems, TopBar } from './scenes/main/TopBar';
 import './scenes/global/StartPage.css'
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+function LoginPage() {
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     console.log('logged in');
-    setIsLoggedIn(true);
+    navigate('/home');
   };
-
-  if (!isLoggedIn) {
-    return (
-      <div className='full-form' >
-        <Login onLogin={handleLogin} />
-        <Register onRegister={handleLogin} />
-      </div>
-    );
-  }
-
+  
   return (
-    <div>
-      <TopBar menuItems={menuItems} />
-      <div className="app-container">
-        <VisGraphOptionsProvider>
-          <GlobalDataProvider>
-            <Tabbing />
-          </GlobalDataProvider>
-        </VisGraphOptionsProvider>
-      </div>
+    <div className='full-form'>
+      <Login onLogin={handleLogin} />
+      <Register onRegister={handleLogin} />
     </div>
   );
-};
+}
 
+function MainPage() {
+  return (
+    <div>
+    <TopBar menuItems={menuItems} />
+    <div className="app-container">
+      <VisGraphOptionsProvider>
+        <GlobalDataProvider>
+          <Tabbing />
+        </GlobalDataProvider>
+      </VisGraphOptionsProvider>
+    </div>
+  </div>
+  );
+}
+
+function App() {
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/home" element={<MainPage/>} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;

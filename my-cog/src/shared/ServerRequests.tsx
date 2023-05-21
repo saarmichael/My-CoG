@@ -1,8 +1,5 @@
 import axios, { AxiosResponse } from "axios"
 
-
-
-
 export const simplePostRequest = async () => {
   const data = { message: 'Hello, server!' }
 
@@ -40,7 +37,7 @@ export const logoutRequest = async () => {
     const response = await axios.get('http://localhost:5000/logout');
     if (response.status === 200) {
       console.log('Logout successful');
-      window.location.reload();
+      window.location.assign('/');
     } else {
       console.log('Logout failed');
     }
