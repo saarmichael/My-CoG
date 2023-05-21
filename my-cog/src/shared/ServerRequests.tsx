@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios"
+import { VisualPreferences } from "../scenes/global/Register"
 
 export const simplePostRequest = async () => {
   const data = { message: 'Hello, server!' }
@@ -32,11 +33,13 @@ export const loginRequest = async (username: string, onLogin: () => void): Promi
     return('');
 };
 
-export const registerRequest = async (username: string, data: string, onRegister: () => void): Promise<string> => {
+export const registerRequest = async (username: string, data: string, settings: VisualPreferences, onRegister: () => void): Promise<string> => {
+  console.log(settings)
   try {
     const response = await axios.post('http://localhost:5000/register', {
       username,
       data,
+      settings,
     });
 
     if (response.status === 200) {

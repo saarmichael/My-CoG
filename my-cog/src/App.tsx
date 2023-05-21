@@ -31,11 +31,11 @@ function MainPage() {
     <div>
     <TopBar menuItems={menuItems} />
     <div className="app-container">
-      <VisGraphOptionsProvider>
+      
         <GlobalDataProvider>
           <Tabbing />
         </GlobalDataProvider>
-      </VisGraphOptionsProvider>
+      
     </div>
   </div>
   );
@@ -45,10 +45,12 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/home" element={<MainPage/>} />
-      </Routes>
+      <VisGraphOptionsProvider>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/home" element={<MainPage/>} />
+        </Routes>
+      </VisGraphOptionsProvider>
     </Router>
   );
 };

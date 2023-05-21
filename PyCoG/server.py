@@ -36,7 +36,7 @@ def register():
     # check if user exists
     if user_in_db(data["username"], User.query):
         return jsonify({"message": "User already exists!"}), 400
-    new_user = write_user(data["username"], data["data"], None)
+    write_user(data["username"], data["data"], data["settings"])
     return jsonify({"message": "User created successfully!"})
 
 
