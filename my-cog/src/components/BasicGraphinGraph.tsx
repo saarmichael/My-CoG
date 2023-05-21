@@ -12,6 +12,7 @@ import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsSe
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
     const { electrode, setElectrode } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     useEffect(() => {
 
@@ -44,6 +45,34 @@ const SampleBehavior = () => {
 
         }
     }, [electrode]);
+
+    useEffect(() => {
+        const nodes = graph.getNodes();
+        state.nodes.forEach(node => {
+            const graphNode = nodes.find(n => n.getModel().id === node.id);
+            if (!graphNode) {
+                return;
+            }
+            // update the node style
+            const nodeStyle = { ...node.style };
+            const updatedNode = { ...graphNode.getModel(), style: nodeStyle };
+            graphNode.update(updatedNode);
+        });
+        // change the edge style
+        const edges = graph.getEdges();
+        state.edges.forEach(edge => {
+            const graphEdge = edges.find(e => e.getModel().id === edge.id);
+            if (!graphEdge) {
+                return;
+            }
+            // update the edge style
+            const edgeStyle = { ...edge.style };
+            const updatedEdge = { ...graphEdge.getModel(), style: edgeStyle };
+            graphEdge.update(updatedEdge);
+        }
+        );
+    }, [state]);
+
     return null;
 };
 
@@ -56,6 +85,7 @@ const BasicGraphinGraph = () => {
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
     const { state, setState, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+    const [graphinState, setGraphinState] = React.useState<GraphinData>({ nodes: [], edges: [] });
     const minRef = React.useRef<HTMLInputElement>(null);
     const maxRef = React.useRef<HTMLInputElement>(null);
     const timeRef = React.useRef<HTMLSelectElement>(null);
@@ -78,10 +108,10 @@ const BasicGraphinGraph = () => {
         let graph = { ...state };
         graph = options.reduce((acc, option) => {
             if (option.checked) {
-                return option.onChange(acc, {...settings});
+                return option.onChange(acc, { ...settings });
             } else {
                 if (option.defaultBehavior) {
-                    return option.defaultBehavior(acc, {...settings});
+                    return option.defaultBehavior(acc, { ...settings });
                 }
             }
             return acc;
@@ -108,18 +138,18 @@ const BasicGraphinGraph = () => {
         console.log(`useEffect`, `createBasicGraph`)
         createBasicGraph().then((data) => {
             setState(data);
-            setSharedGraph({... data});
+            setSharedGraph({ ...data });
             setChangeVis([...changeVis])
         });
     }, []);
 
     useEffect(() => {
-        if(!state.nodes.length || !state.edges.length) return;
+        if (!state.nodes.length || !state.edges.length) return;
         console.log(`useEffect`, `createGraphData`)
         createGraphData().then((data) => {
             //console.log(`data:`, data);
             setState(data);
-            setSharedGraph({... data});
+            setSharedGraph({ ...data });
             setChangeVis([...changeVis])
         });
     }, [freqRange, timeRange]); // TODO: make this more generic
@@ -128,7 +158,7 @@ const BasicGraphinGraph = () => {
         console.log(`useEffect`, `applyVisualizationOptions`)
         applyVisualizationOptions().then((data) => {
             setState(data);
-            setSharedGraph({... data});
+            setSharedGraph({ ...data });
         });
     }, [options, settings, changeVis]);
 
