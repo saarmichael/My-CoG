@@ -66,13 +66,14 @@ const ImageSelector = () => {
 
 const Container = () => {
 
-    const [applyMove, setApplyMove] = useState<any>([]);
+    
     const {
         anchorNode, setAnchorNode,
         selectedNode, setSelectedNode,
         setAngle,
         setRotationReady,
         rotationReady,
+        applyMove, setApplyMove,
     } = useContext(GridContext) as IGridFocusContext;
 
     return (
@@ -146,7 +147,7 @@ const Container = () => {
 
 
 
-            <EditableGrid N={4} M={3} anchorTrigger={anchorNode} applyMove={applyMove} rotationReady={rotationReady} />
+            <EditableGrid N={4} M={3} />
         </>
     )
 }

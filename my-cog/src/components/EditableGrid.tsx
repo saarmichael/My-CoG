@@ -12,15 +12,9 @@ import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocu
 export interface EditableGridProps {
     N: number;
     M: number; // N x M grid
-    applyMove: any;
-    anchorTrigger: any;
-    rotationReady: any;
 }
 
 export interface GridBehaviorProps {
-    applyMove: any;
-    trigger: any;
-    rotationReady: any;
     originalGraph: GraphinData;
 }
 
@@ -30,7 +24,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
 
     // consume the Graphin instance via GraphinContext
     const { graph } = useContext(GraphinContext);
-    const { anchorNode, setAnchorNode, selectedNode, setSelectedNode, anchorsLastPosition, setAnchorsLastPosition, angle } = useContext(GridContext) as IGridFocusContext;
+    const { anchorNode, setAnchorNode, setSelectedNode, anchorsLastPosition, setAnchorsLastPosition, angle, applyMove, rotationReady, setRotationReady } = useContext(GridContext) as IGridFocusContext;
     const { sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [originalNodes, setOriginalNodes] = useState<IUserNode[]>([]);
     const [graphCenter, setGraphCenter] = useState<{ x: number, y: number }>(graph.getGraphCenterPoint());
@@ -48,7 +42,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
             )
         );
         setGraphCenter(graph.getGraphCenterPoint());
-    }, [props.rotationReady]);
+    }, [rotationReady]);
 
     useEffect(() => {
         // when triggered, sets the first clicked node as the anchor node
@@ -87,6 +81,7 @@ const GridBehavior = (props: GridBehaviorProps) => {
         }
         const anchorNodePosition = { x: anchorNodeModel.x, y: anchorNodeModel.y };
         setAnchorsLastPosition(anchorNodePosition);
+        setRotationReady(false);
     }, [anchorNode]);
 
 
@@ -113,10 +108,10 @@ const GridBehavior = (props: GridBehaviorProps) => {
         }
         );
         setAnchorNode('');
-    }, [props.applyMove]);
+    }, [applyMove]);
 
     useEffect(() => {
-        if (!props.rotationReady) {
+        if (!rotationReady) {
             return;
         }
         // rotate the grid by `angle` degrees`
@@ -229,7 +224,9 @@ export const EditableGrid = (props: EditableGridProps) => {
                 }>
                 <ZoomCanvas disabled={false} />
                 <DragCanvas disabled={true} />
-                <GridBehavior applyMove={props.applyMove} trigger={props.anchorTrigger} originalGraph={createGrid()} rotationReady={props.rotationReady} />
+                <GridBehavior
+                    originalGraph={createGrid()}
+                     />
             </Graphin>
         </>
     );
