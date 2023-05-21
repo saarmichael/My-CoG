@@ -68,6 +68,21 @@ const GridBehavior = (props: GridBehaviorProps) => {
                 setAnchorsLastPosition(anchorNodePosition);
             }
         });
+
+        // when scrolling, make the nodes bigger as well
+        graph.on('wheelzoom', (e) => {
+            const nodes = graph.getNodes();
+            nodes.forEach(node => {
+                const model = node.getModel();
+                if (!model.size) {
+                    model.size = 10;
+                }
+                const newSize = model.size as number + 100;
+                graph.updateItem(node, { size: newSize });
+            });
+        }
+        );
+
     }, []);
 
     useEffect(() => {
