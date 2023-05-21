@@ -37,17 +37,27 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                 <>
                     <input
                         type='number'
-                        value={thisOption.value}
+                        defaultValue={thisOption.value}
                         ref={inputRef}
                     />
                     <button
                         onClick={() => {
+                            const newValue = Number(inputRef.current?.value);
                             // change the setting in the settings object
                             if (thisOption.settingName) {
                                 setSettings({
                                     ...settings,
-                                    [thisOption.settingName]: Number(inputRef.current?.value)
+                                    [thisOption.settingName]: newValue
                                 });
+                                setOptions(options.map((option) => {
+                                    if (option.label === props.label) {
+                                        return {
+                                            ...option,
+                                            value: newValue
+                                        };
+                                    }
+                                    return option;
+                                }));
                             }
                         }}>Submit</button>
 

@@ -12,7 +12,7 @@ import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsSe
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
     const { electrode, setElectrode } = useContext(GlobalDataContext) as IGlobalDataContext;
-    const { state } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     useEffect(() => {
 
@@ -48,7 +48,7 @@ const SampleBehavior = () => {
 
     useEffect(() => {
         const nodes = graph.getNodes();
-        state.nodes.forEach(node => {
+        sharedGraph.nodes.forEach(node => {
             const graphNode = nodes.find(n => n.getModel().id === node.id);
             if (!graphNode) {
                 return;
@@ -60,7 +60,7 @@ const SampleBehavior = () => {
         });
         // change the edge style
         const edges = graph.getEdges();
-        state.edges.forEach(edge => {
+        sharedGraph.edges.forEach(edge => {
             const graphEdge = edges.find(e => e.getModel().id === edge.id);
             if (!graphEdge) {
                 return;
@@ -71,7 +71,7 @@ const SampleBehavior = () => {
             graphEdge.update(updatedEdge);
         }
         );
-    }, [state]);
+    }, [sharedGraph]);
 
     return null;
 };
@@ -83,13 +83,9 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, setState, sharedGraph, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const [graphinState, setGraphinState] = React.useState<GraphinData>({ nodes: [], edges: [] });
-    const minRef = React.useRef<HTMLInputElement>(null);
-    const maxRef = React.useRef<HTMLInputElement>(null);
-    const timeRef = React.useRef<HTMLSelectElement>(null);
-
 
     const getFrequencyAndTime = async () => {
         let frequencyListAsync = await getSingletonFreqList();
@@ -105,8 +101,7 @@ const BasicGraphinGraph = () => {
     }
 
     const applyVisualizationOptions = async () => {
-        let graph = { ...state };
-        graph = options.reduce((acc, option) => {
+        let graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, { ...settings });
             } else {
@@ -115,7 +110,7 @@ const BasicGraphinGraph = () => {
                 }
             }
             return acc;
-        }, graph);
+        }, state);
         return { ...graph };
     }
 
@@ -127,6 +122,7 @@ const BasicGraphinGraph = () => {
     }
 
     const [changeVis, setChangeVis] = React.useState<number[]>([1]);
+
 
     // change the graph data according to the user's selections
     useEffect(() => {
@@ -149,16 +145,14 @@ const BasicGraphinGraph = () => {
         createGraphData().then((data) => {
             //console.log(`data:`, data);
             setState(data);
-            setSharedGraph({ ...data });
-            setChangeVis([...changeVis])
+            setChangeVis([...changeVis]);
         });
     }, [freqRange, timeRange]); // TODO: make this more generic
 
     useEffect(() => {
         console.log(`useEffect`, `applyVisualizationOptions`)
         applyVisualizationOptions().then((data) => {
-            setState(data);
-            setSharedGraph({ ...data });
+            setSharedGraph(data);
         });
     }, [options, settings, changeVis]);
 
@@ -167,7 +161,7 @@ const BasicGraphinGraph = () => {
     useEffect(() => {
         setElectrodeList(state.nodes.map((node) => node.id));
     }, [state]);
-    const data = state;
+    const data = sharedGraph;
     return (
         <>
             <div id="mountNode">
