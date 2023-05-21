@@ -33,6 +33,9 @@ def login():
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
+    # check if user exists
+    if user_in_db(data["username"], User.query):
+        return jsonify({"message": "User already exists!"}), 400
     new_user = write_user(data["username"], data["data"], None)
     return jsonify({"message": "User created successfully!"})
 

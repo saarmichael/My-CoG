@@ -10,10 +10,14 @@ interface RegisterProps {
 const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [username, setUsername] = useState('');
   const [data, setData] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    registerRequest(username, data, onRegister);
+    await registerRequest(username, data, onRegister).then((err) => {
+      console.log(err)
+      setErrorMessage(err)
+    });
 
   };
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -49,6 +53,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         </button>
       </div>
       <button type="submit" className="submit-button">Register</button>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </form>
   );
 };

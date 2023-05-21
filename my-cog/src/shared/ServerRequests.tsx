@@ -32,21 +32,7 @@ export const loginRequest = async (username: string, onLogin: () => void): Promi
     return('');
 };
 
-export const logoutRequest = async () => {
-  try {
-    const response = await axios.get('http://localhost:5000/logout');
-    if (response.status === 200) {
-      console.log('Logout successful');
-      window.location.assign('/');
-    } else {
-      console.log('Logout failed');
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const registerRequest = async (username: string, data: string, onRegister: () => void) => {
+export const registerRequest = async (username: string, data: string, onRegister: () => void): Promise<string> => {
   try {
     const response = await axios.post('http://localhost:5000/register', {
       username,
@@ -56,8 +42,25 @@ export const registerRequest = async (username: string, data: string, onRegister
     if (response.status === 200) {
       console.log('Registration successful');
       loginRequest(username, onRegister);
+      return ('');
     } else {
       console.log('Registration failed');
+    }
+  } catch (error) {
+    console.log(error);
+    return ('Username already exists');
+  }
+  return ('');
+};
+
+export const logoutRequest = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/logout');
+    if (response.status === 200) {
+      console.log('Logout successful');
+      window.location.assign('/');
+    } else {
+      console.log('Logout failed');
     }
   } catch (error) {
     console.log(error);
