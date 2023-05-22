@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios"
 import { VisualPreferences } from "../scenes/global/Register"
+import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from "../contexts/VisualGraphOptionsContext";
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',
@@ -20,8 +21,7 @@ export const loginRequest = async (username: string, onLogin: () => void): Promi
       username: username,
     },
   })
-    .then(response => {
-      console.log(response.data);
+    .then(async () => {
       onLogin();
       return ('');
     })
@@ -32,26 +32,24 @@ export const loginRequest = async (username: string, onLogin: () => void): Promi
     return('');
 };
 
-export const registerRequest = async (username: string, data: string, settings: VisualPreferences, onRegister: () => void): Promise<string> => {
-  console.log(settings)
-  try {
-    const response = await instance.post('/register', {
+export const registerRequest = async (username: string, data: string, settings: ServerSettings, onRegister: () => void): Promise<string> => {
+
+    instance.post('/register', {
       username,
       data,
-      settings,
-    });
-
-    if (response.status === 200) {
-      console.log('Registration successful');
-      loginRequest(username, onRegister);
-      return ('');
+      settings
+    }).then((response) => {
+      if (response.status === 200) {
+        console.log('Registration successful');
+        loginRequest(username, onRegister);
+        return ('');
     } else {
       console.log('Registration failed');
     }
-  } catch (error) {
+  }).catch ((error) => {
     console.log(error);
     return ('Username already exists');
-  }
+  });
   return ('');
 };
 
@@ -69,10 +67,35 @@ export const logoutRequest = async () => {
   }
 };
 
+export interface ServerOption {
+  label: string;
+  checked: boolean;
+}
+
+export interface ServerSettings {
+  options: ServerOption[];
+  settings: IVisSettings;
+}
+
+export const extractOptions = (options: IVisGraphOption[]): ServerOption[] => {
+  const serverOptions: ServerOption[] = [];
+  options.forEach(option => {
+    serverOptions.push({
+      label: option.label,
+      checked: option.checked,
+    });
+  });
+  return serverOptions;
+}
+
+
 export const saveSettings = async (settings: VisualPreferences) => {
+    const options = extractOptions(settings.options);
+    const sets = settings.settings;
+    const requestSettings: ServerSettings = {options: options, settings: sets}
     try {
       const response = await instance.post('/saveSettings', {
-          settings
+          requestSettings,
     });
 
     if (response.status === 200) {
@@ -82,6 +105,20 @@ export const saveSettings = async (settings: VisualPreferences) => {
         console.error(error);
         console.log('Failed to save settings');
     }
+};
+
+
+export const getSettings = async (): Promise<ServerSettings> => {
+    try {
+        const response = await instance.get('/getSettings');
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        console.error(error);
+        console.log('Failed to get settings');
+    }
+    return {options: [], settings: {}};
 };
 
 export const getBasicGraphInfo = async () => {

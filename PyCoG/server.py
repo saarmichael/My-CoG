@@ -44,12 +44,11 @@ def register():
 @app.route("/saveSettings", methods=["POST"])
 def save_settings():
     data = request.get_json()
-    print(session.get('username', 'not set'))
     # check if user exists
     if not "username" in session:
         return jsonify({"message": "Session error"}), 400
     user = user_in_db(session["username"], User.query)
-    user.settings = data["settings"]
+    user.settings = data["requestSettings"]
     db.session.commit()
     return jsonify({"message": "Settings saved successfully!"})
 
@@ -64,9 +63,14 @@ bp_data = finger_bp["data"]
 ###############################################
 
 
-@app.route("/", methods=["GET"])
-def hello():
-    return "Hello, World!"
+
+@app.route("/getSettings", methods=["GET"])
+def get_settings():
+    print(session.get('username', 'not set'))
+    if not "username" in session:
+        return jsonify({"message": "Session error"}), 400
+    user = user_in_db(session["username"], User.query)
+    return jsonify(user.settings)
 
 
 @app.route("/frequencies", methods=["GET"])
@@ -183,7 +187,7 @@ def get_graph_basic_info():
 @app.route("/logout", methods=["GET"])
 def logout():
     if "username" in session:
-        print(f"{bcolors.GETREQUEST}user logged out: {session['user']}{bcolors.ENDC}")
+        print(f"{bcolors.GETREQUEST}user logged out: {session['username']}{bcolors.ENDC}")
         session.pop("username", None)
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})

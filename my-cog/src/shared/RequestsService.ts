@@ -1,7 +1,9 @@
 import { GraphinData } from "@antv/graphin";
 import { FreqRange, TimeInterval } from './GraphRelated';
 import { BasicGraphResponse, CoherenceResponse } from "./Requests";
-import { apiGET } from "./ServerRequests";
+import { ServerOption, apiGET } from "./ServerRequests";
+import { Server } from "http";
+import { IVisGraphOption } from "../contexts/VisualGraphOptionsContext";
 
 const baseAddress = "http://localhost:5000";
 
@@ -73,3 +75,16 @@ export const fetchImage = async (azimuth: number, elevation: number, distance:nu
     const response =  await apiGET<Blob>(url);
     return URL.createObjectURL(response);
 }
+
+export const reorganizeOptions = (options: ServerOption[], realOptions: IVisGraphOption[]) => {
+    let newOptions: IVisGraphOption[] = [];
+    for (let i = 0; i < options.length; i++) {
+        let option = options[i];
+        let realOption = realOptions.find((realOption) => realOption.label === option.label);
+        if (realOption) {
+            newOptions.push({ ...realOption, checked: option.checked});
+        }
+    }
+    return newOptions;
+}
+    

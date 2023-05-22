@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
-import { registerRequest } from '../../shared/ServerRequests';
+import { ServerSettings, extractOptions, registerRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
-import { IVisGraphOption, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
+import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
 
 
 interface RegisterProps {
@@ -9,8 +9,8 @@ interface RegisterProps {
 }
 
 export interface VisualPreferences {
-  options: IVisGraphOption[] | undefined;
-  settings: IVisSettings | undefined;
+  options: IVisGraphOption[];
+  settings: IVisSettings;
 }
 
 const Register: React.FC<RegisterProps> = ({ onRegister }) => {
@@ -18,16 +18,18 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [data, setData] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const optionsContext = useContext(VisGraphOptionsContext);
-  // add settings and options to a json object
-  const settings: VisualPreferences = {
-    options: optionsContext?.options,
-    settings: optionsContext?.settings,
-  };
+  const { settings, options}= useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+  
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await registerRequest(username, data, settings, onRegister).then((err) => {
+    let organizedOptions = extractOptions(options);
+    // add settings and options to a json object
+    const reorganizedSettings: ServerSettings = {
+      options: organizedOptions,
+      settings: settings,
+    };
+    registerRequest(username, data, reorganizedSettings, onRegister).then((err) => {
       console.log(err)
       setErrorMessage(err)
     });
