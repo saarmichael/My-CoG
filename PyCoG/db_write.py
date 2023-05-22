@@ -1,5 +1,4 @@
-from server_config import User
-from server_config import Calculation, db
+from server_config import User, Calculation, db
 
 def write_calculation(file_name, url, data, created_by):
     calculation = {

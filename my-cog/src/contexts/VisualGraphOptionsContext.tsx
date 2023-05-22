@@ -58,7 +58,7 @@ interface IVisGraphOptionsProviderProps {
     children?: ReactNode;
 }
 
-export const VisGraphOptionsContext = createContext<IVisGraphOptionsContext | null>(null);
+export const VisGraphOptionsContext = createContext<IVisGraphOptionsContext>({ options: [], setOptions: () => { }, settings: {}, setSettings: () => { } });
 
 export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = ({ children }) => {
 

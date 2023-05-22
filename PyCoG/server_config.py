@@ -1,13 +1,15 @@
-from flask import Flask, request, jsonify, session
+import os
+from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])
-app.secret_key = "mysecretkey"
 
+app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CogDb.db'
 db = SQLAlchemy(app)
+CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,10 +1,10 @@
-from flask import request, jsonify, session, send_file
+from flask import Flask, request, jsonify, send_file, session
+from flask_cors import CORS
 from scipy.io import loadmat
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
 from coherence import coherence_over_time
 from coherence import coherence_time_frame, get_recording_duration
-from flask_sqlalchemy import SQLAlchemy
 from consts import bcolors
 from server_config import User, Calculation, db, app
 from image_generator import get_brain_image
@@ -24,18 +24,33 @@ def login():
     if not user:
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
-    print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
+    session.permanent = True
     session["user_data_dir"] = user.data_dir
     session["username"] = user.username
+    print(session.get('username', 'not set'))
+    print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
     return jsonify({"data_dir": user.data_dir})
 
 
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
-    new_user = write_user(data["username"], data["data"], None)
+    # check if user exists
+    if user_in_db(data["username"], User.query):
+        return jsonify({"message": "User already exists!"}), 400
+    write_user(data["username"], data["data"], data["settings"])
     return jsonify({"message": "User created successfully!"})
 
+@app.route("/saveSettings", methods=["POST"])
+def save_settings():
+    data = request.get_json()
+    # check if user exists
+    if not "username" in session:
+        return jsonify({"message": "Session error"}), 400
+    user = user_in_db(session["username"], User.query)
+    user.settings = data["requestSettings"]
+    db.session.commit()
+    return jsonify({"message": "Settings saved successfully!"})
 
 # load the data
 finger_bp = loadmat("users_data/bp_fingerflex.mat")
@@ -48,9 +63,14 @@ bp_data = finger_bp["data"]
 ###############################################
 
 
-@app.route("/", methods=["GET"])
-def hello():
-    return "Hello, World!"
+
+@app.route("/getSettings", methods=["GET"])
+def get_settings():
+    print(session.get('username', 'not set'))
+    if not "username" in session:
+        return jsonify({"message": "Session error"}), 400
+    user = user_in_db(session["username"], User.query)
+    return jsonify(user.settings)
 
 
 @app.route("/frequencies", methods=["GET"])
@@ -166,12 +186,12 @@ def get_graph_basic_info():
 
 @app.route("/logout", methods=["GET"])
 def logout():
-    if "user" in session:
-        print("d")
+    if "username" in session:
+        print(f"{bcolors.GETREQUEST}user logged out: {session['username']}{bcolors.ENDC}")
         session.pop("username", None)
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})
-    return jsonify({"message": "No user logged in!"})
+    return jsonify({"message": "No user logged in!"}), 400
 
 
 import threading

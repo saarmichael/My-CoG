@@ -1,27 +1,27 @@
 import axios, { AxiosResponse } from "axios"
+import { VisualPreferences } from "../scenes/global/Register"
+import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from "../contexts/VisualGraphOptionsContext";
+
+const instance = axios.create({
+  baseURL: 'http://localhost:5000',
+  withCredentials: true,
+});
 
 export const simplePostRequest = async () => {
   const data = { message: 'Hello, server!' }
 
-  fetch('http://localhost:5000/data', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-    .then(response => response.text())
-    .then(data => console.log(data))
+  instance.post('/data', data)
+    .then(response => console.log(response.data))
     .catch(error => console.error(error))
 }
 
 export const loginRequest = async (username: string, onLogin: () => void): Promise<string> => {
-  await axios({
-    method: 'GET',
-    url: 'http://localhost:5000/login?username=' + username,
+  instance.get('/login', {
+    params: {
+      username: username,
+    },
   })
-    .then(response => {
-      console.log(response.data);
+    .then(async () => {
       onLogin();
       return ('');
     })
@@ -32,11 +32,32 @@ export const loginRequest = async (username: string, onLogin: () => void): Promi
     return('');
 };
 
+export const registerRequest = async (username: string, data: string, settings: ServerSettings, onRegister: () => void): Promise<string> => {
+
+    instance.post('/register', {
+      username,
+      data,
+      settings
+    }).then((response) => {
+      if (response.status === 200) {
+        console.log('Registration successful');
+        loginRequest(username, onRegister);
+        return ('');
+    } else {
+      console.log('Registration failed');
+    }
+  }).catch ((error) => {
+    console.log(error);
+    return ('Username already exists');
+  });
+  return ('');
+};
+
 export const logoutRequest = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/logout');
+    const response = await instance.get('/logout');
     if (response.status === 200) {
-      console.log('Logout successful');
+      console.log(response.request);
       window.location.assign('/');
     } else {
       console.log('Logout failed');
@@ -46,27 +67,63 @@ export const logoutRequest = async () => {
   }
 };
 
-export const registerRequest = async (username: string, data: string, onRegister: () => void) => {
-  try {
-    const response = await axios.post('http://localhost:5000/register', {
-      username,
-      data,
+export interface ServerOption {
+  label: string;
+  checked: boolean;
+}
+
+export interface ServerSettings {
+  options: ServerOption[];
+  settings: IVisSettings;
+}
+
+export const extractOptions = (options: IVisGraphOption[]): ServerOption[] => {
+  const serverOptions: ServerOption[] = [];
+  options.forEach(option => {
+    serverOptions.push({
+      label: option.label,
+      checked: option.checked,
+    });
+  });
+  return serverOptions;
+}
+
+
+export const saveSettings = async (settings: VisualPreferences) => {
+    const options = extractOptions(settings.options);
+    const sets = settings.settings;
+    const requestSettings: ServerSettings = {options: options, settings: sets}
+    try {
+      const response = await instance.post('/saveSettings', {
+          requestSettings,
     });
 
     if (response.status === 200) {
-      console.log('Registration successful');
-      loginRequest(username, onRegister);
-    } else {
-      console.log('Registration failed');
+        console.log('Settings saved successfully');
     }
-  } catch (error) {
-    console.log(error);
-  }
+    } catch (error) {
+        console.error(error);
+        console.log('Failed to save settings');
+    }
+};
+
+
+export const getSettings = async (): Promise<ServerSettings> => {
+    try {
+        const response = await instance.get('/getSettings');
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        console.error(error);
+        console.log('Failed to get settings');
+    }
+    return {options: [], settings: {}};
 };
 
 export const getBasicGraphInfo = async () => {
-  fetch('http://localhost:5000/graph')
-    .then(response => response.json())
+  instance.get('/graph')
+    .then(response => response.data)
     .then(data => console.log(data))
     .catch(error => console.error(error))
 };

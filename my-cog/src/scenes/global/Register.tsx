@@ -1,19 +1,38 @@
-import React, { useState } from 'react';
-import { registerRequest } from '../../shared/ServerRequests';
+import React, { useState, useContext } from 'react';
+import { ServerSettings, extractOptions, registerRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
+import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
 
 
 interface RegisterProps {
   onRegister: () => void;
 }
 
+export interface VisualPreferences {
+  options: IVisGraphOption[];
+  settings: IVisSettings;
+}
+
 const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [username, setUsername] = useState('');
   const [data, setData] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const { settings, options}= useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
+  
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    registerRequest(username, data, onRegister);
+    let organizedOptions = extractOptions(options);
+    // add settings and options to a json object
+    const reorganizedSettings: ServerSettings = {
+      options: organizedOptions,
+      settings: settings,
+    };
+    registerRequest(username, data, reorganizedSettings, onRegister).then((err) => {
+      console.log(err)
+      setErrorMessage(err)
+    });
 
   };
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -49,6 +68,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         </button>
       </div>
       <button type="submit" className="submit-button">Register</button>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </form>
   );
 };
