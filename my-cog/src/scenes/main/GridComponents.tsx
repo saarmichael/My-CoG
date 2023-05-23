@@ -7,8 +7,15 @@ import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeF
 import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
 import './GridStyle.css';
 import { EditablesContainer } from "../../components/EditablesContainer";
+import { GraphVisToggles } from "../../components/GraphVisToggles";
+import { Rnd } from "react-rnd";
+import React from "react";
 
-export function Box() {
+export interface BoxProps {
+  name: string;
+}
+
+export const Box: React.FC<BoxProps> = () => {
   const data = getCoherenceByTime(0);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
@@ -16,22 +23,46 @@ export function Box() {
   };
 
   return (
-    <div className="box"
-      style={{ display: 'flex', padding: "5px", width: "100%", height: '100%', paddingBottom: '1%' }}>
-
-      <GraphContainer />
-
-    </div>
+    <>
+      <Rnd default={{
+        x: 10,
+        y: 100,
+        width: 320,
+        height: 200,
+      }}
+        bounds="parent"
+        minWidth={600}
+        minHeight={650}>
+        <div className="box"
+              style={{ display: 'flex', padding: "5px", width: "100%", height: '100%', paddingBottom: '1%' }}>
+            <GraphContainer />
+        </div>
+      </Rnd>
+    </>
   );
 }
 
-export function Box1() {
+export const Box1: React.FC<BoxProps> = () => {
   const { electrode } = useContext(GlobalDataContext) as IGlobalDataContext;
 
   return(
-    <>
-      <EditablesContainer />
-    </>
+    <div>
+        <GraphVisToggles />
+        <Rnd default={{
+          x: 15,
+          y: 0,
+          width: 320,
+          height: 200,
+        }}
+          bounds="parent"
+          minWidth={600}
+          minHeight={550}
+          disableDragging={true}
+          >
+          <EditablesContainer />
+        </Rnd>
+      
+    </div>
   )
 }
 

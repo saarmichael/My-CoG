@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Rnd } from 'react-rnd';
 import { DataOptions } from "../../components/DataOptions";
 import { GraphVisToggles } from "../../components/GraphVisToggles";
 import "../../components/SideBar.css";
-import { Box, Box1, Box2 } from "./GridComponents";
+import { Box, Box1, Box2, BoxProps } from "./GridComponents";
 import "./Tabs.css";
 import Sidebar from "../../components/SideBar";
-
-
+import { ComponentToggleBar, MenuItem } from "./ComponentToggleBar";
 
 
 interface Tab {
@@ -21,90 +20,105 @@ interface TabsProps {
 }
 
 const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
-  const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);
+    const [activeTabIndex, setActiveTabIndex] = useState(0);
+    const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);
 
-  const handleTabClick = (index: number) => {
-    setActiveTabIndex(index);
-    setHiddenComponentIndex([]);
-  };
+    const handleTabClick = (index: number) => {
+      setActiveTabIndex(index);
+      setHiddenComponentIndex([]);
+    };
 
-  const handleAddTabClick = () => {
-    if (onAddTab) {
-      onAddTab();
-    }
-  };
-
-  const handleComponentSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedIndex = Number(event.target.value);
-    setHiddenComponentIndex((prev) => {
-      if (prev.includes(selectedIndex)) {
-        // Remove the index if it's already in the list
-        return prev.filter((i) => i !== selectedIndex);
-      } else {
-        // Add the index if it's not in the list
-        return [...prev, selectedIndex];
+    const handleAddTabClick = () => {
+      if (onAddTab) {
+        onAddTab();
       }
-    });
-  };
+    };
 
-  const renderComponentOptions = () => {
-    return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
-      const componentType = component.type as React.FC;
-      return componentType === React.Fragment ? null : (
-        <option key={index} value={index}>
-          {hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '} {componentType.displayName || componentType.name || "Component"} {index + 1}
-        </option>
-      );
-    });
-  };
 
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-  
+    
+    const [activeMenu, setActiveMenu] = useState<number | null>(null);
 
-  return (
-    <div className="container">
-      <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar}/>
-      <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="bloc-tabs">
-          {tabs.map((tab, index) => (
-            <button
-              key={index}
-              onClick={() => handleTabClick(index)}
-              className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
-            >
-              {tab.label}
-            </button>
-          ))}
-          {onAddTab && (
-            <button className="plus" onClick={handleAddTabClick}>➕</button>
-          )}
+    const toggleMenu = (index: number) => {
+        setActiveMenu(activeMenu === index ? null : index);
+    };
+
+    const handleComponentSelect = (index: number) => {
+        setHiddenComponentIndex((prev) => {
+            if (prev.includes(index)) {
+                return prev.filter((i) => i !== index);
+            } else {
+                return [...prev, index];
+            }
+        });
+    };
+
+    const renderComponentOptions = () => {
+        return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
+            const componentType = component.type as React.FC<BoxProps>;
+            const displayName = component.props.name as string;
+            return componentType === React.Fragment ? null : (
+                <div key={index} onClick={() => handleComponentSelect(index)}>
+                    {hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '} {displayName}
+                </div>
+            );
+        });
+    };
+
+    const menuItems: MenuItem[] = [
+        {
+            name: 'Select a component to hide',
+            items: renderComponentOptions(),
+            action: (event: React.MouseEvent<HTMLInputElement>) => {
+              event.stopPropagation();
+              }
+        }
+    ];
+
+
+    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+    const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    };
+    
+
+    return (
+      <div className="container">
+        <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar}/>
+        <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+          <div className="bloc-tabs">
+            {tabs.map((tab, index) => (
+              <button
+                key={index}
+                onClick={() => handleTabClick(index)}
+                className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
+              >
+                {tab.label}
+              </button>
+            ))}
+            {onAddTab && (
+              <button className="plus" onClick={handleAddTabClick}>➕</button>
+            )}
+          </div>
+          &nbsp;
+          <DataOptions />
+          <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
+            {tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => (
+              hiddenComponentIndex.includes(index)
+                ? null
+                : (
+                  <>
+                    {component}
+                  </>
+                )
+            ))}
+          </div>
+          <div className="hide-component">
+              <ComponentToggleBar menuItems={menuItems} activeMenu={activeMenu} toggleMenu={toggleMenu} />
+          </div>
         </div>
-        <select value="" onChange={handleComponentSelect}>
-          <option value="" disabled>
-            Select a component to hide
-          </option>
-          {renderComponentOptions()}
-        </select>
-        &nbsp;
-        <DataOptions />
-        <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
-          {tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => (
-            hiddenComponentIndex.includes(index)
-              ? null
-              : (
-                <>
-                  {component}
-                </>
-              )
-          ))}
-        </div>
+        
       </div>
-    </div>
-  );
+    );
 };
 
 const Tabbing = () => {
@@ -115,33 +129,9 @@ const Tabbing = () => {
         className="active-content"
       >
 
-        <GraphVisToggles />
-        <Rnd default={{
-          x: 15,
-          y: 0,
-          width: 320,
-          height: 200,
-        }}
-          bounds="parent"
-          minWidth={600}
-          minHeight={550}
-          disableDragging={true}
-          >
-          <Box1 />
-        </Rnd>
+        <Box1 name="Grid"/>
 
-        <Rnd default={{
-          x: 10,
-          y: 100,
-          width: 320,
-          height: 200,
-        }}
-          bounds="parent"
-          minWidth={600}
-          minHeight={650}>
-
-          <Box />
-        </Rnd>
+        <Box name="Graph"/>
 
       </div>,
     },
