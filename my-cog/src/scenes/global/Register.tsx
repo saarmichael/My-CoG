@@ -66,9 +66,10 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         <button type="button" className="file-upload-button" onClick={handleFileButtonClick}>
           📁
         </button>
+        {data && <p className='upload message'>{data.split('\\').pop()}</p>}
       </div>
       <button type="submit" className="submit-button">Register</button>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {errorMessage && <p className="error message">{errorMessage}</p>}
     </form>
   );
 };

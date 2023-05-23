@@ -32,25 +32,26 @@ export const loginRequest = async (username: string, onLogin: () => void): Promi
     return('');
 };
 
-export const registerRequest = async (username: string, data: string, settings: ServerSettings, onRegister: () => void): Promise<string> => {
+export const registerRequest = async (username: string, data: string, settings: ServerSettings, onRegister: () => void) => {
+  try {
+    const response = await instance.post('/register', {
+        username,
+        data,
+        settings
+    });
 
-    instance.post('/register', {
-      username,
-      data,
-      settings
-    }).then((response) => {
-      if (response.status === 200) {
+    if (response.status === 200) {
         console.log('Registration successful');
-        loginRequest(username, onRegister);
-        return ('');
+        await loginRequest(username, onRegister);
+        return 'Registration successful';
     } else {
-      console.log('Registration failed');
+        console.log('Registration failed');
+        return 'Registration failed';
     }
-  }).catch ((error) => {
-    console.log(error);
-    return ('Username already exists');
-  });
-  return ('');
+    } catch (error) {
+        console.log(error);
+        return 'Username already exists';
+    }
 };
 
 export const logoutRequest = async () => {
