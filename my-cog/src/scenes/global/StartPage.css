@@ -64,37 +64,45 @@
 }
 
 .file-upload-button {
-    padding: 10px;
-    width: 50px;
-    height: 50px;
+    padding: 8px;
+    width: 40px;
+    height: 40px;
     margin-left: auto;
     margin-right: auto;
     border: none;
     border-radius: 50%; /* This makes the button a circle */
     background-color: #321248;
     color: #FFFFFF;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     text-align: center;
-    line-height: 30px; /* Vertically centers the text */
+    line-height: 24px; /* Vertically centers the text */
     text-decoration: none;
     transition: background-color 0.3s ease;
     overflow: hidden; /* To ensure nothing spills out of the circular button */
-  }
+}
   
-  .file-upload-label {
+.file-upload-label {
   display: block;
   margin-bottom: 5px;
 }
 
-.error-message {
-    color: #ff0000; /* red color for the error message */
+.message {
     font-size: 16px;
     font-weight: bold;
     font-family: Arial, sans-serif;
-    text-align: center; /* center the text horizontally */
-    margin-top: 20px; /* add some space above the error message */
+    text-align: center; 
+    margin-top: 5px; 
     padding: 10px;
-    border: 1px solid #ff0000; /* red border */
     border-radius: 5px; /* round the corners of the border */
-  }
+}
+
+.error {
+    color: #ff0000; 
+    border: 1px solid #ff0000; 
+}
+
+.upload {
+    color: #00bf00; 
+    border: 1px solid #00bf00; 
+}
