@@ -7,6 +7,7 @@ import { brainImages } from "../shared/brainImages";
 import { GridContext, IGridFocusContext } from "../contexts/GridContext";
 import { IGraph, INode, NodeConfig } from "@antv/g6";
 import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
+import { mode } from "d3";
 
 
 export interface EditableGridProps {
@@ -24,7 +25,13 @@ const GridBehavior = (props: GridBehaviorProps) => {
 
     // consume the Graphin instance via GraphinContext
     const { graph } = useContext(GraphinContext);
-    const { anchorNode, setAnchorNode, setSelectedNode, anchorsLastPosition, setAnchorsLastPosition, angle, applyMove, rotationReady, setRotationReady } = useContext(GridContext) as IGridFocusContext;
+    const { anchorNode, setAnchorNode,
+        setSelectedNode,
+        anchorsLastPosition, setAnchorsLastPosition,
+        angle, applyMove,
+        rotationReady, setRotationReady,
+        nodeSize,
+    } = useContext(GridContext) as IGridFocusContext;
     const { sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [originalNodes, setOriginalNodes] = useState<IUserNode[]>([]);
     const [graphCenter, setGraphCenter] = useState<{ x: number, y: number }>(graph.getGraphCenterPoint());
@@ -48,9 +55,21 @@ const GridBehavior = (props: GridBehaviorProps) => {
         // when triggered, sets the first clicked node as the anchor node
         graph.on('node:click', (e) => {
             const node = e.item as INode;
-            const model = node.getModel() as NodeConfig;
+            const model = node.getModel();
+            if (!model.id) {
+                return;
+            }
             setSelectedNode(model.id);
             setElectrode(model.id);
+            const size = model.style?.keyshape?.size;
+            if (size) {
+                if (Array.isArray(size)) {
+                    graph.updateItem(node, { size: [size[0] + 100, size[1] + 100] });
+                }
+                else {
+                    graph.updateItem(node, { model: {style: { keyshape:{size: size + 10} }} });
+                }
+            }
         });
 
         graph.on('node:dragend', (e) => {
@@ -70,18 +89,18 @@ const GridBehavior = (props: GridBehaviorProps) => {
         });
 
         // when scrolling, make the nodes bigger as well
-        graph.on('wheelzoom', (e) => {
-            const nodes = graph.getNodes();
-            nodes.forEach(node => {
-                const model = node.getModel();
-                if (!model.size) {
-                    model.size = 10;
-                }
-                const newSize = model.size as number + 100;
-                graph.updateItem(node, { size: newSize });
-            });
-        }
-        );
+        // graph.on('wheelzoom', (e) => {
+        //     const nodes = graph.getNodes();
+        //     nodes.forEach(node => {
+        //         const model = node.getModel();
+        //         if (!model.size) {
+        //             model.size = 10;
+        //         }
+        //         const newSize = model.size as number + 100;
+        //         graph.updateItem(node, { size: newSize });
+        //     });
+        // }
+        // );
 
     }, []);
 
@@ -172,6 +191,21 @@ const GridBehavior = (props: GridBehaviorProps) => {
         });
     }, [sharedGraph]);
 
+    // useEffect(() => {
+    //     let delta = 0;
+    //     if (nodeSize.bigger) {
+    //         delta = 100;
+    //     }
+    //     else {
+    //         delta = -10;
+    //     }
+    //     const nodes = graph.getNodes();
+    //     nodes.forEach(node => {
+    //         const updatedNode = { ...node.getModel(), size: node.getModel().size as number + delta };
+    //         node.update(updatedNode, 'style');
+    //     });
+    // }, [nodeSize]);
+
 
     return null;
 }
@@ -184,7 +218,7 @@ export const EditableGrid = (props: EditableGridProps) => {
 
     const { ZoomCanvas, DragCanvas } = Behaviors;
     const { sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
-    const { backgroundImg } = useContext(GridContext) as IGridFocusContext;
+    const { backgroundImg, nodeSize } = useContext(GridContext) as IGridFocusContext;
 
     const initGrid = () => {
         // create only the nodes without any style at all
@@ -219,6 +253,7 @@ export const EditableGrid = (props: EditableGridProps) => {
         }
     }, [sharedGraph]);
 
+
     //createGrid();
     const data = gridGraph;
 
@@ -233,15 +268,22 @@ export const EditableGrid = (props: EditableGridProps) => {
 
     return (
         <>
-            <Graphin data={data} layout={{ type: 'grid', center: [275, 300], 'rows': props.N, 'cols': props.M }}
+            <Graphin data={data} modes={{
+                default: [
+                    'drag-node',
+                    {
+                        type: 'drag-canvas',
+                        enableOptimize: true, // enable the optimize to hide the shapes beside nodes' keyShape
+                    },
+                ],
+            }} layout={{ type: 'grid', center: [275, 300], 'rows': props.N, 'cols': props.M }}
                 style={
                     backgroundStyle
                 }>
                 <ZoomCanvas disabled={false} />
-                <DragCanvas disabled={true} />
                 <GridBehavior
                     originalGraph={createGrid()}
-                     />
+                />
             </Graphin>
         </>
     );

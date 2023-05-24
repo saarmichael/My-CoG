@@ -74,6 +74,7 @@ const Container = () => {
         setRotationReady,
         rotationReady,
         applyMove, setApplyMove,
+        nodeSize, setNodeSize,
     } = useContext(GridContext) as IGridFocusContext;
 
     return (
@@ -135,6 +136,26 @@ const Container = () => {
                     }}
                 >
                     Ready to Rotate
+                </button>
+
+                <button
+                    className="size-button"
+                    title="Set for Size"
+                    onClick={() => {
+                        setNodeSize({trigger: [...nodeSize.trigger], bigger: true});
+                    }}
+                >
+                    ⏫
+                </button>
+
+                <button
+                    className="size-button"
+                    title="Set for Size"
+                    onClick={() => {
+                        setNodeSize({trigger: [...nodeSize.trigger], bigger: false});
+                    }}
+                >
+                    ⏬
                 </button>
 
                 <span className="node-info">

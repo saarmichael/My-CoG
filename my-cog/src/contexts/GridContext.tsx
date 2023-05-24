@@ -21,6 +21,8 @@ export interface IGridFocusContext {
     setBackImgList: (backImgList: Map<string, string>) => void;
     applyMove: any;
     setApplyMove: (applyMove: any) => void;
+    nodeSize: {trigger: any, bigger: boolean};
+    setNodeSize: (nodeSize: {trigger: any, bigger: boolean}) => void;
 }
 
 interface IGridProviderProps {
@@ -38,6 +40,7 @@ export const GridProvider: React.FC<IGridProviderProps> = ({ children }) => {
     const [backgroundImg, setBackgroundImg] = useState<string>("");
     const [backImgList, setBackImgList] = useState<Map<string, string>>(new Map());
     const [applyMove, setApplyMove] = useState<any>([]);
+    const [nodeSize, setNodeSize] = useState<{trigger: any, bigger: boolean}>({trigger: [], bigger: false});
     return (
         <GridContext.Provider value={{
             anchorNode, setAnchorNode,
@@ -48,6 +51,7 @@ export const GridProvider: React.FC<IGridProviderProps> = ({ children }) => {
             backgroundImg, setBackgroundImg,
             backImgList, setBackImgList,
             applyMove, setApplyMove,
+            nodeSize, setNodeSize,
         }}>
             {children}
         </GridContext.Provider>
