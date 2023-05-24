@@ -66,13 +66,15 @@ const ImageSelector = () => {
 
 const Container = () => {
 
-    const [applyMove, setApplyMove] = useState<any>([]);
+    
     const {
         anchorNode, setAnchorNode,
         selectedNode, setSelectedNode,
         setAngle,
         setRotationReady,
         rotationReady,
+        applyMove, setApplyMove,
+        nodeSize, setNodeSize,
     } = useContext(GridContext) as IGridFocusContext;
 
     return (
@@ -136,6 +138,26 @@ const Container = () => {
                     Ready to Rotate
                 </button>
 
+                <button
+                    className="size-button"
+                    title="Set for Size"
+                    onClick={() => {
+                        setNodeSize({trigger: [...nodeSize.trigger], bigger: true});
+                    }}
+                >
+                    ⏫
+                </button>
+
+                <button
+                    className="size-button"
+                    title="Set for Size"
+                    onClick={() => {
+                        setNodeSize({trigger: [...nodeSize.trigger], bigger: false});
+                    }}
+                >
+                    ⏬
+                </button>
+
                 <span className="node-info">
                     Anchor Node: {anchorNode}
                 </span>
@@ -146,7 +168,7 @@ const Container = () => {
 
 
 
-            <EditableGrid N={4} M={3} anchorTrigger={anchorNode} applyMove={applyMove} rotationReady={rotationReady} />
+            <EditableGrid N={4} M={3} />
         </>
     )
 }

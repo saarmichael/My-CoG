@@ -15,7 +15,8 @@
   
   .select-button,
   .move-button,
-  .rotate-button {
+  .rotate-button,
+  .size-button {
     padding: 8px 16px;
     margin-right: 10px;
   }
