@@ -29,7 +29,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
       options: organizedOptions,
       settings: settings,
     };
-    registerRequest(username, data, reorganizedSettings, onRegister).then((err) => {
+    registerRequest(username, data.split('\\').pop() as string, reorganizedSettings, onRegister).then((err) => {
       console.log(err)
       setErrorMessage(err)
     });

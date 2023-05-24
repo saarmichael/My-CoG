@@ -57,7 +57,6 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         </div>
     );
 
-    console.log(options);
     return (
         <div id="sidebar-container">
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>

@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify, send_file, session
-from flask_cors import CORS
+from flask import request, jsonify, send_file, session
 from scipy.io import loadmat
+from util import find_file
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
 from coherence import coherence_over_time
@@ -9,6 +9,7 @@ from consts import bcolors
 from server_config import User, Calculation, db, app
 from image_generator import get_brain_image
 import os
+import threading
 
 
 @app.before_first_request
@@ -52,11 +53,6 @@ def save_settings():
     db.session.commit()
     return jsonify({"message": "Settings saved successfully!"})
 
-# load the data
-finger_bp = loadmat("users_data/bp_fingerflex.mat")
-bp_data = finger_bp["data"]
-# bp_data = bp_data[:, 0:10]
-
 
 ###############################################
 ############### GET REQUESTS ##################
@@ -66,7 +62,7 @@ bp_data = finger_bp["data"]
 
 @app.route("/getSettings", methods=["GET"])
 def get_settings():
-    print(session.get('username', 'not set'))
+    print(session.get('user_data_dir', 'not set'))
     if not "username" in session:
         return jsonify({"message": "Session error"}), 400
     user = user_in_db(session["username"], User.query)
@@ -75,7 +71,8 @@ def get_settings():
 
 @app.route("/frequencies", methods=["GET"])
 def getFrequencies():
-    f, _ = coherence_time_frame(bp_data, 1000, 0, 1)
+    file = loadmat(find_file(session["user_data_dir"], os.getcwd()))["data"]
+    f, _ = coherence_time_frame(file, 1000, 0, 1)
     print(
         f"{bcolors.GETREQUEST}frequencies returned with {len(f)} frequencies{bcolors.ENDC}"
     )
@@ -84,7 +81,10 @@ def getFrequencies():
 
 @app.route("/duration", methods=["GET"])
 def get_time_range():
-    result = get_recording_duration(bp_data, 1000)
+    data = loadmat(find_file(session["user_data_dir"], os.getcwd()))["data"]
+    if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
+        data = data[:, :9]
+    result = get_recording_duration(data, 1000)
     print(f"{bcolors.GETREQUEST}returned duration: {result}{bcolors.ENDC}")
     return jsonify(result)
 
@@ -99,11 +99,7 @@ def get_time_range():
 #       the CM that corresponds to the time frame specified by the start and end parameters
 @app.route("/time", methods=["GET"])
 def get_coherence_matrices():
-    if not "user_data_dir" in session:
-        session["username"] = "test"
-        session["user_data_dir"] = "users_data/bp_fingerflex.mat"
 
-    data = bp_data
     start = request.args.get("start")
     end = request.args.get("end")
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
@@ -116,10 +112,13 @@ def get_coherence_matrices():
         start = "0"
         # end will be the last time frame
         end = "1"
+    data = loadmat(find_file(session["user_data_dir"], os.getcwd()))["data"]
+    if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
+        data = data[:, :9]
     f, CM = coherence_time_frame(data, 1000, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
-    db_cal = write_calculation(file_name, request.url, result, session["username"])
+    # db_cal = write_calculation(file_name, request.url, result, session["username"])
     print(
         f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
     )
@@ -137,19 +136,15 @@ def get_coherence_matrices():
 def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
-
-    if not "user_data_dir" in session:
-        session["username"] = "test"
-        session["user_data_dir"] = "users_data/bp_fingerflex.mat"
     file_name = session["user_data_dir"].split("/")[-1]
     cal = data_in_db(file_name, request.url, Calculation.query)
     if cal:
         CM = cal.data["CM"]
     else:
-        finger_bp = loadmat(session["user_data_dir"])
-        bp_data = finger_bp["data"]
-        bp_data = bp_data[:, 0:10]
-        f, window_time, t, CM = coherence_over_time(bp_data, 1000, 10, 0.5)
+        finger_bp = loadmat(find_file(session["user_data_dir"], os.getcwd()))
+        data = finger_bp["data"]
+        data = data[:, 0:9]
+        f, window_time, t, CM = coherence_over_time(data, 1000, 10, 0.5)
         calculation = {
             "f": f.tolist(),
             "window_time": window_time,
@@ -192,9 +187,6 @@ def logout():
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})
     return jsonify({"message": "No user logged in!"}), 400
-
-
-import threading
 
 
 def get_brain_image_async(file_name, azimuth=0, elevation=90, distance=360, **kwargs):

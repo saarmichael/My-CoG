@@ -15,21 +15,21 @@ export const simplePostRequest = async () => {
     .catch(error => console.error(error))
 }
 
+
 export const loginRequest = async (username: string, onLogin: () => void): Promise<string> => {
-  instance.get('/login', {
-    params: {
-      username: username,
-    },
-  })
-    .then(async () => {
-      onLogin();
-      return ('');
-    })
-    .catch(error => {
-      console.log(error);
-      return ('User Not Found');
+  try {
+    await instance.get('/login', {
+      params: {
+        username: username,
+      },
     });
-    return('');
+
+    onLogin();
+    return '';
+  } catch (error) {
+    console.log(error);
+    return 'User Not Found';
+  }
 };
 
 export const registerRequest = async (username: string, data: string, settings: ServerSettings, onRegister: () => void) => {
@@ -134,23 +134,28 @@ export const getBasicGraphInfo = async () => {
   * This is a generic function for making GET requests to the server.
 */
 export async function apiGET<T>(url: string): Promise<T> {
-  return fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(response.statusText)
-      }
-      if (response.headers.get("content-type")?.includes("image")) {
-        return response.blob() as Promise<T>;
-      }
-      return response.json() as Promise<T>;
-    })
-};
+  try {
+    const response = await instance.get(url);
+
+    if (response.headers['content-type']?.includes('image')) {
+      return new Blob([response.data]) as unknown as T;
+    }
+
+    return response.data as T;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.statusText || 'Error occurred while fetching data');
+    } else {
+      throw error;
+    }
+  }
+}
 
 /* 
   * This is a generic function for making POST requests to the server.
 */
 export async function apiPOST<T>(url: string, data: T): Promise<AxiosResponse<any, any>> {
-  return axios({
+  return instance({
     method: 'POST',
     url: url,
     data: data,
