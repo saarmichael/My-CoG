@@ -61,15 +61,6 @@ const GridBehavior = (props: GridBehaviorProps) => {
             }
             setSelectedNode(model.id);
             setElectrode(model.id);
-            const size = model.style?.keyshape?.size;
-            if (size) {
-                if (Array.isArray(size)) {
-                    graph.updateItem(node, { size: [size[0] + 100, size[1] + 100] });
-                }
-                else {
-                    graph.updateItem(node, { model: {style: { keyshape:{size: size + 10} }} });
-                }
-            }
         });
 
         graph.on('node:dragend', (e) => {
@@ -89,18 +80,22 @@ const GridBehavior = (props: GridBehaviorProps) => {
         });
 
         // when scrolling, make the nodes bigger as well
-        // graph.on('wheelzoom', (e) => {
-        //     const nodes = graph.getNodes();
-        //     nodes.forEach(node => {
-        //         const model = node.getModel();
-        //         if (!model.size) {
-        //             model.size = 10;
-        //         }
-        //         const newSize = model.size as number + 100;
-        //         graph.updateItem(node, { size: newSize });
-        //     });
-        // }
-        // );
+        graph.on('wheelzoom', (e) => {
+            const nodes = graph.getNodes();
+            nodes.forEach(node => {
+                const model = node.getModel();
+                const size = model.style?.keyshape?.size - (e.wheelDelta / 30);
+                if (size) {
+                    if (Array.isArray(size)) {
+                        graph.updateItem(node, { size: [size[0] + 100, size[1] + 100] });
+                    }
+                    else {
+                        graph.updateItem(node, { style: { keyshape: { size: size } } });
+                    }
+                }
+            });
+        }
+        );
 
     }, []);
 
@@ -179,32 +174,21 @@ const GridBehavior = (props: GridBehaviorProps) => {
     useEffect(() => {
         // when `sharedGraph` changes, update the graph style but leave the nodes positions as they are
         const nodes = graph.getNodes();
-        sharedGraph.nodes.forEach(node => {
-            const graphNode = nodes.find(n => n.getModel().id === node.id);
-            if (!graphNode) {
+        nodes.forEach(node => {
+            const sharedGraphNode = sharedGraph.nodes.find(n => n.id === node.getModel().id);
+            if (!sharedGraphNode) {
                 return;
             }
-            // update the node style
-            const nodeStyle = { ...node.style };
-            const updatedNode = { ...graphNode.getModel(), style: nodeStyle };
-            graphNode.update(updatedNode);
+            let prevSize = node.getModel().style?.keyshape?.size;
+            if (!prevSize) {
+                prevSize = sharedGraphNode.style?.keyshape?.size;
+            }
+            node.update({ style: sharedGraphNode.style });
+            if (prevSize) {
+                node.update({ style: { keyshape: { size: prevSize } } });
+            }
         });
     }, [sharedGraph]);
-
-    // useEffect(() => {
-    //     let delta = 0;
-    //     if (nodeSize.bigger) {
-    //         delta = 100;
-    //     }
-    //     else {
-    //         delta = -10;
-    //     }
-    //     const nodes = graph.getNodes();
-    //     nodes.forEach(node => {
-    //         const updatedNode = { ...node.getModel(), size: node.getModel().size as number + delta };
-    //         node.update(updatedNode, 'style');
-    //     });
-    // }, [nodeSize]);
 
 
     return null;
