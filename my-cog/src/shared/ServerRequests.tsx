@@ -35,23 +35,23 @@ export const loginRequest = async (username: string, onLogin: () => void): Promi
 export const registerRequest = async (username: string, data: string, settings: ServerSettings, onRegister: () => void) => {
   try {
     const response = await instance.post('/register', {
-        username,
-        data,
-        settings
+      username,
+      data,
+      settings
     });
 
     if (response.status === 200) {
-        console.log('Registration successful');
-        await loginRequest(username, onRegister);
-        return 'Registration successful';
+      console.log('Registration successful');
+      await loginRequest(username, onRegister);
+      return 'Registration successful';
     } else {
-        console.log('Registration failed');
-        return 'Registration failed';
+      console.log('Registration failed');
+      return 'Registration failed';
     }
-    } catch (error) {
-        console.log(error);
-        return 'Username already exists';
-    }
+  } catch (error) {
+    console.log(error);
+    return 'Username already exists';
+  }
 };
 
 export const logoutRequest = async () => {
@@ -91,35 +91,35 @@ export const extractOptions = (options: IVisGraphOption[]): ServerOption[] => {
 
 
 export const saveSettings = async (settings: VisualPreferences) => {
-    const options = extractOptions(settings.options);
-    const sets = settings.settings;
-    const requestSettings: ServerSettings = {options: options, settings: sets}
-    try {
-      const response = await instance.post('/saveSettings', {
-          requestSettings,
+  const options = extractOptions(settings.options);
+  const sets = settings.settings;
+  const requestSettings: ServerSettings = { options: options, settings: sets }
+  try {
+    const response = await instance.post('/saveSettings', {
+      requestSettings,
     });
 
     if (response.status === 200) {
-        console.log('Settings saved successfully');
+      console.log('Settings saved successfully');
     }
-    } catch (error) {
-        console.error(error);
-        console.log('Failed to save settings');
-    }
+  } catch (error) {
+    console.error(error);
+    console.log('Failed to save settings');
+  }
 };
 
 
 export const getSettings = async (): Promise<ServerSettings> => {
-    try {
-        const response = await instance.get('/getSettings');
-        if (response.status === 200) {
-            return response.data;
-        }
-    } catch (error) {
-        console.error(error);
-        console.log('Failed to get settings');
+  try {
+    const response = await instance.get('/getSettings');
+    if (response.status === 200) {
+      return response.data;
     }
-    return {options: [], settings: {}};
+  } catch (error) {
+    console.error(error);
+    console.log('Failed to get settings');
+  }
+  return { options: [], settings: {} };
 };
 
 export const getBasicGraphInfo = async () => {
@@ -133,13 +133,17 @@ export const getBasicGraphInfo = async () => {
 /* 
   * This is a generic function for making GET requests to the server.
 */
-export async function apiGET<T>(url: string): Promise<T> {
+export async function apiGET<T>(url: string, respType?: 'json' | 'blob'): Promise<T> {
   try {
-    const response = await instance.get(url);
-
-    if (response.headers['content-type']?.includes('image')) {
-      return new Blob([response.data]) as unknown as T;
+    if(!respType) {
+      respType = 'json';
     }
+    const response = await instance.get(url, { responseType: respType });
+
+    // if (response.headers['content-type']?.includes('image')) {
+    //   // turn the response.data into an array buffer
+    //   return response.data as T;
+    // }
 
     return response.data as T;
   } catch (error) {

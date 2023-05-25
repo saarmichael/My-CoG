@@ -72,7 +72,7 @@ export const simpleGetRequest = async () => {
 
 export const fetchImage = async (azimuth: number, elevation: number, distance:number) => {
     let url = `${baseAddress}/brainImage?azimuth=${azimuth}&elevation=${elevation}&distance=${distance}`;
-    const response =  await apiGET<Blob>(url);
+    const response =  await apiGET<Blob>(url, 'blob');
     return URL.createObjectURL(response);
 }
 

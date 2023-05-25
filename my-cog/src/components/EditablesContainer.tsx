@@ -34,7 +34,7 @@ const ImageSelector = () => {
         <>
             <select onChange={(e) => {
                 const selectedImage = e.target.value;
-                setBackgroundImg("url(" + selectedImage + ")");
+                setBackgroundImg(`url(${selectedImage})`);
             }}>
                 {Array.from(backImgList.keys()).map((imageName) => {
                     return <option value={backImgList.get(imageName)}>{imageName}</option>
@@ -56,7 +56,7 @@ const ImageSelector = () => {
                     ", elevation: " + refElevation.current?.value +
                     ", distance: " + refDistance.current?.value;
                 setBackImgList(backImgList.set(imageName, image));
-                setBackgroundImg("url(" + image + ")");
+                setBackgroundImg(`url(${image})`);
             }}>Add Image</button>
 
         </>
