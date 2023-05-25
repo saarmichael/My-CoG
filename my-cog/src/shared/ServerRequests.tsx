@@ -129,7 +129,6 @@ export const getBasicGraphInfo = async () => {
     .catch(error => console.error(error))
 };
 
-
 /* 
   * This is a generic function for making GET requests to the server.
 */

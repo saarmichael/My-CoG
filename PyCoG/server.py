@@ -1,6 +1,6 @@
 from flask import request, jsonify, send_file, session
-from scipy.io import loadmat
-from util import find_file
+from granger import calculate_granger_for_all_pairs
+from util import get_data
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
 from coherence import coherence_over_time
@@ -28,7 +28,6 @@ def login():
     session.permanent = True
     session["user_data_dir"] = user.data_dir
     session["username"] = user.username
-    print(session.get('username', 'not set'))
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
     return jsonify({"data_dir": user.data_dir})
 
@@ -62,7 +61,6 @@ def save_settings():
 
 @app.route("/getSettings", methods=["GET"])
 def get_settings():
-    print(session.get('user_data_dir', 'not set'))
     if not "username" in session:
         return jsonify({"message": "Session error"}), 400
     user = user_in_db(session["username"], User.query)
@@ -71,7 +69,7 @@ def get_settings():
 
 @app.route("/frequencies", methods=["GET"])
 def getFrequencies():
-    file = loadmat(find_file(session["user_data_dir"], os.getcwd()))["data"]
+    file = get_data()
     f, _ = coherence_time_frame(file, 1000, 0, 1)
     print(
         f"{bcolors.GETREQUEST}frequencies returned with {len(f)} frequencies{bcolors.ENDC}"
@@ -81,9 +79,7 @@ def getFrequencies():
 
 @app.route("/duration", methods=["GET"])
 def get_time_range():
-    data = loadmat(find_file(session["user_data_dir"], os.getcwd()))["data"]
-    if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
-        data = data[:, :9]
+    data = get_data()
     result = get_recording_duration(data, 1000)
     print(f"{bcolors.GETREQUEST}returned duration: {result}{bcolors.ENDC}")
     return jsonify(result)
@@ -112,9 +108,7 @@ def get_coherence_matrices():
         start = "0"
         # end will be the last time frame
         end = "1"
-    data = loadmat(find_file(session["user_data_dir"], os.getcwd()))["data"]
-    if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
-        data = data[:, :9]
+    data = get_data()
     f, CM = coherence_time_frame(data, 1000, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
@@ -124,6 +118,11 @@ def get_coherence_matrices():
     )
     return jsonify(result)
 
+@app.route('/granger', methods=['GET'])
+def granger():
+    data = get_data()
+    result = calculate_granger_for_all_pairs(data)  # calculate Granger causality
+    return jsonify(result)  # return the result as JSON
 
 # get_graph_basic_info
 #   Parameters:
@@ -141,9 +140,7 @@ def get_graph_basic_info():
     if cal:
         CM = cal.data["CM"]
     else:
-        finger_bp = loadmat(find_file(session["user_data_dir"], os.getcwd()))
-        data = finger_bp["data"]
-        data = data[:, 0:9]
+        data = get_data()
         f, window_time, t, CM = coherence_over_time(data, 1000, 10, 0.5)
         calculation = {
             "f": f.tolist(),
