@@ -18,17 +18,6 @@ const ImageSelector = () => {
     const refDistance = useRef<HTMLInputElement>(null);
 
 
-    // useEffect(() => {
-    //     // get the initial basic image and initialize the list with it
-    //     const getImage = async () => {
-    //         const image = await fetchImage(0, 0, 360);
-    //         const imageName = "azimuth: 0, elevation: 0, distance: 360";
-    //         setBackImgList(backImgList.set(imageName, image));
-    //     }
-    //     getImage();
-    // }, []);
-
-
     // return a select element with all the images
     return (
         <>
@@ -66,15 +55,10 @@ const ImageSelector = () => {
 
 const Container = () => {
 
-    
+
     const {
-        anchorNode, setAnchorNode,
-        selectedNode, setSelectedNode,
         setAngle,
         setRotationReady,
-        rotationReady,
-        applyMove, setApplyMove,
-        nodeSize, setNodeSize,
     } = useContext(GridContext) as IGridFocusContext;
 
     return (
@@ -108,25 +92,6 @@ const Container = () => {
             </div>
 
             <div className="button-container">
-                <button
-                    className="select-button"
-                    title="Set Anchor Node"
-                    onClick={() => {
-                        setAnchorNode(selectedNode);
-                    }}
-                >
-                    Select Node
-                </button>
-
-                <button
-                    className="move-button"
-                    title="Apply Move"
-                    onClick={() => {
-                        setApplyMove([...applyMove]);
-                    }}
-                >
-                    Move
-                </button>
 
                 <button
                     className="rotate-button"
@@ -138,32 +103,6 @@ const Container = () => {
                     Ready to Rotate
                 </button>
 
-                <button
-                    className="size-button"
-                    title="Set for Size"
-                    onClick={() => {
-                        setNodeSize({trigger: [...nodeSize.trigger], bigger: true});
-                    }}
-                >
-                    ⏫
-                </button>
-
-                <button
-                    className="size-button"
-                    title="Set for Size"
-                    onClick={() => {
-                        setNodeSize({trigger: [...nodeSize.trigger], bigger: false});
-                    }}
-                >
-                    ⏬
-                </button>
-
-                <span className="node-info">
-                    Anchor Node: {anchorNode}
-                </span>
-                <span className="node-info">
-                    Selected Node: {selectedNode}
-                </span>
             </div>
 
 

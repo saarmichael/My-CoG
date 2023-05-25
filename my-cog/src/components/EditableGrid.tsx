@@ -40,18 +40,6 @@ const GridBehavior = (props: GridBehaviorProps) => {
 
 
     useEffect(() => {
-        // update original nodes positions
-        setOriginalNodes(
-            graph.getNodes().map(node => {
-                const model = node.getModel() as IUserNode;
-                return { ...model };
-            }
-            )
-        );
-        setGraphCenter(graph.getGraphCenterPoint());
-    }, [rotationReady]);
-
-    useEffect(() => {
         // when triggered, sets the first clicked node as the anchor node
         graph.on('node:click', (e) => {
             const node = e.item as INode;
@@ -79,6 +67,17 @@ const GridBehavior = (props: GridBehaviorProps) => {
             }
         });
 
+        graph.on('graph: dragend', (e) => {
+            setOriginalNodes(
+                graph.getNodes().map(node => {
+                    const model = node.getModel() as IUserNode;
+                    return { ...model };
+                }
+                )
+            );
+            setGraphCenter(graph.getGraphCenterPoint());
+        });
+
         // when scrolling, make the nodes bigger as well
         graph.on('wheelzoom', (e) => {
             const nodes = graph.getNodes();
@@ -100,49 +99,20 @@ const GridBehavior = (props: GridBehaviorProps) => {
     }, []);
 
     useEffect(() => {
-        // set the anchor nodes position
-        const anchorNodeModel = graph.findById(anchorNode)?.getModel();
-        if (!anchorNodeModel) {
-            return;
-        }
-        if (!anchorNodeModel.x || !anchorNodeModel.y) {
-            return;
-        }
-        const anchorNodePosition = { x: anchorNodeModel.x, y: anchorNodeModel.y };
-        setAnchorsLastPosition(anchorNodePosition);
-        setRotationReady(false);
-    }, [anchorNode]);
-
-
-    useEffect(() => {
-        // when trigered, apply the grid layout but the the anchor node stays the same. all other nodes are moved and the layout is still 'grid'
-        // find the delta anchor node position and apply it to all other nodes
-        const anchorNodeModel = graph.findById(anchorNode)?.getModel();
-        if (!anchorNodeModel) {
-            return;
-        }
-        const anchorNodePosition = { x: anchorNodeModel.x, y: anchorNodeModel.y };
-        if (!anchorNodePosition.x || !anchorNodePosition.y) {
-            return;
-        }
-        const delta = { x: anchorNodePosition.x - anchorsLastPosition.x, y: anchorNodePosition.y - anchorsLastPosition.y };
-        const nodes = graph.getNodes();
-        nodes.forEach(node => {
-            const model = node.getModel();
-            if (model.x && model.y) {
-                if (model.id !== anchorNode) {
-                    node.updatePosition({ x: model.x + delta.x, y: model.y + delta.y });
-                }
+        setOriginalNodes(
+            graph.getNodes().map(node => {
+                const model = node.getModel() as IUserNode;
+                return { ...model };
             }
-        }
+            )
         );
-        setAnchorNode('');
-    }, [applyMove]);
+        setGraphCenter(graph.getGraphCenterPoint());
+    }, [sharedGraph]);
 
     useEffect(() => {
-        if (!rotationReady) {
-            return;
-        }
+        // if (!rotationReady) {
+        //     return;
+        // }
         // rotate the grid by `angle` degrees`
         const angleRad = angle * Math.PI / 180;
         const nodes = graph.getNodes();
