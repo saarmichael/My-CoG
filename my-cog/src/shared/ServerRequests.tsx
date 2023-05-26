@@ -7,15 +7,6 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-export const simplePostRequest = async () => {
-  const data = { message: 'Hello, server!' }
-
-  instance.post('/data', data)
-    .then(response => console.log(response.data))
-    .catch(error => console.error(error))
-}
-
-
 export const loginRequest = async (username: string, onLogin: () => void): Promise<string> => {
   try {
     await instance.get('/login', {
@@ -122,12 +113,6 @@ export const getSettings = async (): Promise<ServerSettings> => {
   return { options: [], settings: {} };
 };
 
-export const getBasicGraphInfo = async () => {
-  instance.get('/graph')
-    .then(response => response.data)
-    .then(data => console.log(data))
-    .catch(error => console.error(error))
-};
 
 /* 
   * This is a generic function for making GET requests to the server.
