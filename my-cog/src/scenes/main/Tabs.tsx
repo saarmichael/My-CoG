@@ -102,14 +102,10 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
           &nbsp;
           <DataOptions />
           <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
-            {tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => (
-              hiddenComponentIndex.includes(index)
-                ? null
-                : (
-                  <>
-                    {component}
-                  </>
-                )
+            {tabs.map((tab, index) => (
+              <div style={{ display: index === activeTabIndex ? '' : 'none', height: '100%' }}>
+                {tab.content}
+              </div>
             ))}
           </div>
           <div className="hide-component">
