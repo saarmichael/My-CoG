@@ -9,7 +9,6 @@ const baseAddress = "http://localhost:5000";
 
 
 let singletonGraph: GraphinData;
-const coherenceMap = new Map<string, Promise<CoherenceResponse>>();
 let singletonFrequencies: number[];
 let singletonDuration: number;
 
@@ -40,10 +39,7 @@ export const getCoherenceResponse =
         if (time) {
             url += `?start=${time.start}&end=${time.end}`;
         }
-        if (!coherenceMap.has(url)) {
-            coherenceMap.set(url, apiGET<CoherenceResponse>(url));
-        }
-        let response = coherenceMap.get(url);
+        const response = await apiGET<CoherenceResponse>(url);
         return response;
     }
 
@@ -70,9 +66,9 @@ export const simpleGetRequest = async () => {
         .catch(error => console.error(error))
 }
 
-export const fetchImage = async (azimuth: number, elevation: number, distance:number) => {
+export const fetchImage = async (azimuth: number, elevation: number, distance: number) => {
     let url = `${baseAddress}/brainImage?azimuth=${azimuth}&elevation=${elevation}&distance=${distance}`;
-    const response =  await apiGET<Blob>(url, 'blob');
+    const response = await apiGET<Blob>(url, 'blob');
     return URL.createObjectURL(response);
 }
 
@@ -82,9 +78,8 @@ export const reorganizeOptions = (options: ServerOption[], realOptions: IVisGrap
         let option = options[i];
         let realOption = realOptions.find((realOption) => realOption.label === option.label);
         if (realOption) {
-            newOptions.push({ ...realOption, checked: option.checked});
+            newOptions.push({ ...realOption, checked: option.checked });
         }
     }
     return newOptions;
 }
-    

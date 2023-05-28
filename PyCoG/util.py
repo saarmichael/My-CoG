@@ -13,5 +13,5 @@ def get_data():
     data = loadmat(find_file(session["user_data_dir"], os.getcwd()))["data"]
     # special case for finger flex data
     if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
-            data = data[:, 0:10]
+        data = data[:, 0:9]
     return data
