@@ -41,6 +41,7 @@ def register():
     write_user(data["username"], data["data"], data["settings"])
     return jsonify({"message": "User created successfully!"})
 
+
 @app.route("/saveSettings", methods=["POST"])
 def save_settings():
     data = request.get_json()
@@ -56,7 +57,6 @@ def save_settings():
 ###############################################
 ############### GET REQUESTS ##################
 ###############################################
-
 
 
 @app.route("/getSettings", methods=["GET"])
@@ -95,7 +95,6 @@ def get_time_range():
 #       the CM that corresponds to the time frame specified by the start and end parameters
 @app.route("/time", methods=["GET"])
 def get_coherence_matrices():
-
     start = request.args.get("start")
     end = request.args.get("end")
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
@@ -104,11 +103,15 @@ def get_coherence_matrices():
     if cal:
         return jsonify(cal.data)
     # error handling
-    if ((start is None) or (start == "0")) or ((end is None) or (end == "0")):
+    if start is None:
         start = "0"
         # end will be the last time frame
+    if end is None:
         end = "1"
+    if int(start) > int(end):
+        end = str(int(start) + 1)
     data = get_data()
+    print(f"{bcolors.DEBUG}in time/ : data shape: {data.shape}{bcolors.ENDC}")
     f, CM = coherence_time_frame(data, 1000, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
@@ -118,11 +121,13 @@ def get_coherence_matrices():
     )
     return jsonify(result)
 
-@app.route('/granger', methods=['GET'])
+
+@app.route("/granger", methods=["GET"])
 def granger():
     data = get_data()
     result = calculate_granger_for_all_pairs(data)  # calculate Granger causality
     return jsonify(result)  # return the result as JSON
+
 
 # get_graph_basic_info
 #   Parameters:
@@ -179,7 +184,9 @@ def get_graph_basic_info():
 @app.route("/logout", methods=["GET"])
 def logout():
     if "username" in session:
-        print(f"{bcolors.GETREQUEST}user logged out: {session['username']}{bcolors.ENDC}")
+        print(
+            f"{bcolors.GETREQUEST}user logged out: {session['username']}{bcolors.ENDC}"
+        )
         session.pop("username", None)
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})

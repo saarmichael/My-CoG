@@ -27,9 +27,9 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const response = await apiGET<Data>("http://localhost:5000/granger");
+        // const response = await apiGET<Data>("http://localhost:5000/granger");
 
-        console.log(response);
+        // console.log(response);
       };
 
       fetchData();
