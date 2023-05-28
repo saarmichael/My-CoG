@@ -1,6 +1,7 @@
 import './TopBar.css';
 import React, { useState } from 'react';
-import { handleNew, handleOpen, handleSave, handleSaveAs, handleUndo, handleRedo, handleFullscreen, handleOptions, handleLogout } from '../../shared/TopBarUtil';
+import { AddFile, handleOpen, handleSave, handleSaveAs, handleUndo, handleRedo, handleFullscreen, handleOptions, handleLogout } from '../../shared/TopBarUtil';
+import MyDropzone from '../global/MyDropZone';
 
 interface MenuItem {
     name: string;
@@ -45,12 +46,14 @@ export const TopBar: React.FC<TopBarProps> = ({ menuItems }) => {
 };
 
 
+
 export const menuItems: MenuItem[] = [
+    
     {
         name: 'File',
         items: [
-            <div onClick={() => handleNew()}>
-                New
+            <div>
+                <MyDropzone dropFunc={AddFile} message='Add File'/>
             </div>,
             <div onClick={() => handleOpen()}>
                 Open

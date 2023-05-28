@@ -1,7 +1,9 @@
-import { logoutRequest } from "./ServerRequests";
+import { apiPOST, logoutRequest } from "./ServerRequests";
 
-export function handleNew() {
-    console.log("New");
+export function AddFile(file: string) {
+    apiPOST<object>('/addFile',  {file: file}).then((response) => {
+        console.log(response);
+    });
 }
 
 export function handleOpen() {

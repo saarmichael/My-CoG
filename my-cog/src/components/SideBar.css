@@ -9,7 +9,6 @@
 .sidebar {
   display: flex;
   position: absolute;
-  z-index: 1;
   flex-direction: column;
   left: -300px;
   width: 300px;

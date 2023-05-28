@@ -1,4 +1,7 @@
+import ast
+import json
 from flask import request, jsonify, send_file, session
+from db_write import update_data_dir
 from granger import calculate_granger_for_all_pairs
 from util import get_data
 from cache_check import data_in_db, user_in_db
@@ -26,7 +29,7 @@ def login():
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session.permanent = True
-    session["user_data_dir"] = user.data_dir
+    session["user_data_dir"] = ast.literal_eval(user.data_dir)[0]
     session["username"] = user.username
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
     return jsonify({"data_dir": user.data_dir})
@@ -40,6 +43,12 @@ def register():
         return jsonify({"message": "User already exists!"}), 400
     write_user(data["username"], data["data"], data["settings"])
     return jsonify({"message": "User created successfully!"})
+
+@app.route("/addFile", methods=["POST"])
+def add_file():
+    data = request.get_json()
+    update_data_dir(session["username"], data["file"])
+    return jsonify({"message": "File added successfully!"})
 
 @app.route("/saveSettings", methods=["POST"])
 def save_settings():
@@ -99,7 +108,7 @@ def get_coherence_matrices():
     start = request.args.get("start")
     end = request.args.get("end")
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
-    file_name = session["user_data_dir"].split("/")[-1]
+    file_name = session["user_data_dir"]
     cal = data_in_db(file_name, request.url, Calculation.query)
     if cal:
         return jsonify(cal.data)
@@ -112,7 +121,7 @@ def get_coherence_matrices():
     f, CM = coherence_time_frame(data, 1000, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
-    # db_cal = write_calculation(file_name, request.url, result, session["username"])
+    write_calculation(file_name, request.url, result, session["username"])
     print(
         f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
     )
