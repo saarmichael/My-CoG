@@ -7,6 +7,7 @@ import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
 import { FreqRange, TimeInterval } from './GraphRelated';
 import { CoherenceResponse } from './Requests';
 import { getCoherenceResponse, getSingletonFreqList, getSingletonGraph } from './RequestsService';
+import { NODE_LABEL_FONT_SIZE } from './DesignConsts';
 
 
 // function that creates circular positions (x, y)[] for the nodes
@@ -464,6 +465,9 @@ export const getGraphBase = async (): Promise<GraphinData> => {
                     ...graph.edges[index].style?.keyshape?.endArrow,
                     path: '0',
                 }
+            }, 
+            label: {
+                fontSize: NODE_LABEL_FONT_SIZE,
             }
         }
     });
@@ -596,6 +600,7 @@ export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
             ...graph.nodes[i].style,
             label: {
                 ...graph.nodes[i].style?.label,
+                fontSize: NODE_LABEL_FONT_SIZE,
                 value: idNum,
                 position: 'center',
             },
