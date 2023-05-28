@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Rnd } from 'react-rnd';
 import { DataOptions } from "../../components/DataOptions";
 import { GraphVisToggles } from "../../components/GraphVisToggles";
@@ -7,6 +7,8 @@ import { Box, Box1, Box2, BoxProps } from "./GridComponents";
 import "./Tabs.css";
 import Sidebar from "../../components/SideBar";
 import { ComponentToggleBar, MenuItem } from "./ComponentToggleBar";
+import { apiGET } from "../../shared/ServerRequests";
+import { AxiosResponse } from "axios";
 
 
 interface Tab {
@@ -19,7 +21,20 @@ interface TabsProps {
   onAddTab?: () => void;
 }
 
+type Data = Promise<number[][]>;
+
 const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const response = await apiGET<Data>("http://localhost:5000/granger");
+
+        console.log(response);
+      };
+
+      fetchData();
+    }, []);
+    
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);
 

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { loginRequest, getSettings } from '../../shared/ServerRequests';
+import { loginRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
 
