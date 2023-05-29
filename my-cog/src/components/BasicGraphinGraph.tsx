@@ -83,9 +83,8 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState, sharedGraph, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, setState, sharedGraph, setSharedGraph, setElectrodeList, freqRange, setFreqList, timeRange, setDuration, activeNodes, setActiveNodes } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
-    const [graphinState, setGraphinState] = React.useState<GraphinData>({ nodes: [], edges: [] });
 
     const getFrequencyAndTime = async () => {
         let frequencyListAsync = await getSingletonFreqList();
@@ -101,7 +100,11 @@ const BasicGraphinGraph = () => {
     }
 
     const applyVisualizationOptions = async () => {
-        let graph = options.reduce((acc, option) => {
+        let graph = { ...state };
+        // keep only the active nodes
+        graph.nodes = graph.nodes.filter((node) => activeNodes.includes(node.id));
+        graph.edges = graph.edges.filter((edge) => activeNodes.includes(edge.source) && activeNodes.includes(edge.target));
+        graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, { ...settings });
             } else {
@@ -110,7 +113,7 @@ const BasicGraphinGraph = () => {
                 }
             }
             return acc;
-        }, state);
+        }, graph);
         return { ...graph };
     }
 
@@ -123,7 +126,6 @@ const BasicGraphinGraph = () => {
 
     const [changeVis, setChangeVis] = React.useState<number[]>([1]);
 
-
     // change the graph data according to the user's selections
     useEffect(() => {
         console.log(`useEffect`, `getFrequencyAndTime`)
@@ -133,6 +135,7 @@ const BasicGraphinGraph = () => {
         });
         console.log(`useEffect`, `createBasicGraph`)
         createBasicGraph().then((data) => {
+            setActiveNodes(data.nodes.map((node) => node.id));
             setState(data);
             setSharedGraph({ ...data });
             setChangeVis([...changeVis])
@@ -154,7 +157,7 @@ const BasicGraphinGraph = () => {
         applyVisualizationOptions().then((data) => {
             setSharedGraph(data);
         });
-    }, [options, settings, changeVis]);
+    }, [options, settings, changeVis, activeNodes]);
 
     // createGraphData();
     // set the electrode list according to the current graph
