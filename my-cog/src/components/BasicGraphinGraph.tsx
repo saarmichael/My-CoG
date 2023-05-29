@@ -83,7 +83,7 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState, sharedGraph, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, setState, sharedGraph, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration, chosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const [graphinState, setGraphinState] = React.useState<GraphinData>({ nodes: [], edges: [] });
 
@@ -137,7 +137,7 @@ const BasicGraphinGraph = () => {
             setSharedGraph({ ...data });
             setChangeVis([...changeVis])
         });
-    }, []);
+    }, [chosenFile]);
 
     useEffect(() => {
         if (!state.nodes.length || !state.edges.length) return;

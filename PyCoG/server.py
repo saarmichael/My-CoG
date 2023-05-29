@@ -93,6 +93,11 @@ def get_time_range():
     print(f"{bcolors.GETREQUEST}returned duration: {result}{bcolors.ENDC}")
     return jsonify(result)
 
+@app.route("/getFiles", methods=["GET"])
+def get_files():
+    user = user_in_db(session["username"], User.query)
+    return jsonify(ast.literal_eval(user.data_dir))
+
 
 # get_coherence_matrices
 #   Parameters:

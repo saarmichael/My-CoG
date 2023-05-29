@@ -1,4 +1,4 @@
-import { apiPOST, logoutRequest } from "./ServerRequests";
+import { apiGET, apiPOST, logoutRequest } from "./ServerRequests";
 
 export function AddFile(file: string) {
     apiPOST<object>('/addFile',  {file: file}).then((response) => {
@@ -6,9 +6,6 @@ export function AddFile(file: string) {
     });
 }
 
-export function handleOpen() {
-    console.log("Open");
-}
 
 export function handleSave() {
     console.log("Save");

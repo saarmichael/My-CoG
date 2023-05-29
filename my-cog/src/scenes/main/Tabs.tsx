@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Rnd } from 'react-rnd';
 import { DataOptions } from "../../components/DataOptions";
 import { GraphVisToggles } from "../../components/GraphVisToggles";
@@ -9,6 +9,7 @@ import Sidebar from "../../components/SideBar";
 import { ComponentToggleBar, MenuItem } from "./ComponentToggleBar";
 import { apiGET } from "../../shared/ServerRequests";
 import { AxiosResponse } from "axios";
+import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 
 
 interface Tab {
@@ -24,16 +25,11 @@ interface TabsProps {
 type Data = Promise<number[][]>;
 
 const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
+    const { setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
 
-    // useEffect(() => {
-    //   const fetchData = async () => {
-    //     const response = await apiGET<Data>("http://localhost:5000/granger");
-
-    //     console.log(response);
-    //   };
-
-    //   fetchData();
-    // }, []);
+    useEffect(() => {
+      setChosenFile("test");
+    }, []);
     
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);
