@@ -441,17 +441,36 @@ const applyCMOnGraph = (graph: GraphinData, CM: number[][]) => {
     return { ...graph };
 }
 
-export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, time?: TimeInterval)
+export let singletonCM: number[][][] = [[[]]];
+
+export const getGraphCoherence = async (graph: GraphinData, freq: FreqRange, time?: TimeInterval)
     : Promise<GraphinData> => {
     const url = buildRequest(time);
     let response: CoherenceResponse | undefined = await getCoherenceResponse(time);
     if (!response) {
         return graph;
     }
+    singletonCM = response.CM;
     const CM = getAverageCMbyCM(response.CM, response.f, freq);
     const newGraph = applyCMOnGraph(graph, CM);
     return newGraph;
 }
+
+export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, freqList: number[]) => {
+    if(singletonCM[0].length === 1 && singletonCM[0][0].length === 1 && singletonCM[0][0][0] === 0){
+        return graph;
+    }
+    if(freqList.length === 0){
+        return graph;
+    }
+    if(freq === undefined){
+        return graph;
+    }
+    const CM = getAverageCMbyCM(singletonCM, freqList, freq);
+    const newGraph = applyCMOnGraph(graph, CM);
+    return newGraph;
+}
+
 
 export const getGraphBase = async (): Promise<GraphinData> => {
     let graph = await getSingletonGraph();
