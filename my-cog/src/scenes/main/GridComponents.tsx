@@ -27,12 +27,12 @@ export const Box: React.FC<BoxProps> = () => {
       <Rnd default={{
         x: 10,
         y: 100,
-        width: 320,
-        height: 200,
+        width: 600,
+        height: 600,
       }}
         bounds="parent"
-        minWidth={600}
-        minHeight={650}>
+        minWidth={350}
+        minHeight={400}>
         <div className="box"
               style={{ display: 'flex', padding: "5px", width: "100%", height: '100%', paddingBottom: '1%' }}>
             <GraphContainer />

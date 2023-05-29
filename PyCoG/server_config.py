@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CogDb.db'
 db = SQLAlchemy(app)
+
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
 

@@ -114,18 +114,22 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
               <button className="plus" onClick={handleAddTabClick}>➕</button>
             )}
           </div>
-          &nbsp;
-          <DataOptions />
+          
           <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
             {tabs.map((tab, index) => (
               <div style={{ display: index === activeTabIndex ? '' : 'none', height: '100%' }}>
-                {tab.content}
+                {tab.content.props.children.map((component: JSX.Element, index: number) => (
+                  <div style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '', width:'100%', height:'100%', position:'absolute'}}>
+                    {component}
+                  </div>
+                ))}
               </div>
             ))}
           </div>
           <div className="hide-component">
               <ComponentToggleBar menuItems={menuItems} activeMenu={activeMenu} toggleMenu={toggleMenu} />
           </div>
+          <DataOptions />
         </div>
         
       </div>
