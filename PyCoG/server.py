@@ -215,5 +215,14 @@ def receive_data():
     return "Data received"
 
 
+@app.route("/exportData", methods=["POST"])
+def export_data():
+    print(f"{bcolors.DEBUG}exporting data{bcolors.ENDC}")
+    data = request.json
+    print(f"{bcolors.DEBUG}data: {data}{bcolors.ENDC}")
+    # do something with data
+    return "Data received"
+
+
 if __name__ == "__main__":
     app.run()

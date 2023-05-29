@@ -1,7 +1,7 @@
 import { GraphinData } from "@antv/graphin";
 import { FreqRange, TimeInterval } from './GraphRelated';
 import { BasicGraphResponse, CoherenceResponse } from "./Requests";
-import { ServerOption, apiGET } from "./ServerRequests";
+import { ServerOption, apiGET, apiPOST } from "./ServerRequests";
 import { Server } from "http";
 import { IVisGraphOption } from "../contexts/VisualGraphOptionsContext";
 
@@ -82,4 +82,10 @@ export const reorganizeOptions = (options: ServerOption[], realOptions: IVisGrap
         }
     }
     return newOptions;
+}
+
+export const exportData = async (time: TimeInterval, connectivityMeasure?: string) => {
+    const url = `/exportData`
+    const response = await apiPOST<TimeInterval>(url, time);
+    return response;
 }
