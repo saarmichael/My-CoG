@@ -3,7 +3,7 @@ import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '
 import React, { useContext, useEffect } from 'react';
 import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
-import { getGraphBase, updateGraphCoherence } from '../shared/GraphService';
+import { getGraphBase, getGraphCoherence, updateGraphCoherence } from '../shared/GraphService';
 import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
 
 
@@ -83,7 +83,7 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState, sharedGraph, setSharedGraph, setElectrodeList, freqRange, setFreqList, timeRange, setDuration, activeNodes, setActiveNodes } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, setState, sharedGraph, setSharedGraph, setElectrodeList, freqRange, setFreqList, freqList, timeRange, setDuration, activeNodes, setActiveNodes } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
 
     const getFrequencyAndTime = async () => {
@@ -120,7 +120,13 @@ const BasicGraphinGraph = () => {
     const createGraphData = async () => {
         // get the coherence values for the selected frequency and time ranges
         let graph = { ...state };
-        graph = await updateGraphCoherence(graph, freqRange, timeRange);
+        graph = await getGraphCoherence(graph, freqRange, timeRange);
+        return { ...graph };
+    }
+
+    const updateGraphData = async () => {
+        let graph = { ...state };
+        graph = await updateGraphCoherence(graph, freqRange, freqList);
         return { ...graph };
     }
 
@@ -150,7 +156,17 @@ const BasicGraphinGraph = () => {
             setState(data);
             setChangeVis([...changeVis]);
         });
-    }, [freqRange, timeRange]); // TODO: make this more generic
+    }, [timeRange]); // TODO: make this more generic
+
+    useEffect(() => {
+        if (!state.nodes.length || !state.edges.length) return;
+        console.log(`useEffect`, `createGraphData`)
+        updateGraphData().then((data) => {
+            //console.log(`data:`, data);
+            setState(data);
+            setChangeVis([...changeVis]);
+        });
+    }, [freqRange]);
 
     useEffect(() => {
         console.log(`useEffect`, `applyVisualizationOptions`)
