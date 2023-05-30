@@ -8,3 +8,8 @@ export interface TimeInterval {
     start: number;
     end: number;
 }
+
+export interface ExportDataProps {
+    time: TimeInterval;
+    connectivityMeasure: string;
+}

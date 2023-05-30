@@ -6,4 +6,5 @@
 *.jpeg
 *.gif
 *.bmp
-node_modules
+*.mat
+

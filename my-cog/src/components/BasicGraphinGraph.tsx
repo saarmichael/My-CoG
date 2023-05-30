@@ -5,8 +5,8 @@ import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocu
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { getGraphBase, updateGraphCoherence } from '../shared/GraphService';
 import { getDuration, getFrequencies } from '../shared/RequestsService';
-
-
+import { getGraphBase, getGraphCoherence, updateGraphCoherence } from '../shared/GraphService';
+import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
 
 
 const SampleBehavior = () => {
@@ -83,9 +83,16 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState, sharedGraph, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration, chosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, setState,
+        sharedGraph, setSharedGraph,
+        setElectrodeList,
+        freqRange,
+        setFreqList, freqList,
+        timeRange, setDuration,
+        activeNodes, setActiveNodes,
+        setLoading, chosenFile
+    } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
-    const [graphinState, setGraphinState] = React.useState<GraphinData>({ nodes: [], edges: [] });
 
     const getFrequencyAndTime = async () => {
         let frequencyListAsync = await getFrequencies();
@@ -101,7 +108,11 @@ const BasicGraphinGraph = () => {
     }
 
     const applyVisualizationOptions = async () => {
-        let graph = options.reduce((acc, option) => {
+        let graph = { ...state };
+        // keep only the active nodes
+        graph.nodes = graph.nodes.filter((node) => activeNodes.includes(node.id));
+        graph.edges = graph.edges.filter((edge) => activeNodes.includes(edge.source) && activeNodes.includes(edge.target));
+        graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, { ...settings });
             } else {
@@ -110,19 +121,24 @@ const BasicGraphinGraph = () => {
                 }
             }
             return acc;
-        }, state);
+        }, graph);
         return { ...graph };
     }
 
     const createGraphData = async () => {
         // get the coherence values for the selected frequency and time ranges
         let graph = { ...state };
-        graph = await updateGraphCoherence(graph, freqRange, timeRange);
+        graph = await getGraphCoherence(graph, freqRange, timeRange);
+        return { ...graph };
+    }
+
+    const updateGraphData = async () => {
+        let graph = { ...state };
+        graph = await updateGraphCoherence(graph, freqRange, freqList);
         return { ...graph };
     }
 
     const [changeVis, setChangeVis] = React.useState<number[]>([1]);
-
 
     // change the graph data according to the user's selections
     useEffect(() => {
@@ -133,6 +149,7 @@ const BasicGraphinGraph = () => {
         });
         console.log(`useEffect`, `createBasicGraph`)
         createBasicGraph().then((data) => {
+            setActiveNodes(data.nodes.map((node) => node.id));
             setState(data);
             setSharedGraph({ ...data });
             setChangeVis([...changeVis])
@@ -141,20 +158,32 @@ const BasicGraphinGraph = () => {
 
     useEffect(() => {
         if (!state.nodes.length || !state.edges.length) return;
+        setLoading(true);
         console.log(`useEffect`, `createGraphData`)
         createGraphData().then((data) => {
+            //console.log(`data:`, data);
+            setLoading(false);
+            setState(data);
+            setChangeVis([...changeVis]);
+        });
+    }, [timeRange]); // TODO: make this more generic
+
+    useEffect(() => {
+        if (!state.nodes.length || !state.edges.length) return;
+        console.log(`useEffect`, `createGraphData`)
+        updateGraphData().then((data) => {
             //console.log(`data:`, data);
             setState(data);
             setChangeVis([...changeVis]);
         });
-    }, [freqRange, timeRange]); // TODO: make this more generic
+    }, [freqRange]);
 
     useEffect(() => {
         console.log(`useEffect`, `applyVisualizationOptions`)
         applyVisualizationOptions().then((data) => {
             setSharedGraph(data);
         });
-    }, [options, settings, changeVis]);
+    }, [options, settings, changeVis, activeNodes]);
 
     // createGraphData();
     // set the electrode list according to the current graph
