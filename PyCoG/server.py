@@ -1,7 +1,7 @@
 from flask import request, jsonify, send_file, session
 from export_data import export_coherence_to_mat
 from granger import calculate_granger_for_all_pairs
-from util import get_data
+from util import dataProvider
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
 from coherence import coherence_over_time
@@ -12,6 +12,9 @@ from image_generator import get_brain_image
 import os
 import threading
 from datetime import datetime
+
+
+data_provider = dataProvider(session)
 
 
 @app.before_first_request
@@ -71,8 +74,9 @@ def get_settings():
 
 @app.route("/frequencies", methods=["GET"])
 def getFrequencies():
-    file = get_data()
-    f, _ = coherence_time_frame(file, 1000, 0, 1)
+    file = data_provider.get_data()
+    sfreq = data_provider.get_sampling_rate()
+    f, _ = coherence_time_frame(file, sfreq, 0, 1)
     print(
         f"{bcolors.GETREQUEST}frequencies returned with {len(f)} frequencies{bcolors.ENDC}"
     )
@@ -81,8 +85,9 @@ def getFrequencies():
 
 @app.route("/duration", methods=["GET"])
 def get_time_range():
-    data = get_data()
-    result = get_recording_duration(data, 1000)
+    data = data_provider.get_data()
+    sfreq = data_provider.get_sampling_rate()
+    result = get_recording_duration(data, sfreq)
     print(f"{bcolors.GETREQUEST}returned duration: {result}{bcolors.ENDC}")
     return jsonify(result)
 
@@ -112,9 +117,10 @@ def get_coherence_matrices():
         end = "1"
     if int(start) > int(end):
         end = str(int(start) + 1)
-    data = get_data()
+    data = data_provider.get_data()
     print(f"{bcolors.DEBUG}in time/ : data shape: {data.shape}{bcolors.ENDC}")
-    f, CM = coherence_time_frame(data, 1000, start, end)
+    sfreq = data_provider.get_sampling_rate()
+    f, CM = coherence_time_frame(data, sfreq, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
     # db_cal = write_calculation(file_name, request.url, result, session["username"])
@@ -126,7 +132,7 @@ def get_coherence_matrices():
 
 @app.route("/granger", methods=["GET"])
 def granger():
-    data = get_data()
+    data = data_provider.get_data()
     result = calculate_granger_for_all_pairs(data)  # calculate Granger causality
     return jsonify(result)  # return the result as JSON
 
@@ -142,7 +148,7 @@ def granger():
 def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
-    num_nodes = get_data().shape[1]
+    num_nodes = data_provider.get_data().shape[1]
     # create the ids and labels.
     nodes = []
     for i in range(num_nodes):
@@ -231,8 +237,11 @@ def export_data():
     )
     date_time = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
     file_name = "exported_mat/" + session["username"] + "_" + date_time
-    data = get_data()
-    export_coherence_to_mat(name=file_name, data=data, sfreq=1000, start=start, end=end)
+    data = data_provider.get_data()
+    sfreq = data_provider.get_sampling_rate()
+    export_coherence_to_mat(
+        name=file_name, data=data, sfreq=sfreq, start=start, end=end
+    )
     # do something with data
     return "Data received"
 
