@@ -34,8 +34,11 @@ def login():
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session.permanent = True
-    session["user_data_dir"] = ast.literal_eval(user.data_dir)[0]
+    session[
+        "user_data_dir"
+    ] = r"C:\Users\saarm\Code Projects\BIDS\AudioVisual\sub-01\ses-iemu\ieeg\sub-01_ses-iemu_task-film_acq-clinical_run-1_ieeg"
     session["username"] = user.username
+    data_provider = dataProvider(session)
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
     return jsonify({"data_dir": user.data_dir})
 
@@ -104,7 +107,9 @@ def get_time_range():
 
 @app.route("/getFiles", methods=["GET"])
 def get_files():
-    return jsonify(convert_path_to_tree("C:\\Users\\dekel\\Downloads\\bids2"))
+    return jsonify(
+        convert_path_to_tree("C:\\Users\\saarm\\Code Projects\\BIDS\\AudioVisual")
+    )
 
 
 # get_coherence_matrices

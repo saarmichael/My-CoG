@@ -57,7 +57,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
             timeRange, setTimeRange,
             duration, setDuration,
             sharedGraph, setSharedGraph,
-            chosenFile, setChosenFile
+            chosenFile, setChosenFile,
             activeNodes, setActiveNodes,
             loading, setLoading
         }}>

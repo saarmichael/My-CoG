@@ -137,8 +137,8 @@ const Tabbing = () => {
         className="active-content"
       >
 
-        <Box1 name="Grid"/>
 
+        <Box1 name="Grid"/>
         <Box name="Graph"/>
 
       </div>,

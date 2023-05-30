@@ -79,6 +79,8 @@ class dataProvider:
     def get_data(self):
         if self.bids_path == None:
             file_name = self.session["user_data_dir"]
+            # get rid of the .eeg suffix
+            file_name = file_name.split(".")[0]
             self.bids_path = mne_bids.get_bids_path_from_fname(file_name)
         # load the raw data from the bids path
         raw = mne_bids.read_raw_bids(bids_path=self.bids_path, verbose=False)
@@ -89,10 +91,10 @@ class dataProvider:
         data = raw.get_data()
         # traspose the data so that the channels are the columns
         data = data.transpose()
-        data = loadmat(self.find_file(session["user_data_dir"], os.getcwd()))["data"]
+        # data = loadmat(self.find_file(session["user_data_dir"], os.getcwd()))["data"]
         # special case for finger flex data
-        if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
-            data = data[:, 0:9]
+        # if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
+        #     data = data[:, 0:9]
 
         return data[:, 0:9]
 
