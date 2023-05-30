@@ -12,7 +12,7 @@ const MyDropzone: React.FC<MyDropzoneProps> = ({ dropFunc, message }) => {
       let name = acceptedFiles[0].name as string;
       dropFunc(name);
     }
-  });
+});
 
   return (
     <div {...getRootProps()}>

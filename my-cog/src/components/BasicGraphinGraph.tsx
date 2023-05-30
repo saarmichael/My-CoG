@@ -3,7 +3,6 @@ import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '
 import React, { useContext, useEffect } from 'react';
 import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
-import { getGraphBase, updateGraphCoherence } from '../shared/GraphService';
 import { getDuration, getFrequencies } from '../shared/RequestsService';
 import { getGraphBase, getGraphCoherence, updateGraphCoherence } from '../shared/GraphService';
 import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
