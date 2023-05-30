@@ -26,7 +26,7 @@ export const DataOptions = () => {
 
         <Button onClick={async () =>{
             // export the data to a csv file
-            const resp = await exportData(timeRange);
+            const resp = await exportData(timeRange, 'coherence');
             if (resp.status === 200 || true) {
                 setExported(true);
                 // set timer to remove the "exported" message

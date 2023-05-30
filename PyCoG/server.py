@@ -1,4 +1,5 @@
 from flask import request, jsonify, send_file, session
+from export_data import export_coherence_to_mat
 from granger import calculate_granger_for_all_pairs
 from util import get_data
 from cache_check import data_in_db, user_in_db
@@ -10,6 +11,7 @@ from server_config import User, Calculation, db, app
 from image_generator import get_brain_image
 import os
 import threading
+from datetime import datetime
 
 
 @app.before_first_request
@@ -220,6 +222,17 @@ def export_data():
     print(f"{bcolors.DEBUG}exporting data{bcolors.ENDC}")
     data = request.json
     print(f"{bcolors.DEBUG}data: {data}{bcolors.ENDC}")
+    start = data["time"]["start"]
+    end = data["time"]["end"]
+    resolution = data["time"]["resolution"]
+    connectivityMeasure = data["connectivityMeasure"]
+    print(
+        f"{bcolors.DEBUG}start: {start}, end: {end}, resolution: {resolution} connectivityMeasure: {connectivityMeasure}{bcolors.ENDC}"
+    )
+    date_time = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
+    file_name = "exported_mat/" + session["username"] + date_time
+    data = get_data()
+    export_coherence_to_mat(name=file_name, data=data, sfreq=1000, start=start, end=end)
     # do something with data
     return "Data received"
 
