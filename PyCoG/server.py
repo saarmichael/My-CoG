@@ -230,7 +230,7 @@ def export_data():
         f"{bcolors.DEBUG}start: {start}, end: {end}, resolution: {resolution} connectivityMeasure: {connectivityMeasure}{bcolors.ENDC}"
     )
     date_time = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
-    file_name = "exported_mat/" + session["username"] + date_time
+    file_name = "exported_mat/" + session["username"] + "_" + date_time
     data = get_data()
     export_coherence_to_mat(name=file_name, data=data, sfreq=1000, start=start, end=end)
     # do something with data
