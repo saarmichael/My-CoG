@@ -23,6 +23,8 @@ export interface IGlobalDataContext {
     setSharedGraph: (sharedGraph: GraphinData) => void;
     activeNodes: string[];
     setActiveNodes: (activeNodes: string[]) => void;
+    loading: boolean;
+    setLoading: (loading: boolean) => void;
 }
 
 interface IGlobalDataProviderProps {
@@ -41,6 +43,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
     const [duration, setDuration] = useState<number>(2);
     const [sharedGraph, setSharedGraph] = useState<GraphinData>({ nodes: [], edges: [] });
     const [activeNodes, setActiveNodes] = React.useState<string[]>([]);
+    const [loading , setLoading] = React.useState<boolean>(false);
     return (
         <GlobalDataContext.Provider value={{
             state, setState,
@@ -51,7 +54,8 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
             timeRange, setTimeRange,
             duration, setDuration,
             sharedGraph, setSharedGraph,
-            activeNodes, setActiveNodes
+            activeNodes, setActiveNodes,
+            loading, setLoading
         }}>
             {children}
         </GlobalDataContext.Provider>

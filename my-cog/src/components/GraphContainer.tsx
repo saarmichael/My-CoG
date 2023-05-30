@@ -8,11 +8,19 @@ import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocu
 import SlidingBar from "./SlidingBar";
 import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsService";
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
+import ReactLoading from "react-loading";
 
 
 export const GraphContainer = () => {
 
-    const { state, freqList, setFreqList, setFreqRange, duration, setDuration, timeRange, setTimeRange, activeNodes, setActiveNodes } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state,
+        freqList, setFreqList,
+        setFreqRange, duration,
+        setDuration,
+        setTimeRange,
+        activeNodes, setActiveNodes,
+        loading,
+    } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const handleFreqChange = (event: Event, newValue: number[]) => {
         setFreqRange({ min: newValue[0], max: newValue[1] })
@@ -88,6 +96,9 @@ export const GraphContainer = () => {
         </div >
     );
 
+    const loadingGif = (
+        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
+    );
 
     return (
         <>
@@ -96,6 +107,7 @@ export const GraphContainer = () => {
             </div>
             <SlidingBar range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
             <SlidingBar range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
+            {loading ? loadingGif : <></>}
             <div>
                 <BasicGraphinGraph />
             </div>

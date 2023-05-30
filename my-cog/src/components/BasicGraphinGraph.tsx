@@ -83,7 +83,15 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState, sharedGraph, setSharedGraph, setElectrodeList, freqRange, setFreqList, freqList, timeRange, setDuration, activeNodes, setActiveNodes } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, setState,
+        sharedGraph, setSharedGraph,
+        setElectrodeList,
+        freqRange,
+        setFreqList, freqList,
+        timeRange, setDuration,
+        activeNodes, setActiveNodes,
+        setLoading
+    } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
 
     const getFrequencyAndTime = async () => {
@@ -150,9 +158,11 @@ const BasicGraphinGraph = () => {
 
     useEffect(() => {
         if (!state.nodes.length || !state.edges.length) return;
+        setLoading(true);
         console.log(`useEffect`, `createGraphData`)
         createGraphData().then((data) => {
             //console.log(`data:`, data);
+            setLoading(false);
             setState(data);
             setChangeVis([...changeVis]);
         });
