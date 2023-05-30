@@ -130,9 +130,10 @@ def get_coherence_matrices():
     if cal:
         return jsonify(cal.data)
     # error handling
-    if ((start is None) or (start == "0")) or ((end is None) or (end == "0")):
+    if start is None:
         start = "0"
         # end will be the last time frame
+    if end is None:
         end = "1"
     if int(start) > int(end):
         end = str(int(start) + 1)
@@ -168,23 +169,7 @@ def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
     file_name = session["user_data_dir"].split("/")[-1]
-    cal = data_in_db(file_name, request.url, Calculation.query)
-    if cal:
-        CM = cal.data["CM"]
-    else:
-        data = data_provider.get_data()
-        f, window_time, t, CM = coherence_over_time(data, 1000, 10, 0.5)
-        calculation = {
-            "f": f.tolist(),
-            "window_time": window_time,
-            "t": t.tolist(),
-            "CM": CM.tolist(),
-        }
-        cal = write_calculation(
-            file_name, request.url, calculation, session["username"]
-        )
-
-    num_nodes = len(CM[0][0][0])
+    num_nodes = data_provider.get_data().shape[1]
     # create the ids and labels.
     nodes = []
     for i in range(num_nodes):
