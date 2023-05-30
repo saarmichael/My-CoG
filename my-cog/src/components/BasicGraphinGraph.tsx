@@ -4,7 +4,7 @@ import React, { useContext, useEffect } from 'react';
 import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { getGraphBase, updateGraphCoherence } from '../shared/GraphService';
-import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
+import { getDuration, getFrequencies } from '../shared/RequestsService';
 
 
 
@@ -83,13 +83,13 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState, sharedGraph, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, setState, sharedGraph, setSharedGraph, electrode, setElectrodeList, freqRange, setFreqRange, freqList, setFreqList, timeRange, setTimeRange, duration, setDuration, chosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const [graphinState, setGraphinState] = React.useState<GraphinData>({ nodes: [], edges: [] });
 
     const getFrequencyAndTime = async () => {
-        let frequencyListAsync = await getSingletonFreqList();
-        let durationAsync = await getSingletonDuration();
+        let frequencyListAsync = await getFrequencies();
+        let durationAsync = await getDuration();
         return { frequencyListAsync, durationAsync };
     }
 
@@ -137,7 +137,7 @@ const BasicGraphinGraph = () => {
             setSharedGraph({ ...data });
             setChangeVis([...changeVis])
         });
-    }, []);
+    }, [chosenFile]);
 
     useEffect(() => {
         if (!state.nodes.length || !state.edges.length) return;

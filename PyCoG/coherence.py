@@ -1,8 +1,6 @@
 # import scipy
 from scipy import signal
 import numpy as np
-from tqdm import tqdm
-from consts import bcolors
 
 
 def coherence(x, y, fs, window, overlap):
@@ -19,7 +17,6 @@ def get_coherence_matrices(data, fs, window, overlap):
     """
     Compute the coherence between all pairs of electrodes in data.
     """
-    print(f"{bcolors.DEBUG}data shape: {data.shape}{bcolors.ENDC}")
     f, _ = coherence(data[:, 0], data[:, 1], fs, window, overlap)
     # f is the frequency vector and CM is all the coherence matrices for each pair of electrodes and is number[][][]
     CM = np.zeros((len(f), data.shape[1], data.shape[1]))
@@ -94,17 +91,14 @@ def coherence_over_time(data, fs, num_windows, time_overlap):
 
 
 def coherence_time_frame(data, fs, start=None, end=None, time_overlap=0.5):
-    print(f"{bcolors.DEBUG}data shape: {data.shape}{bcolors.ENDC}")
     if start is None:
         start = 0
     if end is None:
         end = data.shape[0] / fs
     if start == end or start > end:
         end = data.shape[0] / fs
-    print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
     start = float(start) * fs
     end = float(end) * fs
-    print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
     f, CM = get_coherence_matrices(
         data[int(start) : int(end), :], fs, "hann", time_overlap
     )
