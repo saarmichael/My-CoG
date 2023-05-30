@@ -3,10 +3,10 @@ import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '
 import React, { useContext, useEffect } from 'react';
 import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
+import { getGraphBase, updateGraphCoherence } from '../shared/GraphService';
+import { getDuration, getFrequencies } from '../shared/RequestsService';
 import { getGraphBase, getGraphCoherence, updateGraphCoherence } from '../shared/GraphService';
 import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
-
-
 
 
 const SampleBehavior = () => {
@@ -90,13 +90,13 @@ const BasicGraphinGraph = () => {
         setFreqList, freqList,
         timeRange, setDuration,
         activeNodes, setActiveNodes,
-        setLoading
+        setLoading, chosenFile
     } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
 
     const getFrequencyAndTime = async () => {
-        let frequencyListAsync = await getSingletonFreqList();
-        let durationAsync = await getSingletonDuration();
+        let frequencyListAsync = await getFrequencies();
+        let durationAsync = await getDuration();
         return { frequencyListAsync, durationAsync };
     }
 
@@ -154,7 +154,7 @@ const BasicGraphinGraph = () => {
             setSharedGraph({ ...data });
             setChangeVis([...changeVis])
         });
-    }, []);
+    }, [chosenFile]);
 
     useEffect(() => {
         if (!state.nodes.length || !state.edges.length) return;

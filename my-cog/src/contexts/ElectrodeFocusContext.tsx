@@ -21,6 +21,8 @@ export interface IGlobalDataContext {
     setDuration: (timeList: number) => void;
     sharedGraph: GraphinData;
     setSharedGraph: (sharedGraph: GraphinData) => void;
+    chosenFile: string;
+    setChosenFile: (chosenFile: string) => void;
     activeNodes: string[];
     setActiveNodes: (activeNodes: string[]) => void;
     loading: boolean;
@@ -42,6 +44,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
     const [timeRange, setTimeRange] = useState<TimeInterval>({ resolution: 's', start: 0, end: 0 });
     const [duration, setDuration] = useState<number>(2);
     const [sharedGraph, setSharedGraph] = useState<GraphinData>({ nodes: [], edges: [] });
+    const [chosenFile, setChosenFile] = useState<string>("");
     const [activeNodes, setActiveNodes] = React.useState<string[]>([]);
     const [loading , setLoading] = React.useState<boolean>(false);
     return (
@@ -54,6 +57,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
             timeRange, setTimeRange,
             duration, setDuration,
             sharedGraph, setSharedGraph,
+            chosenFile, setChosenFile
             activeNodes, setActiveNodes,
             loading, setLoading
         }}>

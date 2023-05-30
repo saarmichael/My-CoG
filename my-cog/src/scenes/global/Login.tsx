@@ -32,7 +32,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           />
         </div>
         <button type="submit" className="submit-button">Login</button>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        {errorMessage && <p className="error message">{errorMessage}</p>}
       </form>
     );
 };

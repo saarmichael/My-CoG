@@ -6,6 +6,7 @@ import { DataOptions } from "./DataOptions";
 import { GraphVisToggles } from "./GraphVisToggles";
 import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
 import SlidingBar from "./SlidingBar";
+import { getDuration, getFrequencies } from "../shared/RequestsService";
 import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsService";
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import ReactLoading from "react-loading";
@@ -36,8 +37,8 @@ export const GraphContainer = () => {
     useEffect(() => {
         console.log("GraphContainer: useEffect: getFrequencyAndTime");
         const getFrequencyAndTime = async () => {
-            let frequencyListAsync = await getSingletonFreqList();
-            let durationAsync = await getSingletonDuration();
+            let frequencyListAsync = await getFrequencies();;
+            let durationAsync = await getDuration();
             return { frequencyListAsync, durationAsync };
         }
         getFrequencyAndTime().then((data) => {

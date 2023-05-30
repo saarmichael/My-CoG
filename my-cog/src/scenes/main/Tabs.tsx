@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Rnd } from 'react-rnd';
 import { DataOptions } from "../../components/DataOptions";
 import { GraphVisToggles } from "../../components/GraphVisToggles";
@@ -9,6 +9,9 @@ import Sidebar from "../../components/SideBar";
 import { ComponentToggleBar, MenuItem } from "./ComponentToggleBar";
 import { apiGET } from "../../shared/ServerRequests";
 import { AxiosResponse } from "axios";
+import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
+import { Modal } from "@mui/material";
+import ModalPopup from "../global/ModalPopup";
 
 
 interface Tab {
@@ -24,16 +27,6 @@ interface TabsProps {
 type Data = Promise<number[][]>;
 
 const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
-
-    useEffect(() => {
-      const fetchData = async () => {
-        // const response = await apiGET<Data>("http://localhost:5000/granger");
-
-        // console.log(response);
-      };
-
-      fetchData();
-    }, []);
     
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);
@@ -114,18 +107,22 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
               <button className="plus" onClick={handleAddTabClick}>➕</button>
             )}
           </div>
-          &nbsp;
-          <DataOptions />
+          
           <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
             {tabs.map((tab, index) => (
               <div style={{ display: index === activeTabIndex ? '' : 'none', height: '100%' }}>
-                {tab.content}
+                {tab.content.props.children.map((component: JSX.Element, index: number) => (
+                  <div style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '', width:'100%', height:'100%', position:'absolute'}}>
+                    {component}
+                  </div>
+                ))}
               </div>
             ))}
           </div>
           <div className="hide-component">
               <ComponentToggleBar menuItems={menuItems} activeMenu={activeMenu} toggleMenu={toggleMenu} />
           </div>
+          <DataOptions />
         </div>
         
       </div>

@@ -6,8 +6,7 @@ import { interpolate } from 'd3-interpolate';
 import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
 import { FreqRange, TimeInterval } from './GraphRelated';
 import { CoherenceResponse } from './Requests';
-import { getCoherenceResponse, getSingletonFreqList, getSingletonGraph } from './RequestsService';
-import { NODE_LABEL_FONT_SIZE } from './DesignConsts';
+import { getBasicGraph, getCoherenceResponse, getFrequencies } from './RequestsService';
 
 
 // function that creates circular positions (x, y)[] for the nodes
@@ -473,7 +472,7 @@ export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, 
 
 
 export const getGraphBase = async (): Promise<GraphinData> => {
-    let graph = await getSingletonGraph();
+    let graph = await getBasicGraph();
     graph.edges.forEach((edge, index) => {
         // set arrow path to 0
         graph.edges[index].style = {
@@ -484,9 +483,6 @@ export const getGraphBase = async (): Promise<GraphinData> => {
                     ...graph.edges[index].style?.keyshape?.endArrow,
                     path: '0',
                 }
-            }, 
-            label: {
-                fontSize: NODE_LABEL_FONT_SIZE,
             }
         }
     });
@@ -505,7 +501,7 @@ export const getSimpleGraphinData = (): GraphinData => {
 
 
 export const getFrequencyList = async (): Promise<number[]> => {
-    return getSingletonFreqList();
+    return getFrequencies();
 }
 
 export const getTimeIntervals = (): number[] => {
@@ -619,7 +615,6 @@ export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
             ...graph.nodes[i].style,
             label: {
                 ...graph.nodes[i].style?.label,
-                fontSize: NODE_LABEL_FONT_SIZE,
                 value: idNum,
                 position: 'center',
             },
