@@ -95,3 +95,65 @@ class dataProvider:
             data = data[:, 0:9]
 
         return data[:, 0:9]
+
+
+def convert_to_tree(path, prefix=""):
+    children = []
+    for i, sub_path in enumerate(glob.glob(os.path.join(path, "*"))):
+        key = f"{prefix}{i}"
+        if os.path.isdir(sub_path):
+            children.append(
+                {
+                    "key": key,
+                    "label": os.path.basename(sub_path),
+                    "children": convert_to_tree(sub_path, prefix=f"{key}-"),
+                    "isFile": False,
+                }
+            )
+        else:
+            # check if files ends with .eeg
+            if sub_path.endswith(".eeg"):
+                children.append(
+                    {
+                        "key": key,
+                        "label": os.path.basename(sub_path),
+                        "children": [],
+                        "isFile": True,
+                    }
+                )
+    return children
+
+
+def convert_path_to_tree(path):
+    return convert_to_tree(path, prefix="")
+
+
+def convert_to_tree(path, prefix=""):
+    children = []
+    for i, sub_path in enumerate(glob.glob(os.path.join(path, "*"))):
+        key = f"{prefix}{i}"
+        if os.path.isdir(sub_path):
+            children.append(
+                {
+                    "key": key,
+                    "label": os.path.basename(sub_path),
+                    "children": convert_to_tree(sub_path, prefix=f"{key}-"),
+                    "isFile": False,
+                }
+            )
+        else:
+            # check if files ends with .eeg
+            if sub_path.endswith(".eeg"):
+                children.append(
+                    {
+                        "key": key,
+                        "label": os.path.basename(sub_path),
+                        "children": [],
+                        "isFile": True,
+                    }
+                )
+    return children
+
+
+def convert_path_to_tree(path):
+    return convert_to_tree(path, prefix="")

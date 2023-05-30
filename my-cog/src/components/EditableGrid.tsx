@@ -8,7 +8,6 @@ import { GridContext, IGridFocusContext } from "../contexts/GridContext";
 import { IGraph, INode, NodeConfig } from "@antv/g6";
 import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
 import { mode } from "d3";
-import { NODE_LABEL_FONT_SIZE } from "../shared/DesignConsts";
 
 
 export interface EditableGridProps {
@@ -84,17 +83,13 @@ const GridBehavior = (props: GridBehaviorProps) => {
             const nodes = graph.getNodes();
             nodes.forEach(node => {
                 const model = node.getModel();
-                const size = model.style?.keyshape?.size - (e.wheelDelta / 20);
-                let fontSize = model.style?.label?.fontSize - (e.wheelDelta / 20);
-                if(!fontSize){
-                    fontSize = NODE_LABEL_FONT_SIZE;
-                }
+                const size = model.style?.keyshape?.size - (e.wheelDelta / 30);
                 if (size) {
                     if (Array.isArray(size)) {
-                        graph.updateItem(node, { size: [size[0] + 100, size[1] + 100], fontSize: fontSize });
+                        graph.updateItem(node, { size: [size[0] + 100, size[1] + 100] });
                     }
                     else {
-                        graph.updateItem(node, { style: { keyshape: { size: size }, label: { fontSize: fontSize } } });
+                        graph.updateItem(node, { style: { keyshape: { size: size } } });
                     }
                 }
             });

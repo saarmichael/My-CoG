@@ -1,7 +1,10 @@
+import ast
+import json
 from flask import request, jsonify, send_file, session
+from db_write import update_data_dir
 from export_data import export_coherence_to_mat
 from granger import calculate_granger_for_all_pairs
-from util import dataProvider
+from util import convert_path_to_tree, dataProvider
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
 from coherence import coherence_over_time
@@ -31,7 +34,7 @@ def login():
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session.permanent = True
-    session["user_data_dir"] = user.data_dir
+    session["user_data_dir"] = ast.literal_eval(user.data_dir)[0]
     session["username"] = user.username
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
     return jsonify({"data_dir": user.data_dir})
@@ -45,6 +48,13 @@ def register():
         return jsonify({"message": "User already exists!"}), 400
     write_user(data["username"], data["data"], data["settings"])
     return jsonify({"message": "User created successfully!"})
+
+
+@app.route("/addFile", methods=["POST"])
+def add_file():
+    data = request.get_json()
+    update_data_dir(session["username"], data["file"])
+    return jsonify({"message": "File added successfully!"})
 
 
 @app.route("/saveSettings", methods=["POST"])
@@ -92,6 +102,11 @@ def get_time_range():
     return jsonify(result)
 
 
+@app.route("/getFiles", methods=["GET"])
+def get_files():
+    return jsonify(convert_path_to_tree("C:\\Users\\dekel\\Downloads\\bids2"))
+
+
 # get_coherence_matrices
 #   Parameters:
 #       start: start time of the time frame
@@ -105,15 +120,14 @@ def get_coherence_matrices():
     start = request.args.get("start")
     end = request.args.get("end")
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
-    file_name = session["user_data_dir"].split("/")[-1]
+    file_name = session["user_data_dir"]
     cal = data_in_db(file_name, request.url, Calculation.query)
     if cal:
         return jsonify(cal.data)
     # error handling
-    if start is None:
+    if ((start is None) or (start == "0")) or ((end is None) or (end == "0")):
         start = "0"
         # end will be the last time frame
-    if end is None:
         end = "1"
     if int(start) > int(end):
         end = str(int(start) + 1)
@@ -123,7 +137,7 @@ def get_coherence_matrices():
     f, CM = coherence_time_frame(data, sfreq, start, end)
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
-    # db_cal = write_calculation(file_name, request.url, result, session["username"])
+    write_calculation(file_name, request.url, result, session["username"])
     print(
         f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
     )
@@ -148,7 +162,24 @@ def granger():
 def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
-    num_nodes = data_provider.get_data().shape[1]
+    file_name = session["user_data_dir"].split("/")[-1]
+    cal = data_in_db(file_name, request.url, Calculation.query)
+    if cal:
+        CM = cal.data["CM"]
+    else:
+        data = data_provider.get_data()
+        f, window_time, t, CM = coherence_over_time(data, 1000, 10, 0.5)
+        calculation = {
+            "f": f.tolist(),
+            "window_time": window_time,
+            "t": t.tolist(),
+            "CM": CM.tolist(),
+        }
+        cal = write_calculation(
+            file_name, request.url, calculation, session["username"]
+        )
+
+    num_nodes = len(CM[0][0][0])
     # create the ids and labels.
     nodes = []
     for i in range(num_nodes):
@@ -200,12 +231,12 @@ def brain_image():
     # build file name
     file_name = "brain_images/" + "brain_image_" + azi + "_" + ele + "_" + dis + ".png"
     # check if the file exists
-    if not os.path.isfile(file_name):
-        t = threading.Thread(
-            target=get_brain_image_async, args=(file_name, azi, ele, dis)
-        )
-        t.start()
-        t.join()
+    # if not os.path.isfile(file_name):
+    #     t = threading.Thread(
+    #         target=get_brain_image_async, args=(file_name, azi, ele, dis)
+    #     )
+    #     t.start()
+    #     t.join()
     # return the png file to the client side
     return send_file(file_name, mimetype="image/gif")
 

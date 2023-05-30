@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { ServerSettings, extractOptions, registerRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
 import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
+import MyDropzone from './MyDropZone';
 
 
 interface RegisterProps {
@@ -55,17 +56,10 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         <label htmlFor="upload" className="file-upload-label">
           Data
         </label>
-        <input
-          type="file"
-          id="upload"
-          ref={fileInputRef}
-          className="file-upload-input"
-          onChange={(e) => setData(e.target.value)}
-          style={{ display: 'none' }}
-        />
-        <button type="button" className="file-upload-button" onClick={handleFileButtonClick}>
-          📁
-        </button>
+        <div className='file-upload-button'>
+          <MyDropzone dropFunc={setData} message="📁" />
+        </div>
+        
         {data && <p className='upload message'>{data.split('\\').pop()}</p>}
       </div>
       <button type="submit" className="submit-button">Register</button>
