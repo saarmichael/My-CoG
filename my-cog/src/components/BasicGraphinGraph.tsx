@@ -4,7 +4,7 @@ import React, { useContext, useEffect } from 'react';
 import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { getGraphBase, updateGraphCoherence } from '../shared/GraphService';
-import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
+import { getDuration, getFrequencies } from '../shared/RequestsService';
 
 
 
@@ -88,8 +88,8 @@ const BasicGraphinGraph = () => {
     const [graphinState, setGraphinState] = React.useState<GraphinData>({ nodes: [], edges: [] });
 
     const getFrequencyAndTime = async () => {
-        let frequencyListAsync = await getSingletonFreqList();
-        let durationAsync = await getSingletonDuration();
+        let frequencyListAsync = await getFrequencies();
+        let durationAsync = await getDuration();
         return { frequencyListAsync, durationAsync };
     }
 

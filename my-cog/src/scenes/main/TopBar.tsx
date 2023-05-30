@@ -1,8 +1,13 @@
 import './TopBar.css';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AddFile, handleSave, handleSaveAs, handleUndo, handleRedo, handleFullscreen, handleOptions, handleLogout } from '../../shared/TopBarUtil';
 import MyDropzone from '../global/MyDropZone';
 import { apiGET } from '../../shared/ServerRequests';
+import TreeView from '../global/TreeView';
+import { Node } from '../global/TreeView';
+import ModelPopup from '../global/ModalPopup';
+import { ModalProvider } from '../../contexts/ModalContext';
+import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 
 interface MenuItem {
     name: string;
@@ -12,28 +17,26 @@ interface MenuItem {
 
 export const TopBar: React.FC = () => {
     const [activeMenu, setActiveMenu] = useState<number | null>(null);
-    const [showFileList, setShowFileList] = useState<boolean>(false); // new state for file list visibility
-    const [openFileList, setOpenFileList] = useState<string[]>([]); // new state for file list
+    const [openFileList, setOpenFileList] = useState<Node[]>([]); // new state for file list
+    const { setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const toggleMenu = (index: number) => {
         setActiveMenu(activeMenu === index ? null : index);
     };
 
-    const handleOpenClick = () => {
-        setShowFileList(!showFileList); // toggle file list visibility
-    };
-
-    // Fetch data when showFileList changes
     useEffect(() => {
-        if (showFileList) {
-            apiGET('/getFiles').then((response) => {
-                let files = response as string[]; // Change this based on the structure of your response
-                setOpenFileList(files);
-            });
-        }
-    }, [showFileList]);
+        setChosenFile("s");
+        apiGET('/getFiles').then((response) => {
+            let files = response as Node[];
+            setOpenFileList(files);
+        });
+    }, []);
 
     
+
+    const fileClicked = (file: string) => {
+        setChosenFile(file);
+    };
 
 
     const menuItems: MenuItem[] = [
@@ -43,8 +46,10 @@ export const TopBar: React.FC = () => {
                 <div>
                     <MyDropzone dropFunc={AddFile} message='Add File'/>
                 </div>,
-                <div onClick={handleOpenClick}>
-                    Open
+                <div onClick={(e) => {e.stopPropagation()}}>
+                    <ModalProvider>
+                        <ModelPopup title='Choose a file' buttonName='Open' content={<TreeView treeData={openFileList} fileClicked={fileClicked}/>}/>
+                    </ModalProvider>
                 </div>,
                 <div onClick={() => handleSave()}>
                     Save
@@ -57,10 +62,10 @@ export const TopBar: React.FC = () => {
         {
             name: 'Edit',
             items: [
-                <div className="menu-item" onClick={() => handleUndo()}>
+                <div onClick={() => handleUndo()}>
                     Undo
                 </div>,
-                <div className="menu-item" onClick={() => handleRedo()}>
+                <div onClick={() => handleRedo()}>
                     Redo
                 </div>
             ]
@@ -68,7 +73,7 @@ export const TopBar: React.FC = () => {
         {
             name: 'View',
             items: [
-                <div className="menu-item" onClick={() => handleFullscreen()}>
+                <div onClick={() => handleFullscreen()}>
                     Fullscreen
                 </div>
             ]
@@ -96,17 +101,6 @@ export const TopBar: React.FC = () => {
             <div className="menu-item top-bar__logout" onClick={handleLogout}>
                 Logout
             </div>
-
-            {/* File list */}
-            {showFileList && (
-                <div className="file-list">
-                    {openFileList.map((file, index) => (
-                        <div key={index} className="file-item">
-                            {file}
-                        </div>
-                    ))}
-                </div>
-            )}
         </div>
     );
 };

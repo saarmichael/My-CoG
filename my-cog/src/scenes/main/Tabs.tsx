@@ -10,6 +10,8 @@ import { ComponentToggleBar, MenuItem } from "./ComponentToggleBar";
 import { apiGET } from "../../shared/ServerRequests";
 import { AxiosResponse } from "axios";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
+import { Modal } from "@mui/material";
+import ModalPopup from "../global/ModalPopup";
 
 
 interface Tab {
@@ -25,11 +27,6 @@ interface TabsProps {
 type Data = Promise<number[][]>;
 
 const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
-    const { setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
-
-    useEffect(() => {
-      setChosenFile("test");
-    }, []);
     
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);

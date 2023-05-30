@@ -3,7 +3,7 @@ import json
 from flask import request, jsonify, send_file, session
 from db_write import update_data_dir
 from granger import calculate_granger_for_all_pairs
-from util import get_data
+from util import get_data, find_file, convert_path_to_tree
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
 from coherence import coherence_over_time
@@ -95,8 +95,7 @@ def get_time_range():
 
 @app.route("/getFiles", methods=["GET"])
 def get_files():
-    user = user_in_db(session["username"], User.query)
-    return jsonify(ast.literal_eval(user.data_dir))
+    return(jsonify(convert_path_to_tree('C:\\Users\\dekel\\Downloads\\bids2')))
 
 
 # get_coherence_matrices
@@ -216,12 +215,12 @@ def brain_image():
     # build file name
     file_name = "brain_images/" + "brain_image_" + azi + "_" + ele + "_" + dis + ".png"
     # check if the file exists
-    if not os.path.isfile(file_name):
-        t = threading.Thread(
-            target=get_brain_image_async, args=(file_name, azi, ele, dis)
-        )
-        t.start()
-        t.join()
+    # if not os.path.isfile(file_name):
+    #     t = threading.Thread(
+    #         target=get_brain_image_async, args=(file_name, azi, ele, dis)
+    #     )
+    #     t.start()
+    #     t.join()
     # return the png file to the client side
     return send_file(file_name, mimetype="image/gif")
 
