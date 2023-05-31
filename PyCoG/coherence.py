@@ -1,6 +1,7 @@
 # import scipy
 from scipy import signal
 import numpy as np
+import concurrent.futures
 
 
 def coherence(x, y, fs, window, overlap):
@@ -13,10 +14,7 @@ def coherence(x, y, fs, window, overlap):
     return f, Cxy
 
 
-def get_coherence_matrices(data, fs, window, overlap):
-    """
-    Compute the coherence between all pairs of electrodes in data.
-    """
+def get_synchronous_coherence_matrices(data, fs, window, overlap):
     f, _ = coherence(data[:, 0], data[:, 1], fs, window, overlap)
     # f is the frequency vector and CM is all the coherence matrices for each pair of electrodes and is number[][][]
     CM = np.zeros((len(f), data.shape[1], data.shape[1]))
@@ -24,6 +22,34 @@ def get_coherence_matrices(data, fs, window, overlap):
         for j in range(i + 1, data.shape[1]):
             f, Cxy = coherence(data[:, i], data[:, j], fs, window, overlap)
             CM[:, i, j] = Cxy
+    return f, CM
+
+
+def get_coherence_matrices(data, fs, window, overlap):
+    """
+    Compute the coherence between all pairs of electrodes in data.
+    """
+    f, _ = coherence(data[:, 0], data[:, 1], fs, window, overlap)
+
+    def coherence_worker(i, j):
+        _, Cxy = coherence(data[:, i], data[:, j], fs, window, overlap)
+        return Cxy, i, j
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [
+            executor.submit(coherence_worker, i, j)
+            for i in range(data.shape[1])
+            for j in range(i + 1, data.shape[1])
+        ]
+        results = [
+            future.result() for future in concurrent.futures.as_completed(futures)
+        ]
+
+    CM = np.zeros((len(f), data.shape[1], data.shape[1]))
+    for result in results:
+        Cxy, i, j = result
+        CM[:, i, j] = Cxy
+
     return f, CM
 
 
