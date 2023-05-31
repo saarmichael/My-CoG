@@ -2,12 +2,13 @@ import './TopBar.css';
 import React, { useContext, useEffect, useState } from 'react';
 import { AddFile, handleSave, handleSaveAs, handleUndo, handleRedo, handleFullscreen, handleOptions, handleLogout } from '../../shared/TopBarUtil';
 import MyDropzone from '../global/MyDropZone';
-import { apiGET } from '../../shared/ServerRequests';
+import { apiGET, apiPOST } from '../../shared/ServerRequests';
 import TreeView from '../global/TreeView';
 import { Node } from '../global/TreeView';
 import ModelPopup from '../global/ModalPopup';
 import { ModalProvider } from '../../contexts/ModalContext';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import DirectoryPicker from '../global/MyDropZone';
 
 interface MenuItem {
     name: string;
@@ -35,7 +36,15 @@ export const TopBar: React.FC = () => {
     
 
     const fileClicked = (file: string) => {
-        setChosenFile(file);
+        apiPOST<object>('/setFile', {file: file}).then((response) => {
+            if (response.status === 200) {
+                setChosenFile(file);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        }
+        );
     };
 
 
@@ -44,7 +53,7 @@ export const TopBar: React.FC = () => {
             name: 'File',
             items: [
                 <div>
-                    <MyDropzone dropFunc={AddFile} message='Add File'/>
+                    <DirectoryPicker onChange={AddFile} buttonName='Add File'/>
                 </div>,
                 <div onClick={(e) => {e.stopPropagation()}}>
                     <ModalProvider>

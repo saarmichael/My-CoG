@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios"
+import axios, { AxiosError, AxiosResponse } from "axios"
 import { VisualPreferences } from "../scenes/global/Register"
 import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from "../contexts/VisualGraphOptionsContext";
 
@@ -35,13 +35,14 @@ export const registerRequest = async (username: string, data: string, settings: 
       console.log('Registration successful');
       await loginRequest(username, onRegister);
       return 'Registration successful';
-    } else {
-      console.log('Registration failed');
-      return 'Registration failed';
     }
   } catch (error) {
-    console.log(error);
-    return 'Username already exists';
+    const axiosError = error as AxiosError;
+
+    if (axiosError.response) {
+      const message = axiosError.response.data as { message: string };
+      return message["message"] as string;
+    }
   }
 };
 
