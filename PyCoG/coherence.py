@@ -1,4 +1,5 @@
 # import scipy
+import time
 from scipy import signal
 import numpy as np
 import concurrent.futures
@@ -125,10 +126,13 @@ def coherence_time_frame(data, fs, start=None, end=None, time_overlap=0.5):
         end = data.shape[0] / fs
     start = float(start) * fs
     end = float(end) * fs
+    stopwatch = time.time()
     f, CM = get_coherence_matrices(
         data[int(start) : int(end), :], fs, "hann", time_overlap
     )
-
+    print(
+        f"coherence_time_frame took {time.time() - stopwatch} seconds, for calculating {CM.shape} CM"
+    )
     return f, CM
 
 
