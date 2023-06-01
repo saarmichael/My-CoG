@@ -52,11 +52,17 @@ export const GraphContainer = () => {
         setFList(freqList);
     }, [freqList]);
 
-    const handleCheckboxClick = (id: string) => {
-        if (activeNodes.includes(id)) {
-            setActiveNodes(activeNodes.filter((node) => node !== id));
+    const handleCheckboxClick = (label: string) => {
+        const activeNodesId = activeNodes.map((node) => node.id);
+        const activeNodesLabel = activeNodes.map((node) => node.label);
+        // if the node is already active, remove it from the active nodes list
+        if (activeNodesLabel.includes(label) || activeNodesId.includes(label)) {
+            setActiveNodes(activeNodes.filter((node) => node.id !== label && node.label !== label));
         } else {
-            setActiveNodes([...activeNodes, id]);
+            const node = state.nodes.find((node) => node.id === label || node.style?.label?.value === label);
+            if (node) {
+                setActiveNodes([...activeNodes, { id: node.id, label: node.style?.label?.value ? node.style.label.value : node.id }]);
+            }
         }
     }
 
@@ -78,17 +84,19 @@ export const GraphContainer = () => {
                 {state.nodes.map((node) => {
                     return (
                         <ListItem key={node.id} >
-                            <ListItemButton role={undefined} onClick={() => handleCheckboxClick(node.id)} dense>
+                            <ListItemButton role={undefined} onClick={
+                                () => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}
+                                dense>
                                 <ListItemIcon>
                                     <Checkbox
                                         edge="start"
-                                        checked={activeNodes.includes(node.id)}
+                                        checked={activeNodes.map((activeNode) => activeNode.id).includes(node.id)}
                                         tabIndex={-1}
                                         disableRipple
                                         inputProps={{ 'aria-labelledby': node.id }}
                                     />
                                 </ListItemIcon>
-                                <ListItemText id={node.id} primary={node.id} />
+                                <ListItemText id={node.id} primary={node.style?.label?.value ? node.style.label.value : node.id} />
                             </ListItemButton>
                         </ListItem>
                     )

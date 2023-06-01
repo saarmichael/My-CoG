@@ -4,6 +4,12 @@ import { FreqRange } from '../shared/GraphRelated';
 import { TimeInterval } from "../shared/GraphRelated";
 import { GraphinData } from "@antv/graphin";
 
+export interface ActiveNodeProps {
+    id: string;
+    label: string;
+}
+
+
 export interface IGlobalDataContext {
     state: GraphinData;
     setState: (state: GraphinData) => void;
@@ -23,8 +29,8 @@ export interface IGlobalDataContext {
     setSharedGraph: (sharedGraph: GraphinData) => void;
     chosenFile: string;
     setChosenFile: (chosenFile: string) => void;
-    activeNodes: string[];
-    setActiveNodes: (activeNodes: string[]) => void;
+    activeNodes: ActiveNodeProps[];
+    setActiveNodes: (activeNodes: ActiveNodeProps[]) => void;
     loading: boolean;
     setLoading: (loading: boolean) => void;
 }
@@ -45,7 +51,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
     const [duration, setDuration] = useState<number>(2);
     const [sharedGraph, setSharedGraph] = useState<GraphinData>({ nodes: [], edges: [] });
     const [chosenFile, setChosenFile] = useState<string>("");
-    const [activeNodes, setActiveNodes] = React.useState<string[]>([]);
+    const [activeNodes, setActiveNodes] = React.useState<ActiveNodeProps[]>([]);
     const [loading , setLoading] = React.useState<boolean>(false);
     return (
         <GlobalDataContext.Provider value={{

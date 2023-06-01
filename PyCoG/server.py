@@ -178,11 +178,13 @@ def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
     file_name = session["user_data_dir"].split("/")[-1]
-    num_nodes = data_provider.get_data().shape[1]
+    data = data_provider.get_data()
+    channel_names = data_provider.get_channel_names()
+    num_nodes = data.shape[1]
     # create the ids and labels.
     nodes = []
     for i in range(num_nodes):
-        nodes.append({"id": str(i), "label": "Electrode " + str(i)})
+        nodes.append({"id": str(i), "style": {"label": {"value": channel_names[i]}}})
     # create the edges. theres an edge between every node
     edges = []
     for i in range(num_nodes):

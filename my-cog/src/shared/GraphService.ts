@@ -620,7 +620,6 @@ export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
             label: {
                 ...graph.nodes[i].style?.label,
                 fontSize: NODE_LABEL_FONT_SIZE,
-                value: idNum,
                 position: 'center',
             },
             keyshape: {
