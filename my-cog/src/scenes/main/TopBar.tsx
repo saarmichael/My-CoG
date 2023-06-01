@@ -18,7 +18,8 @@ interface MenuItem {
 
 export const TopBar: React.FC = () => {
     const [activeMenu, setActiveMenu] = useState<number | null>(null);
-    const [openFileList, setOpenFileList] = useState<Node[]>([]); // new state for file list
+    const [openFileList, setOpenFileList] = useState<Node[]>([]);
+    const [recentFiles, setRecentFiles] = useState<Node[]>([]);
     const { setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const toggleMenu = (index: number) => {
@@ -26,7 +27,7 @@ export const TopBar: React.FC = () => {
     };
 
     useEffect(() => {
-        setChosenFile("s");
+        setChosenFile("first");
         apiGET('/getFiles').then((response) => {
             let files = response as Node[];
             setOpenFileList(files);
@@ -39,6 +40,16 @@ export const TopBar: React.FC = () => {
         apiPOST<object>('/setFile', {file: file}).then((response) => {
             if (response.status === 200) {
                 setChosenFile(file);
+                // check if file in recent files
+                let found = false;
+                recentFiles.forEach((recentFile) => {
+                    if (recentFile.label === file) {
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    setRecentFiles([...recentFiles, {key: (recentFiles.length + 1).toString() ,label: file, children: [], isFile: true}]);
+                }
             }
         })
         .catch((error) => {
@@ -52,12 +63,12 @@ export const TopBar: React.FC = () => {
         {
             name: 'File',
             items: [
-                <div>
-                    <DirectoryPicker onChange={AddFile} buttonName='Add File'/>
+                <div onClick={(e) => {e.stopPropagation()}}>
+                    <ModelPopup title='Choose from recent files:' buttonName='Recent Files' content={<TreeView treeData={recentFiles} fileClicked={fileClicked}/>}/>
                 </div>,
                 <div onClick={(e) => {e.stopPropagation()}}>
                     <ModalProvider>
-                        <ModelPopup title='Choose a file' buttonName='Open' content={<TreeView treeData={openFileList} fileClicked={fileClicked}/>}/>
+                        <ModelPopup title='Choose a file:' buttonName='Choose file' content={<TreeView treeData={openFileList} fileClicked={fileClicked}/>}/>
                     </ModalProvider>
                 </div>,
                 <div onClick={() => handleSave()}>

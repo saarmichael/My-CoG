@@ -34,13 +34,13 @@ def login():
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session.permanent = True
-    print(find_file(ast.literal_eval(user.data_dir)[0], os.getcwd()))
-    session["user_root_dir"] = ast.literal_eval(user.data_dir)[0]
-    session["user_data_dir"] = find_first_eeg_file(find_file(ast.literal_eval(user.data_dir)[0], os.getcwd()))
+    print(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
+    session["user_root_dir"] = ast.literal_eval(user.user_root_dir)[0]
+    session["user_data_dir"] = find_first_eeg_file(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
     session["username"] = user.username
     data_provider = dataProvider(session)
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
-    return jsonify({"data_dir": user.data_dir})
+    return jsonify({"data_dir": user.user_root_dir})
 
 
 @app.route("/register", methods=["POST"])
@@ -224,6 +224,7 @@ def logout():
             f"{bcolors.GETREQUEST}user logged out: {session['username']}{bcolors.ENDC}"
         )
         session.pop("username", None)
+        session.pop("user_root_dir", None)
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})
     return jsonify({"message": "No user logged in!"}), 400
