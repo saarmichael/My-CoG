@@ -3,6 +3,7 @@ import { ServerSettings, extractOptions, registerRequest } from '../../shared/Se
 import './StartPage.css';
 import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
 import MyDropzone from './MyDropZone';
+import DirectoryPicker from './MyDropZone';
 
 
 interface RegisterProps {
@@ -32,7 +33,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
     };
     registerRequest(username, data.split('\\').pop() as string, reorganizedSettings, onRegister).then((err) => {
       console.log(err)
-      setErrorMessage(err)
+      setErrorMessage(err as string)
     });
 
   };
@@ -57,7 +58,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
           Data
         </label>
         <div className='file-upload-button'>
-          <MyDropzone dropFunc={setData} message="📁" />
+          <DirectoryPicker onChange={setData} buttonName="📁" />
         </div>
         
         {data && <p className='upload message'>{data.split('\\').pop()}</p>}

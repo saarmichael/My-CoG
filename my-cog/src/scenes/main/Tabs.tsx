@@ -108,11 +108,11 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
             )}
           </div>
           
-          <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
+          <div id="mainContent" style={{ position: 'absolute', height: '100%', width: '100%' }}>
             {tabs.map((tab, index) => (
               <div style={{ display: index === activeTabIndex ? '' : 'none', height: '100%' }}>
                 {tab.content.props.children.map((component: JSX.Element, index: number) => (
-                  <div style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '', width:'100%', height:'100%', position:'absolute'}}>
+                  <div style={{ display: hiddenComponentIndex.includes(index) ? 'none' : ''}}>
                     {component}
                   </div>
                 ))}

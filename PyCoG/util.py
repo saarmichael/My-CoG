@@ -63,10 +63,6 @@ class dataProvider:
             self.sampling_rate = tsv_table["sampling_frequency"].tolist()[0]
         return self.sampling_rate
 
-    def find_file(pattern, path):
-        for file in glob.glob(f"{path}/**/{pattern}", recursive=True):
-            return file
-
     def get_duration(self):
         if self.session == None:
             print("session is None")
@@ -159,3 +155,14 @@ def convert_to_tree(path, prefix=""):
 
 def convert_path_to_tree(path):
     return convert_to_tree(path, prefix="")
+
+
+def find_file(pattern, path):
+        for file in glob.glob(f"{path}/**/{pattern}", recursive=True):
+            return file
+
+def find_first_eeg_file(directory):
+    for filepath in glob.iglob(directory + '/**/*.eeg', recursive=True):
+        return filepath
+
+    return None

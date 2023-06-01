@@ -4,7 +4,7 @@ from flask import request, jsonify, send_file, session
 from db_write import update_data_dir
 from export_data import export_coherence_to_mat
 from granger import calculate_granger_for_all_pairs
-from util import convert_path_to_tree, dataProvider
+from util import convert_path_to_tree, dataProvider, find_first_eeg_file, find_file
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
 from coherence import coherence_over_time
@@ -34,19 +34,22 @@ def login():
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session.permanent = True
-    session[
-        "user_data_dir"
-    ] = r"C:\Users\saarm\Code Projects\BIDS\AudioVisual\sub-01\ses-iemu\ieeg\sub-01_ses-iemu_task-film_acq-clinical_run-1_ieeg"
+    print(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
+    session["user_root_dir"] = ast.literal_eval(user.user_root_dir)[0]
+    session["user_data_dir"] = find_first_eeg_file(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
     session["username"] = user.username
     data_provider = dataProvider(session)
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
-    return jsonify({"data_dir": user.data_dir})
+    return jsonify({"data_dir": user.user_root_dir})
 
 
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
+    print(f'user:{data["username"]}.')
     # check if user exists
+    if data["username"] == "":
+        return jsonify({"message": "Username cannot be empty!"}), 400
     if user_in_db(data["username"], User.query):
         return jsonify({"message": "User already exists!"}), 400
     write_user(data["username"], data["data"], data["settings"])
@@ -70,6 +73,12 @@ def save_settings():
     user.settings = data["requestSettings"]
     db.session.commit()
     return jsonify({"message": "Settings saved successfully!"})
+
+@app.route("/setFile", methods=["POST"])
+def set_file():
+    print(session["user_data_dir"])
+    session["user_data_dir"] = request.get_json()["file"]
+    return jsonify({"message": "File set successfully!"})
 
 
 ###############################################
@@ -108,7 +117,7 @@ def get_time_range():
 @app.route("/getFiles", methods=["GET"])
 def get_files():
     return jsonify(
-        convert_path_to_tree("C:\\Users\\saarm\\Code Projects\\BIDS\\AudioVisual")
+        convert_path_to_tree(find_file(session["user_root_dir"], os.getcwd()))
     )
 
 
@@ -200,6 +209,7 @@ def logout():
             f"{bcolors.GETREQUEST}user logged out: {session['username']}{bcolors.ENDC}"
         )
         session.pop("username", None)
+        session.pop("user_root_dir", None)
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})
     return jsonify({"message": "No user logged in!"}), 400
