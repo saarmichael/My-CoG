@@ -109,8 +109,9 @@ const BasicGraphinGraph = () => {
     const applyVisualizationOptions = async () => {
         let graph = { ...state };
         // keep only the active nodes
-        graph.nodes = graph.nodes.filter((node) => activeNodes.includes(node.id));
-        graph.edges = graph.edges.filter((edge) => activeNodes.includes(edge.source) && activeNodes.includes(edge.target));
+        let activeNodesId = activeNodes.map((node)=>(node.id))
+        graph.nodes = graph.nodes.filter((node) => activeNodesId.includes(node.id));
+        graph.edges = graph.edges.filter((edge) => activeNodesId.includes(edge.source) && activeNodesId.includes(edge.target));
         graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, { ...settings });
@@ -148,7 +149,10 @@ const BasicGraphinGraph = () => {
         });
         console.log(`useEffect`, `createBasicGraph`)
         createBasicGraph().then((data) => {
-            setActiveNodes(data.nodes.map((node) => node.id));
+            setActiveNodes(data.nodes.map((node) => {
+                const nodeLabel = node.style?.label?.value ? node.style.label.value : node.id;
+                return { id: node.id, label: nodeLabel };
+            }));
             setState(data);
             setSharedGraph({ ...data });
             setChangeVis([...changeVis])
