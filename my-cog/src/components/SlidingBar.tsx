@@ -1,4 +1,4 @@
-import { Slider, TextField } from "@mui/material";
+import { Slider, TextField, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getSpectrogramDataSync } from "../shared/getters";
 
@@ -57,9 +57,66 @@ const SlidingBar = (props: SlidingBarProps) => {
     props.onChange(new Event('change'), value);
   }, [value]);
 
+  // micro slider
+
+  const [showMicroSlider, setShowMicroSlider] = useState<boolean>(false);
+  const [hoverValue, setHoverValue] = React.useState<number[]>([0, 1]);
+  const [microSliderValue, setMicroSliderValue] = React.useState<number[]>([0, 1]);
+
+  const handleHoverChange = (event: any, newValue: number | number[]) => {
+    newValue = newValue as number[];
+    setHoverValue([Math.floor(newValue[0]), Math.floor(newValue[0]) + 2]); // get the floor value to define a range for micro slider
+    setShowMicroSlider(true); // show the micro slider when user moves the thumb
+  };
+
+  const handleMicroSliderChange = (event: any, newValue: number | number[], activeThumb: number) => {
+    newValue = newValue as number[];
+    newValue = newValue.map((num: number) => Math.round(num * 1000) / 1000);
+    if (activeThumb === 0) {
+      setMicroSliderValue([Math.min(newValue[0], microSliderValue[1] - 0.001), microSliderValue[1]]);
+      // change the lower thumb input field value
+      if (lowerThumbRef.current) {
+        lowerThumbRef.current.value = Math.min(newValue[0], microSliderValue[1] - 0.001).toString();
+      }
+    } else {
+      setMicroSliderValue([microSliderValue[0], Math.max(newValue[1], microSliderValue[0] + 0.001)]);
+      // change the upper thumb input field value
+      if (upperThumbRef.current) {
+        upperThumbRef.current.value = Math.max(newValue[1], microSliderValue[0] + 0.001).toString();
+      }
+    }
+  };
+
+
+  const handleTooltipOpen = (event: React.MouseEvent<HTMLSpanElement>) => {
+
+    handleHoverChange(event, value);
+    // calculate hoverValue here based on event data...
+    setShowMicroSlider(true);
+  };
+  
+  const handleTooltipClose = () => {
+    setTimeout(() => {
+      setShowMicroSlider(false);
+    }, 3000);
+  };
 
   return (
     <>
+      <Tooltip 
+      open={showMicroSlider}
+      
+      title={<Slider
+        style={{width: '25vh'}}
+        value={microSliderValue}
+        onChange={handleMicroSliderChange}
+        onMouseDown={handleMouseDown}
+        min={hoverValue[0]}
+        max={hoverValue[1]}
+        step={0.001}
+        valueLabelDisplay="auto"
+      />} arrow>
+      <span style={{ width: '100%' }} onMouseOver={handleTooltipOpen} onMouseLeave={handleTooltipClose}>
       <Slider
         getAriaLabel={() => 'Timeframe slider'}
         value={value}
@@ -72,6 +129,8 @@ const SlidingBar = (props: SlidingBarProps) => {
         max={array[array.length - 1]}
         disableSwap={true}
       />
+      </span>
+      </Tooltip>
       <TextField inputRef={lowerThumbRef} defaultValue={value[0]} type="number" size="small" label={"lowerThumb"}
         onChange={(event) => {
           // set the value of the slider to the value of the input field
@@ -86,7 +145,7 @@ const SlidingBar = (props: SlidingBarProps) => {
 
       {props.toSubmit && <button onClick={() => {
         if (props.onSubmit) {
-          props.onSubmit(value[0], value[1]);
+          props.onSubmit(Number(lowerThumbRef.current?.value), Number(upperThumbRef.current?.value));
         }
       }
       }

@@ -15,7 +15,7 @@ from image_generator import get_brain_image
 import os
 import threading
 from datetime import datetime
-
+import math
 
 data_provider = dataProvider(session)
 
@@ -144,7 +144,7 @@ def get_coherence_matrices():
         # end will be the last time frame
     if end is None:
         end = "1"
-    if int(start) > int(end):
+    if int(math.floor(float(start))) > int(math.floor(float(end))):
         end = str(int(start) + 1)
     data = data_provider.get_data()
     print(f"{bcolors.DEBUG}in time/ : data shape: {data.shape}{bcolors.ENDC}")
