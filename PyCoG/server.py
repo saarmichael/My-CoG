@@ -4,7 +4,7 @@ from flask import request, jsonify, send_file, session
 from db_write import update_data_dir
 from export_data import export_coherence_to_mat
 from granger import calculate_granger_for_all_pairs
-from util import convert_path_to_tree, dataProvider
+from util import convert_path_to_tree, dataProvider, find_first_eeg_file, find_file
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
 from coherence import coherence_over_time
@@ -15,7 +15,7 @@ from image_generator import get_brain_image
 import os
 import threading
 from datetime import datetime
-
+import math
 
 data_provider = dataProvider(session)
 
@@ -34,19 +34,22 @@ def login():
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session.permanent = True
-    session[
-        "user_data_dir"
-    ] = r"C:\Users\saarm\Code Projects\BIDS\AudioVisual\sub-01\ses-iemu\ieeg\sub-01_ses-iemu_task-film_acq-clinical_run-1_ieeg"
+    print(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
+    session["user_root_dir"] = ast.literal_eval(user.user_root_dir)[0]
+    session["user_data_dir"] = find_first_eeg_file(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
     session["username"] = user.username
     data_provider = dataProvider(session)
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
-    return jsonify({"data_dir": user.data_dir})
+    return jsonify({"data_dir": user.user_root_dir})
 
 
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
+    print(f'user:{data["username"]}.')
     # check if user exists
+    if data["username"] == "":
+        return jsonify({"message": "Username cannot be empty!"}), 400
     if user_in_db(data["username"], User.query):
         return jsonify({"message": "User already exists!"}), 400
     write_user(data["username"], data["data"], data["settings"])
@@ -70,6 +73,12 @@ def save_settings():
     user.settings = data["requestSettings"]
     db.session.commit()
     return jsonify({"message": "Settings saved successfully!"})
+
+@app.route("/setFile", methods=["POST"])
+def set_file():
+    print(session["user_data_dir"])
+    session["user_data_dir"] = request.get_json()["file"]
+    return jsonify({"message": "File set successfully!"})
 
 
 ###############################################
@@ -108,7 +117,7 @@ def get_time_range():
 @app.route("/getFiles", methods=["GET"])
 def get_files():
     return jsonify(
-        convert_path_to_tree("C:\\Users\\saarm\\Code Projects\\BIDS\\AudioVisual")
+        convert_path_to_tree(find_file(session["user_root_dir"], os.getcwd()))
     )
 
 
@@ -130,11 +139,12 @@ def get_coherence_matrices():
     if cal:
         return jsonify(cal.data)
     # error handling
-    if ((start is None) or (start == "0")) or ((end is None) or (end == "0")):
+    if start is None:
         start = "0"
         # end will be the last time frame
+    if end is None:
         end = "1"
-    if int(start) > int(end):
+    if int(math.floor(float(start))) > int(math.floor(float(end))):
         end = str(int(start) + 1)
     data = data_provider.get_data()
     print(f"{bcolors.DEBUG}in time/ : data shape: {data.shape}{bcolors.ENDC}")
@@ -168,27 +178,13 @@ def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
     file_name = session["user_data_dir"].split("/")[-1]
-    cal = data_in_db(file_name, request.url, Calculation.query)
-    if cal:
-        CM = cal.data["CM"]
-    else:
-        data = data_provider.get_data()
-        f, window_time, t, CM = coherence_over_time(data, 1000, 10, 0.5)
-        calculation = {
-            "f": f.tolist(),
-            "window_time": window_time,
-            "t": t.tolist(),
-            "CM": CM.tolist(),
-        }
-        cal = write_calculation(
-            file_name, request.url, calculation, session["username"]
-        )
-
-    num_nodes = len(CM[0][0][0])
+    data = data_provider.get_data()
+    channel_names = data_provider.get_channel_names()
+    num_nodes = data.shape[1]
     # create the ids and labels.
     nodes = []
     for i in range(num_nodes):
-        nodes.append({"id": str(i), "label": "Electrode " + str(i)})
+        nodes.append({"id": str(i), "style": {"label": {"value": channel_names[i]}}})
     # create the edges. theres an edge between every node
     edges = []
     for i in range(num_nodes):
@@ -215,6 +211,7 @@ def logout():
             f"{bcolors.GETREQUEST}user logged out: {session['username']}{bcolors.ENDC}"
         )
         session.pop("username", None)
+        session.pop("user_root_dir", None)
         session.pop("user_data_dir", None)
         return jsonify({"message": "Logged out successfully!"})
     return jsonify({"message": "No user logged in!"}), 400

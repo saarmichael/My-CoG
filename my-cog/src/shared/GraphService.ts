@@ -612,37 +612,37 @@ const getIdNum = (id: string): string => {
 
 
 export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
-    for (let i = 0; i < graph.nodes.length; i++) {
+    let newGraph = { ...graph };
+    for (let i = 0; i < newGraph.nodes.length; i++) {
         // get the number og the node (it is the last chars of the id. notice that the number could be more than one digit)
-        const idNum = getIdNum(graph.nodes[i].id);
-        graph.nodes[i].style = {
-            ...graph.nodes[i].style,
+        const idNum = getIdNum(newGraph.nodes[i].id);
+        newGraph.nodes[i].style = {
+            ...newGraph.nodes[i].style,
             label: {
-                ...graph.nodes[i].style?.label,
-                fontSize: NODE_LABEL_FONT_SIZE,
-                value: idNum,
+                ...newGraph.nodes[i].style?.label, 
                 position: 'center',
             },
             keyshape: {
-                ...graph.nodes[i].style?.keyshape,
+                ...newGraph.nodes[i].style?.keyshape,
             }
         };
 
 
     }
-    return { ...graph };
+    return { ...newGraph };
 }
 
 export const hideNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
-    for (let i = 0; i < graph.nodes.length; i++) {
-        graph.nodes[i].style = {
-            ...graph.nodes[i].style,
+    let newGraph = { ...graph };
+    for (let i = 0; i < newGraph.nodes.length; i++) {
+        newGraph.nodes[i].style = {
+            ...newGraph.nodes[i].style,
             label: {
-                ...graph.nodes[i].style?.label,
+                ...newGraph.nodes[i].style?.label,
                 value: '',
             }
         };
 
     }
-    return { ...graph };
+    return { ...newGraph };
 }

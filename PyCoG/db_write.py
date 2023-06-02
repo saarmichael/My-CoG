@@ -18,7 +18,7 @@ def write_calculation(file_name, url, data, created_by):
 
 
 def write_user(username, data_dir, settings):
-    user = User(username=username, data_dir='[]', settings=settings)
+    user = User(username=username, user_root_dir='[]', settings=settings)
     db.session.add(user)
     db.session.commit()
     update_data_dir(username, data_dir)
@@ -27,8 +27,8 @@ def write_user(username, data_dir, settings):
 
 def update_data_dir(username, new_data_dir):
     user = user_in_db(username, User.query)
-    data_dirs = ast.literal_eval(user.data_dir)
+    data_dirs = ast.literal_eval(user.user_root_dir)
     data_dirs.append(new_data_dir)
-    user.data_dir = str(data_dirs)
+    user.user_root_dir = str(data_dirs)
     db.session.commit()
     return user

@@ -85,16 +85,17 @@ const GridBehavior = (props: GridBehaviorProps) => {
             nodes.forEach(node => {
                 const model = node.getModel();
                 const size = model.style?.keyshape?.size - (e.wheelDelta / 20);
-                let fontSize = model.style?.label?.fontSize - (e.wheelDelta / 20);
-                if(!fontSize){
-                    fontSize = NODE_LABEL_FONT_SIZE;
+                let modelFontSize = model.style?.label?.fontSize - (e.wheelDelta / 20);
+
+                if(!modelFontSize){
+                    modelFontSize = NODE_LABEL_FONT_SIZE;
                 }
                 if (size) {
                     if (Array.isArray(size)) {
-                        graph.updateItem(node, { size: [size[0] + 100, size[1] + 100], fontSize: fontSize });
+                        graph.updateItem(node, { size: [size[0] + 100, size[1] + 100], fontSize: modelFontSize });
                     }
                     else {
-                        graph.updateItem(node, { style: { keyshape: { size: size }, label: { fontSize: fontSize } } });
+                        graph.updateItem(node, { style: { keyshape: { size: size }, label: { fontSize: modelFontSize } } });
                     }
                 }
             });

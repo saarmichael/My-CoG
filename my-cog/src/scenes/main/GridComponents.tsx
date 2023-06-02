@@ -30,7 +30,7 @@ export const Box: React.FC<BoxProps> = () => {
         width: 600,
         height: 600,
       }}
-        bounds="parent"
+        bounds="#mainContent"
         minWidth={350}
         minHeight={400}>
         <div className="box"
@@ -54,7 +54,7 @@ export const Box1: React.FC<BoxProps> = () => {
           width: 320,
           height: 200,
         }}
-          bounds="parent"
+          bounds="#mainContent"
           minWidth={600}
           minHeight={550}
           disableDragging={true}

@@ -4,6 +4,7 @@ from scipy.io import loadmat
 from flask import session
 import mne_bids
 import pandas as pd
+import threading
 
 
 class dataProvider:
@@ -13,6 +14,7 @@ class dataProvider:
         self.sampling_rate = None
         self.session = session
         self.duration = None
+        self.lock = threading.Lock()
 
     def set_session(self, session):
         self.session = session
@@ -51,42 +53,46 @@ class dataProvider:
         if self.session == None:
             print("session is None")
             return None
-        if self.sampling_rate == None:
-            tsv_path = (
-                self.get_bids_path()
-                .copy()
-                .update(suffix="channels", extension=".tsv")
-                .fpath
-            )
-            tsv_table = pd.read_table(tsv_path)
-            # get a list of the sampling rates
-            self.sampling_rate = tsv_table["sampling_frequency"].tolist()[0]
-        return self.sampling_rate
+        with self.lock:
+            if self.sampling_rate == None:
+                tsv_path = (
+                    self.get_bids_path()
+                    .copy()
+                    .update(suffix="channels", extension=".tsv")
+                    .fpath
+                )
+                tsv_table = pd.read_table(tsv_path)
+                # get a list of the sampling rates
+                self.sampling_rate = tsv_table["sampling_frequency"].tolist()[0]
 
-    def find_file(pattern, path):
-        for file in glob.glob(f"{path}/**/{pattern}", recursive=True):
-            return file
+        return self.sampling_rate
 
     def get_duration(self):
         if self.session == None:
             print("session is None")
             return None
-        if self.duration == None:
-            raw = mne_bids.read_raw_bids(bids_path=self.bids_path, verbose=False)
-            self.duration = raw.n_times / raw.info["sfreq"]
+        with self.lock:
+            if self.duration == None:
+                raw = mne_bids.read_raw_bids(bids_path=self.bids_path, verbose=False)
+                self.duration = raw.n_times / raw.info["sfreq"]
+
         return self.duration
 
     def get_data(self):
-        if self.bids_path == None:
-            file_name = self.session["user_data_dir"]
-            # get rid of the .eeg suffix
-            file_name = file_name.split(".")[0]
-            self.bids_path = mne_bids.get_bids_path_from_fname(file_name)
+        with self.lock:
+            if self.bids_path == None:
+                file_name = self.session["user_data_dir"]
+                # get rid of the .eeg suffix
+                file_name = file_name.split(".")[0]
+                self.bids_path = mne_bids.get_bids_path_from_fname(file_name)
+
         # load the raw data from the bids path
         raw = mne_bids.read_raw_bids(bids_path=self.bids_path, verbose=False)
-        if self.duration == None:
-            # update here already because why not
-            self.duration = raw.n_times / raw.info["sfreq"]
+        with self.lock:
+            if self.duration == None:
+                # update here already because why not
+                self.duration = raw.n_times / raw.info["sfreq"]
+
         # get the data from the bids_path
         data = raw.get_data()
         # traspose the data so that the channels are the columns
@@ -96,7 +102,7 @@ class dataProvider:
         # if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
         #     data = data[:, 0:9]
 
-        return data[:, 0:9]
+        return data[:, 0:32]
 
 
 def convert_to_tree(path, prefix=""):
@@ -159,3 +165,15 @@ def convert_to_tree(path, prefix=""):
 
 def convert_path_to_tree(path):
     return convert_to_tree(path, prefix="")
+
+
+def find_file(pattern, path):
+    for file in glob.glob(f"{path}/**/{pattern}", recursive=True):
+        return file
+
+
+def find_first_eeg_file(directory):
+    for filepath in glob.iglob(directory + "/**/*.eeg", recursive=True):
+        return filepath
+
+    return None

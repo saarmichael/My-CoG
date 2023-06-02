@@ -1,7 +1,7 @@
 import { INode, NodeConfig } from '@antv/g6';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
 import React, { useContext, useEffect } from 'react';
-import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
+import { ActiveNodeProps, GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import { getDuration, getFrequencies } from '../shared/RequestsService';
 import { getGraphBase, getGraphCoherence, updateGraphCoherence } from '../shared/GraphService';
@@ -11,7 +11,7 @@ import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsSe
 const SampleBehavior = () => {
     const { graph, apis } = useContext(GraphinContext);
     const { electrode, setElectrode } = useContext(GlobalDataContext) as IGlobalDataContext;
-    const { sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state, sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     useEffect(() => {
 
@@ -46,6 +46,11 @@ const SampleBehavior = () => {
     }, [electrode]);
 
     useEffect(() => {
+        // get the labels from the state
+        const nodesLabels: ActiveNodeProps[] = state.nodes.map((node) => {
+            const nodeLabel = node.style?.label?.value ? node.style.label.value : node.id;
+            return { id: node.id, label: nodeLabel };
+        });
         const nodes = graph.getNodes();
         sharedGraph.nodes.forEach(node => {
             const graphNode = nodes.find(n => n.getModel().id === node.id);
@@ -106,11 +111,19 @@ const BasicGraphinGraph = () => {
         return { ...graph };
     }
 
+    useEffect(() => {
+        console.log(`test`, state);
+    }, [state]);
+
     const applyVisualizationOptions = async () => {
-        let graph = { ...state };
+        // deep copy the graph
+        const newNodes = state.nodes.map((node) => ({ ...node }));
+        const newEdges = state.edges.map((edge) => ({ ...edge }));
+        let graph: GraphinData = { nodes: newNodes, edges: newEdges };
         // keep only the active nodes
-        graph.nodes = graph.nodes.filter((node) => activeNodes.includes(node.id));
-        graph.edges = graph.edges.filter((edge) => activeNodes.includes(edge.source) && activeNodes.includes(edge.target));
+        let activeNodesId = activeNodes.map((node)=>(node.id))
+        graph.nodes = graph.nodes.filter((node) => activeNodesId.includes(node.id));
+        graph.edges = graph.edges.filter((edge) => activeNodesId.includes(edge.source) && activeNodesId.includes(edge.target));
         graph = options.reduce((acc, option) => {
             if (option.checked) {
                 return option.onChange(acc, { ...settings });
@@ -148,9 +161,15 @@ const BasicGraphinGraph = () => {
         });
         console.log(`useEffect`, `createBasicGraph`)
         createBasicGraph().then((data) => {
-            setActiveNodes(data.nodes.map((node) => node.id));
+            setActiveNodes(data.nodes.map((node) => {
+                const nodeLabel = node.style?.label?.value ? node.style.label.value : node.id;
+                return { id: node.id, label: nodeLabel };
+            }));
             setState(data);
-            setSharedGraph({ ...data });
+            const newNodes = data.nodes.map((node) => ({ ...node }));
+            const newEdges = data.edges.map((edge) => ({ ...edge }));
+            let graph: GraphinData = { nodes: newNodes, edges: newEdges };
+            setSharedGraph(graph);
             setChangeVis([...changeVis])
         });
     }, [chosenFile]);
@@ -178,14 +197,11 @@ const BasicGraphinGraph = () => {
     }, [freqRange]);
 
     useEffect(() => {
-        console.log(`useEffect`, `applyVisualizationOptions`)
         applyVisualizationOptions().then((data) => {
             setSharedGraph(data);
         });
     }, [options, settings, changeVis, activeNodes]);
 
-    // createGraphData();
-    // set the electrode list according to the current graph
     useEffect(() => {
         setElectrodeList(state.nodes.map((node) => node.id));
     }, [state]);

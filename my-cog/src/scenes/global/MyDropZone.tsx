@@ -1,25 +1,42 @@
-import React from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { ChangeEvent } from 'react';
 
-type MyDropzoneProps = {
-  dropFunc: (file: string) => void;
-  message: string;
-};
-
-const MyDropzone: React.FC<MyDropzoneProps> = ({ dropFunc, message }) => {
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: acceptedFiles => {
-      let name = acceptedFiles[0].name as string;
-      dropFunc(name);
-    }
-});
-
-  return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      <p>{message}</p>
-    </div>
-  );
+declare module 'react' {
+  interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+    // extends React's HTMLAttributes
+    directory?: string;
+    webkitdirectory?: string;
+    mozdirectory?: string;
+  }
 }
 
-export default MyDropzone;
+interface DirectoryPickerProps {
+  onChange: (directoryName: string) => void;
+  buttonName: string;
+}
+
+const DirectoryPicker: React.FC<DirectoryPickerProps> = ({ onChange, buttonName }) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const directoryName = event.target.files[0].webkitRelativePath.split('/')[0];
+      onChange(directoryName);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="file"
+        id="directory"
+        webkitdirectory=""
+        directory=""
+        onChange={handleChange}
+        style={{ display: 'none' }} 
+      />
+      <label htmlFor="directory">
+        {buttonName}
+      </label>
+    </div>
+  );
+};
+
+export default DirectoryPicker;
