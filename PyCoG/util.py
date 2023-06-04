@@ -102,7 +102,7 @@ class dataProvider:
         # if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
         #     data = data[:, 0:9]
 
-        return data[:, 0:32]
+        return data[:, 0:16]
 
 
 def convert_to_tree(path, prefix=""):

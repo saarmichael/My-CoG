@@ -1,6 +1,7 @@
 import ast
 import json
 from flask import request, jsonify, send_file, session
+from video import graph_video
 from db_write import update_data_dir
 from export_data import export_coherence_to_mat
 from granger import calculate_granger_for_all_pairs
@@ -80,6 +81,17 @@ def set_file():
     session["user_data_dir"] = request.get_json()["file"]
     return jsonify({"message": "File set successfully!"})
 
+@app.route("/getGraphVideo", methods=["POST"])
+def get_graph_video():
+    request_data = request.get_json()
+    data = data_provider.get_data()
+    sfreq = data_provider.get_sampling_rate()
+    channels = data_provider.get_channel_names()
+    duration = request_data["duration"]
+    video_name = request_data["videoName"]
+    video = graph_video(data, channels, sfreq, duration, video_name, epoch_duration=0.5)
+    return jsonify({"message": "Video created successfully!"})
+
 
 ###############################################
 ############### GET REQUESTS ##################
@@ -119,7 +131,6 @@ def get_files():
     return jsonify(
         convert_path_to_tree(find_file(session["user_root_dir"], os.getcwd()))
     )
-
 
 # get_coherence_matrices
 #   Parameters:
