@@ -27,21 +27,19 @@ const CreateVideoModal: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
         <form onSubmit={handleSubmit} className="form-container" >
             <div className="input-field">
-                <label>
-                    <div>Video Name</div>
+                <label>Video Name</label>
                     <input type="text" name="videoName" value={form.videoName} onChange={handleChange} required />
-                </label>
-                <label>
-                    <div>Duration</div>
+                
+                <label>Duration</label>
                     <input type="text" name="duration" value={form.duration} onChange={handleChange} required />
-                </label>
-                <input type="submit" value="Submit" className="submit-button"/>
             </div>
+            <input type="submit" value="Submit" className="submit-button"/>
+            
+            <span style={{ textAlign: 'center', width: '100%' }}>{messageResponse}</span>
         </form>
-        {messageResponse}
     </div>
   );
 };
