@@ -71,40 +71,44 @@ export const GraphContainer = () => {
 
     // make a list of checkboxes to select the active nodes
     const selectActiveNodes = (
-        <Box sx={{ 
-            display: 'flex', 
-            flexWrap: 'nowrap', 
-            width: '100%',
-            bgcolor: 'background.paper',
-            position: 'relative',
-            overflowX: 'auto',
-            maxHeight: 125,
-            margin: '10px'
-        }}>
-            {state.nodes.map((node) => {
-                return (
-                    <Box key={node.id} sx={{margin: '10px', maxWidth: '100%'}}>
-                        <ListItemButton role={undefined} onClick={
-                            () => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}
-                            dense>
-                            <ListItemIcon>
-                                <Checkbox
-                                    icon={<CheckCircleOutlineIcon />}
-                                    checkedIcon={<CheckCircleIcon />}
-                                    edge="start"
-                                    checked={activeNodes.map((activeNode) => activeNode.id).includes(node.id)}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{ 'aria-labelledby': node.id }}
-                                    style={{ color: 'purple' }}
-                                />
-                            </ListItemIcon>
-                            <ListItemText id={node.id} primary={node.style?.label?.value ? node.style.label.value : node.id} />
-                        </ListItemButton>
-                    </Box>
-                )
-            })}
-        </Box>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', width: '100%', height: '10%' }}>
+
+
+            <List sx={{
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                width: '100%',
+                bgcolor: 'background.paper',
+                position: 'relative',
+                overflow: 'auto',
+                maxHeight: 125,
+                margin: '10px'
+            }}>
+                {state.nodes.map((node) => {
+                    return (
+                        <ListItem key={node.id} >
+                            <ListItemButton role={undefined} onClick={
+                                () => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}
+                                dense>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        icon={<CheckCircleOutlineIcon />}
+                                        checkedIcon={<CheckCircleIcon />}
+                                        edge="start"
+                                        checked={activeNodes.map((activeNode) => activeNode.id).includes(node.id)}
+                                        tabIndex={-1}
+                                        disableRipple
+                                        inputProps={{ 'aria-labelledby': node.id }}
+                                        style={{ color: 'purple' }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText id={node.id} primary={node.style?.label?.value ? node.style.label.value : node.id} />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                })}
+            </List>
+        </div >
     );
 
     const loadingGif = (
@@ -113,7 +117,9 @@ export const GraphContainer = () => {
 
     return (
         <>
-            {selectActiveNodes}
+            <div>
+                {selectActiveNodes}
+            </div>
             <SlidingBar range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
             <SlidingBar range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
             {loading ? loadingGif : <></>}
