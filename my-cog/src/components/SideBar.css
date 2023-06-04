@@ -9,6 +9,7 @@
 .sidebar {
   display: flex;
   position: absolute;
+  justify-content: space-between;
   flex-direction: column;
   left: -300px;
   width: 300px;
@@ -19,6 +20,7 @@
 
 .sidebar.open {
   left: 0;
+  height: 100%;
 }
 
 .sidebar h2 {
@@ -62,7 +64,7 @@
   font-size: 15px;
   position: absolute;
   right: -15px;
-  top: 0;
+  bottom: 5vh;
   width: 15px;
   height: 25px;
   z-index: 2;
@@ -75,7 +77,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   border-radius: 5px;
-  background-color: rgba(34, 34, 34, 0.5);
+  background-color: purple;
 }
 
 .toggle-button:hover {

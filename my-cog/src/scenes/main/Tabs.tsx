@@ -12,6 +12,7 @@ import { AxiosResponse } from "axios";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { Modal } from "@mui/material";
 import ModalPopup from "../global/ModalPopup";
+import AddIcon from '@mui/icons-material/Add';
 
 
 interface Tab {
@@ -104,7 +105,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
               </button>
             ))}
             {onAddTab && (
-              <button className="plus" onClick={handleAddTabClick}>➕</button>
+              <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
             )}
           </div>
           
