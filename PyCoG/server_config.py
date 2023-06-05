@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/videos')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CogDb.db'
 db = SQLAlchemy(app)
 

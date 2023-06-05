@@ -7,6 +7,5 @@
 *.gif
 *.bmp
 *.mat
-bids
-videos
 users_data
+videos

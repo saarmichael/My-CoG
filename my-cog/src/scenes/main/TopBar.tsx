@@ -1,14 +1,15 @@
 import './TopBar.css';
 import React, { useContext, useEffect, useState } from 'react';
 import { AddFile, handleSave, handleSaveAs, handleUndo, handleRedo, handleFullscreen, handleOptions, handleLogout } from '../../shared/TopBarUtil';
-import MyDropzone from '../global/MyDropZone';
+import MyDropzone from '../global/DirectoryPicker';
 import { apiGET, apiPOST } from '../../shared/ServerRequests';
 import TreeView from '../global/TreeView';
 import { Node } from '../global/TreeView';
 import ModelPopup from '../global/ModalPopup';
 import { ModalProvider } from '../../contexts/ModalContext';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
-import DirectoryPicker from '../global/MyDropZone';
+import DirectoryPicker from '../global/DirectoryPicker';
+import CreateVideoModal from './CreateVideoModal';
 
 interface MenuItem {
     name: string;
@@ -71,8 +72,8 @@ export const TopBar: React.FC = () => {
                         <ModelPopup title='Choose a file:' buttonName='Choose file' content={<TreeView treeData={openFileList} fileClicked={fileClicked}/>}/>
                     </ModalProvider>
                 </div>,
-                <div onClick={() => handleSave()}>
-                    Save
+                <div onClick={(e) => {e.stopPropagation()}}>
+                    <ModelPopup title='Choose video name and duration' buttonName='Create graph video' content={<CreateVideoModal/>}/>
                 </div>,
                 <div onClick={() => handleSaveAs()}>
                     Save AS

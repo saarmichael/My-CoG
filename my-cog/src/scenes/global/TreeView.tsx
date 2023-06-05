@@ -44,7 +44,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, fileClicked }) => {
     };
     return (
       <>
-        <div onClick={handleClick} style={{ marginBottom: "10px" }}>
+        <div onClick={handleClick} style={{ marginBottom: "10px", cursor: 'pointer' }}>
           <span>{label}</span>
         </div>
         <ul style={{ paddingLeft: "10px", borderLeft: "1px solid black" }}>

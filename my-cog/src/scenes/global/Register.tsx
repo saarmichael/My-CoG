@@ -2,8 +2,8 @@ import React, { useState, useContext } from 'react';
 import { ServerSettings, extractOptions, registerRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
 import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
-import MyDropzone from './MyDropZone';
-import DirectoryPicker from './MyDropZone';
+import MyDropzone from './DirectoryPicker';
+import DirectoryPicker from './DirectoryPicker';
 
 
 interface RegisterProps {
