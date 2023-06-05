@@ -83,12 +83,12 @@ export const reorganizeOptions = (options: ServerOption[], realOptions: IVisGrap
     return newOptions;
 }
 
-export const exportData = async (time: TimeInterval, connectivityMeasure?: string) => {
+export const exportData = async (time: TimeInterval, connectivityMeasure?: string, fileName?: string) => {
     if(!connectivityMeasure) {
         connectivityMeasure = 'coherence';
     }
     const url = `/exportData`
-    const response = await apiPOST<ExportDataProps>(url, {time: time, connectivityMeasure: connectivityMeasure});
+    const response = await apiPOST<ExportDataProps>(url, {time: time, connectivityMeasure: connectivityMeasure, fileName: fileName});
     return response;
 }
 
