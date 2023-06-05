@@ -1,6 +1,8 @@
-import { Slider, TextField, Tooltip } from "@mui/material";
+import { Button, Slider, TextField, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getSpectrogramDataSync } from "../shared/getters";
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 interface SlidingBarProps {
   range: number[] | number;
@@ -15,6 +17,7 @@ const SlidingBar = (props: SlidingBarProps) => {
   const lowerThumbRef = React.useRef<HTMLInputElement>(null);
   // ref for input field for the upper thumb of the slider
   const upperThumbRef = React.useRef<HTMLInputElement>(null);
+  const [lockThumbs, setLockThumbs] = useState<boolean>(false);
 
   let minDistance = 0;
   let array: number[] = [];
@@ -39,19 +42,35 @@ const SlidingBar = (props: SlidingBarProps) => {
     newValue = newValue as number[];
     newValue = newValue.map((num: number) => Math.round(num * 1000) / 1000);
     if (activeThumb === 0) {
-      setValue([Math.min(newValue[0], value[1] - minDistance), value[1]]);
-      // change the lower thumb input field value
-      if (lowerThumbRef.current) {
-        lowerThumbRef.current.value = Math.min(newValue[0], value[1] - minDistance).toString();
+      if (lockThumbs) {
+        const stepSize = newValue[0] - value[0];
+        if (value[1] + stepSize > array[array.length - 1]) {
+          setValue([value[0], array[array.length - 1]]);
+        } else {
+          // move both thumbs in the same direction in the same time
+          setValue([value[0] + stepSize, Math.min(value[1] + stepSize, array[array.length - 1])]);
+        }
+      } else {
+        setValue([Math.min(newValue[0], value[1] - minDistance), value[1]]);
       }
     } else {
-      setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
-      // change the upper thumb input field value
-      if (upperThumbRef.current) {
-        upperThumbRef.current.value = Math.max(newValue[1], value[0] + minDistance).toString();
+      if (lockThumbs) {
+        const stepSize = newValue[1] - value[1];
+        if (value[0] + stepSize < array[0]) {
+          setValue([array[0], value[1]]);
+        } else {
+          // move both thumbs in the same direction in the same time
+          setValue([Math.max(value[0] + stepSize, array[0]), value[1] + stepSize]);
+        }
+      } else {
+        setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
       }
     }
-  };
+    if (lowerThumbRef.current && upperThumbRef.current) {
+      lowerThumbRef.current.value = value[0].toString();
+      upperThumbRef.current.value = value[1].toString();
+    }
+  }
 
   useEffect(() => {
     props.onChange(new Event('change'), value);
@@ -103,7 +122,7 @@ const SlidingBar = (props: SlidingBarProps) => {
     // calculate hoverValue here based on event data...
     setShowMicroSlider(true);
   };
-  
+
   const handleTooltipClose = () => {
     setTimeout(() => {
       setShowMicroSlider(false);
@@ -151,6 +170,11 @@ const SlidingBar = (props: SlidingBarProps) => {
           // set the value of the slider to the value of the input field  
           setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
         }} />
+      <Button onClick={() => {
+        setLockThumbs(!lockThumbs);
+      }}>
+        {lockThumbs ? <LockIcon /> : <LockOpenIcon />}
+      </Button>
 
 
       {props.toSubmit && <button onClick={() => {
