@@ -11,8 +11,8 @@
   position: absolute;
   justify-content: space-between;
   flex-direction: column;
-  left: -300px;
-  width: 300px;
+  left: -250px;
+  width: 250px;
   height: 100%;
   background-color: #f0f0f0;
   transition: all 0.3s ease-in-out;
@@ -50,14 +50,14 @@
 
 .main-content {
   margin-left: 0;
-  width: calc(100% - 300px);
+  width: calc(100% - 250px);
 }
 
 
 .sidebar.open~.main-content {
-  margin-left: 300px;
+  margin-left: 250px;
   top: 5%;
-  width: calc(100% - 300px);
+  width: calc(100% - 250px);
 }
 
 .toggle-button {

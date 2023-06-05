@@ -62,6 +62,7 @@ const SlidingBar = (props: SlidingBarProps) => {
   const [showMicroSlider, setShowMicroSlider] = useState<boolean>(false);
   const [hoverValue, setHoverValue] = React.useState<number[]>([0, 1]);
   const [microSliderValue, setMicroSliderValue] = React.useState<number[]>([0, 1]);
+  const [hoverTooltipOpen, setHoverTooltipOpen] = React.useState<boolean>(false);
 
   const handleHoverChange = (event: any, newValue: number | number[]) => {
     newValue = newValue as number[];
@@ -87,6 +88,14 @@ const SlidingBar = (props: SlidingBarProps) => {
     }
   };
 
+  const handleTooltipHoverOpen = (event: React.MouseEvent<HTMLSpanElement>) => {
+    setHoverTooltipOpen(true);
+  };
+
+  const handleTooltipHoverClose = () => {
+    setHoverTooltipOpen(false);
+  };
+
 
   const handleTooltipOpen = (event: React.MouseEvent<HTMLSpanElement>) => {
 
@@ -98,15 +107,16 @@ const SlidingBar = (props: SlidingBarProps) => {
   const handleTooltipClose = () => {
     setTimeout(() => {
       setShowMicroSlider(false);
-    }, 3000);
+    }, 1000);
   };
 
   return (
     <>
       <Tooltip 
-      open={showMicroSlider}
-      
+      open={showMicroSlider || hoverTooltipOpen}
       title={<Slider
+        onMouseEnter={handleTooltipHoverOpen}
+        onMouseLeave={handleTooltipHoverClose}
         style={{width: '25vh'}}
         value={microSliderValue}
         onChange={handleMicroSliderChange}

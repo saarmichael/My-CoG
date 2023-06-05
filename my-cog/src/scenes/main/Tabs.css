@@ -29,8 +29,8 @@ body {
 }
 
 .main-content.sidebar-open {
-  transform: translateX(300px); /* adjust as needed */
-  width: calc(100% - 300px); /* Adjust 200px to match your sidebar width */
+  transform: translateX(250px); /* adjust as needed */
+  width: calc(100% - 250px); /* Adjust 200px to match your sidebar width */
 }
 
 

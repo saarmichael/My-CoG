@@ -97,7 +97,7 @@ export const TopBar: React.FC = () => {
                     Fullscreen
                 </div>
             ]
-        }
+        },
     ];
     return (
         <div className="topbar">
