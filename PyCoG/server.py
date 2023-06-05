@@ -37,7 +37,9 @@ def login():
     session.permanent = True
     print(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
     session["user_root_dir"] = ast.literal_eval(user.user_root_dir)[0]
-    session["user_data_dir"] = find_first_eeg_file(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
+    session["user_data_dir"] = find_first_eeg_file(
+        find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd())
+    )
     session["username"] = user.username
     data_provider = dataProvider(session)
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
@@ -75,11 +77,13 @@ def save_settings():
     db.session.commit()
     return jsonify({"message": "Settings saved successfully!"})
 
+
 @app.route("/setFile", methods=["POST"])
 def set_file():
     print(session["user_data_dir"])
     session["user_data_dir"] = request.get_json()["file"]
     return jsonify({"message": "File set successfully!"})
+
 
 @app.route("/getGraphVideo", methods=["POST"])
 def get_graph_video():
@@ -132,6 +136,7 @@ def get_files():
         convert_path_to_tree(find_file(session["user_root_dir"], os.getcwd()))
     )
 
+
 # get_coherence_matrices
 #   Parameters:
 #       start: start time of the time frame
@@ -148,6 +153,7 @@ def get_coherence_matrices():
     file_name = session["user_data_dir"]
     cal = data_in_db(file_name, request.url, Calculation.query)
     if cal:
+        print(f"{bcolors.DEBUG}CACHED!{bcolors.ENDC}")
         return jsonify(cal.data)
     # error handling
     if start is None:
@@ -280,6 +286,8 @@ def export_data():
         f"{bcolors.DEBUG}start: {start}, end: {end}, resolution: {resolution} connectivityMeasure: {connectivityMeasure}{bcolors.ENDC}"
     )
     date_time = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
+    if not os.path.isdir("exported_mat"):
+        os.mkdir("exported_mat")
     file_name = "exported_mat/" + session["username"] + "_" + date_time
     data = data_provider.get_data()
     sfreq = data_provider.get_sampling_rate()
