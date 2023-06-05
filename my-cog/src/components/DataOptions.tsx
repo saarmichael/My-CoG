@@ -3,7 +3,43 @@ import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocu
 import { Button } from "@mui/material";
 import { exportData } from "../shared/RequestsService";
 import ReactLoading from 'react-loading';
+import ModalPopup from "../scenes/global/ModalPopup";
+import { TextField } from "@mui/material";
 
+
+const ExportDataModal: React.FC = () => {
+    const [exported, setExported] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [fileName, setFileName] = useState('');
+    const { timeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <form className="form-container" onSubmit={async (event: React.FormEvent) => {
+                event.preventDefault();
+
+                setLoading(true);
+                const resp = await exportData(timeRange, 'coherence', fileName);
+                setLoading(false);
+
+                if (resp.status === 200 || true) {
+                    setExported(true);
+
+                    setTimeout(() => {
+                        setExported(false);
+                    }, 2500);
+                }
+            }}>
+                <TextField
+                    label="File Name"
+                    value={fileName}
+                    onChange={event => setFileName(event.target.value)}
+                />
+                <input type="submit" className="submit-button" value="Export Data" />
+            </form>
+        </div>
+    );
+}
 
 
 
@@ -25,23 +61,20 @@ export const DataOptions = () => {
 
     const [exported, setExported] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [fileName, setFileName] = useState('');
 
-    const exportDataButton = (
 
-        <Button onClick={async () => {
-            // export the data to a csv file
-            setLoading(true);
-            const resp = await exportData(timeRange, 'coherence');
-            setLoading(false);
-            if (resp.status === 200 || true) {
-                setExported(true);
-                // set timer to remove the "exported" message
-                setTimeout(() => {
-                    setExported(false);
-                }, 2500);
-            }
-        }} >Export Data</Button>
-    );
+
+
+
+    const modal = (
+        <div style={{ position: "absolute", bottom: "0", right: '0' }}>
+            <ModalPopup
+                buttonName="Export Data"
+                title="Choose file name"
+                content={<ExportDataModal />}
+            />
+        </div>);
 
     const loadingGif = (
         <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
@@ -50,7 +83,7 @@ export const DataOptions = () => {
     return (
         <>
             {selection}
-            {exportDataButton}
+            {modal}
             {loading ? loadingGif : <></>}
             {exported ? <p>Exported!</p> : <></>}
         </>
