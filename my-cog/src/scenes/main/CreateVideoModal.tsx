@@ -22,6 +22,11 @@ const CreateVideoModal: React.FC = () => {
         if (response.status === 200) {
             setmessageResponse(response.data['message']);
             console.log(response.data['videoUrl']);
+        } else if (response.status === 400) {
+            setmessageResponse(response.data['message']);
+        }
+        else {
+            setmessageResponse('Unknown Error while attempting to create video.');
         }
     })
   };

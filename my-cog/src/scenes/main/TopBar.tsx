@@ -51,12 +51,13 @@ export const TopBar: React.FC = () => {
                 if (!found) {
                     setRecentFiles([...recentFiles, {key: (recentFiles.length + 1).toString() ,label: file, children: [], isFile: true}]);
                 }
+            } else if (response.status === 400) {
+                console.log(response.data.message);
             }
-        })
-        .catch((error) => {
-            console.log(error);
-        }
-        );
+            else {
+                console.log(response.data.message);
+            }
+        });
     };
 
 

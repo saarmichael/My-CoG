@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
 import { Button } from "@mui/material";
 import { exportData } from "../shared/RequestsService";
@@ -12,10 +12,22 @@ const ExportDataModal: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [fileName, setFileName] = useState('');
     const { timeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const [error, setError] = useState<boolean>(false);
+    const [response, setResponse] = useState<string>('');
 
     const loadingGif = (
         <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
     );
+
+    const generateResponseMessage = () => {
+        let className = '';
+        if (!error) {
+            className = 'upload';
+        } else {
+            className = 'error message';
+        }
+        return <p className={className}>{response}</p>;
+    }
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -25,13 +37,19 @@ const ExportDataModal: React.FC = () => {
                 setLoading(true);
                 const resp = await exportData(timeRange, 'coherence', fileName);
                 setLoading(false);
-
-                if (resp.status === 200 || true) {
-                    setExported(true);
-
-                    setTimeout(() => {
-                        setExported(false);
-                    }, 2500);
+                setExported(true);
+                setTimeout(() => {
+                    setExported(false);
+                }, 2500);
+                if (resp.status === 200) {
+                    setError(false);
+                    setResponse('Exported!');
+                } else if (resp.status === 400) {
+                    setError(true);
+                    setResponse(resp.data.message);
+                } else {
+                    setError(true);
+                    setResponse('Unknown error');
                 }
             }}>
                 <TextField
@@ -41,7 +59,7 @@ const ExportDataModal: React.FC = () => {
                 />
                 <input type="submit" className="submit-button" value="Export Data" />
                 {loading ? loadingGif : <></>}
-                {exported ? <p>Exported!</p> : <></>}
+                {exported ? generateResponseMessage() : <></>}
             </form>
         </div>
     );

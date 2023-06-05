@@ -150,9 +150,8 @@ export async function apiPOST<T>(url: string, data: T): Promise<AxiosResponse<an
     data: data,
   })
     .then(response => {
-      if (response.status !== 200) {
-        throw new Error(response.statusText)
-      }
       return response;
-    })
+    }).catch(error => {
+      return error.response;
+    });
 }
