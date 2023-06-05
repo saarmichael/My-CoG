@@ -10,6 +10,7 @@ import { ModalProvider } from '../../contexts/ModalContext';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 import DirectoryPicker from '../global/DirectoryPicker';
 import CreateVideoModal from './CreateVideoModal';
+import { DataOptions } from '../../components/DataOptions';
 
 interface MenuItem {
     name: string;
@@ -75,8 +76,8 @@ export const TopBar: React.FC = () => {
                 <div onClick={(e) => {e.stopPropagation()}}>
                     <ModelPopup title='Choose video name and duration' buttonName='Create graph video' content={<CreateVideoModal/>}/>
                 </div>,
-                <div onClick={() => handleSaveAs()}>
-                    Save AS
+                <div onClick={(e) => {e.stopPropagation()}}>
+                    <DataOptions />
                 </div>
             ]
         },

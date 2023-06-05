@@ -13,6 +13,7 @@ import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeF
 import { Modal } from "@mui/material";
 import ModalPopup from "../global/ModalPopup";
 import AddIcon from '@mui/icons-material/Add';
+import { Grid } from '@mui/material';
 
 
 interface Tab {
@@ -92,7 +93,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
 
     return (
       <div className="container">
-        <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar}/>
+        <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
         <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`}>
           <div className="bloc-tabs">
             {tabs.map((tab, index) => (
@@ -108,26 +109,25 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
               <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
             )}
           </div>
+    
           
-          <div id="mainContent" style={{ position: 'absolute', height: '100%', width: '100%' }}>
-            {tabs.map((tab, index) => (
-              <div style={{ display: index === activeTabIndex ? '' : 'none', height: '100%' }}>
-                {tab.content.props.children.map((component: JSX.Element, index: number) => (
-                  <div style={{ display: hiddenComponentIndex.includes(index) ? 'none' : ''}}>
-                    {component}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
+          {tabs.map((tab, index) => (
+            
+              <Grid container justifyContent="center" spacing={20} style={{ display: index === activeTabIndex ? '' : 'none' }}>
+              {tab.content.props.children.map((component: JSX.Element, index: number) => (
+                <Grid item  xs={5} style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '' }}>
+                  {component}
+                </Grid>
+              ))}
+              </Grid>
+          ))}
+          
           <div className="hide-component">
               <ComponentToggleBar menuItems={menuItems} activeMenu={activeMenu} toggleMenu={toggleMenu} />
           </div>
-          <DataOptions />
         </div>
-        
       </div>
-    );
+    );    
 };
 
 const Tabbing = () => {
@@ -138,9 +138,9 @@ const Tabbing = () => {
         className="active-content"
       >
 
-
-        <Box1 name="Grid"/>
         <Box name="Graph"/>
+        <Box1 name="Grid"/>
+        
 
       </div>,
     },

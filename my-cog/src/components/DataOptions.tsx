@@ -13,22 +13,12 @@ export const DataOptions = () => {
     const { timeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
     // make sure all the electrodes appear in the selection
 
-    const selection = (
-        <select onChange={(e) => setElectrode(e.target.value)} value={electrode} >
-            {electrodeList.map((elec) => (
-                <option key={elec} value={elec}>
-                    {elec}
-                </option>
-            ))}
-        </select>
-    );
-
     const [exported, setExported] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
     const exportDataButton = (
 
-        <Button onClick={async () => {
+        <div onClick={async () => {
             // export the data to a csv file
             setLoading(true);
             const resp = await exportData(timeRange, 'coherence');
@@ -40,19 +30,18 @@ export const DataOptions = () => {
                     setExported(false);
                 }, 2500);
             }
-        }} >Export Data</Button>
+        }} style={ {marginRight: "5px"} }>Export Data</div>
     );
 
     const loadingGif = (
-        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
+        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#FFFFFF" />
     );
 
     return (
-        <>
-            {selection}
-            {exportDataButton}
+        <div style={ { display: "flex", width: "100%" } }>
+            <div style={ { alignSelf: "flex-start" } }>{exportDataButton}</div>
             {loading ? loadingGif : <></>}
-            {exported ? <p>Exported!</p> : <></>}
-        </>
+            <div style={ { alignSelf: "flex-end" } }>{exported ? "Exported!" : <></>}</div>
+        </div>
     );
 };
