@@ -281,21 +281,27 @@ def export_data():
     start = data["time"]["start"]
     end = data["time"]["end"]
     resolution = data["time"]["resolution"]
+    file_name = data["fileName"]
     connectivityMeasure = data["connectivityMeasure"]
     print(
         f"{bcolors.DEBUG}start: {start}, end: {end}, resolution: {resolution} connectivityMeasure: {connectivityMeasure}{bcolors.ENDC}"
     )
-    date_time = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
     if not os.path.isdir("exported_mat"):
         os.mkdir("exported_mat")
-    file_name = "exported_mat/" + session["username"] + "_" + date_time
+    if not file_name:
+        date_time = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
+        file_name = session["username"] + "_" + date_time
+    file_name = "exported_mat/" + file_name
+    # check if file is already exists
+    if os.path.isfile(file_name + ".mat"):
+        return jsonify({"message": "File already exists!"}), 400
     data = data_provider.get_data()
     sfreq = data_provider.get_sampling_rate()
     export_coherence_to_mat(
         name=file_name, data=data, sfreq=sfreq, start=start, end=end
     )
     # do something with data
-    return "Data received"
+    return jsonify({"message": "Data exported successfully!"}), 200
 
 
 if __name__ == "__main__":
