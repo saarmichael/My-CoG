@@ -13,6 +13,10 @@ const ExportDataModal: React.FC = () => {
     const [fileName, setFileName] = useState('');
     const { timeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
 
+    const loadingGif = (
+        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
+    );
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <form className="form-container" onSubmit={async (event: React.FormEvent) => {
@@ -36,6 +40,8 @@ const ExportDataModal: React.FC = () => {
                     onChange={event => setFileName(event.target.value)}
                 />
                 <input type="submit" className="submit-button" value="Export Data" />
+                {loading ? loadingGif : <></>}
+                {exported ? <p>Exported!</p> : <></>}
             </form>
         </div>
     );
@@ -84,8 +90,6 @@ export const DataOptions = () => {
         <>
             {selection}
             {modal}
-            {loading ? loadingGif : <></>}
-            {exported ? <p>Exported!</p> : <></>}
         </>
     );
 };
