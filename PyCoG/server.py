@@ -12,7 +12,7 @@ from coherence import coherence_over_time
 from coherence import coherence_time_frame, get_recording_duration
 from consts import bcolors
 from server_config import User, Calculation, db, app
-from image_generator import get_brain_image
+from image_generator import get_azi_ele_dist_lists, get_brain_image
 import os
 import threading
 from datetime import datetime
@@ -257,6 +257,15 @@ def brain_image():
     #     t.join()
     # return the png file to the client side
     return send_file(file_name, mimetype="image/gif")
+
+
+@app.route("/brainImageParamsList", methods=["GET"])
+def get_image_params():
+    azi_list, rot_list, ele_list = get_azi_ele_dist_lists()
+    return (
+        jsonify({"azi_list": azi_list, "ele_list": rot_list, "dist_list": ele_list}),
+        200,
+    )
 
 
 ###############################################
