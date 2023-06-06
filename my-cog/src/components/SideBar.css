@@ -11,10 +11,12 @@
   position: absolute;
   justify-content: space-between;
   flex-direction: column;
+  z-index: 2;
   left: -250px;
   width: 250px;
   height: 100%;
   background-color: #f0f0f0;
+  background: linear-gradient(to right, #ffffff 95%, #959595, #959595);
   transition: all 0.3s ease-in-out;
 }
 
@@ -81,7 +83,7 @@
 }
 
 .toggle-button:hover {
-  background-color: rgba(51, 51, 51);
+  background-color: #561f7b;
 }
 
 .toggle-button:focus {

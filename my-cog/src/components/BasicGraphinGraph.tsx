@@ -207,16 +207,17 @@ const BasicGraphinGraph = () => {
     }, [state]);
     const data = sharedGraph;
     return (
-        <>
-            <div id="mountNode">
-                <Graphin data={data} layout={{ type: 'circular', center: [275, 300] }} style={{ width: "75%" }}>
-                    <ActivateRelations trigger="click" />
-                    <SampleBehavior />
-                    <ZoomCanvas disabled={true} />
-                    <DragCanvas disabled={true} />
-                </Graphin>
-            </div>
-        </>
+<div id="mountNode" >
+    <h1>Connectivity Graph</h1>
+    <div style={{ width: '100%', height: '100px', margin: 'auto', display: 'flex', alignItems: 'center' }}>
+        <Graphin data={data} layout={{ type: 'circular', center: [250, 275] }} style={{ width: '100%', height: '100%' }}>
+            <ActivateRelations trigger="click" />
+            <SampleBehavior />
+            <ZoomCanvas disabled={true} />
+            <DragCanvas disabled={true} />
+        </Graphin>
+    </div>
+</div>
     );
 }
 

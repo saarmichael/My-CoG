@@ -28,12 +28,6 @@ body {
   height: 100%;
 }
 
-.main-content.sidebar-open {
-  transition: transform 0.3s ease-in-out;
-  transform: translateX(250px); /* adjust as needed */
-  width: calc(100% - 250px); /* Adjust 200px to match your sidebar width */
-}
-
 
 
 .tabs:not(:last-child) {

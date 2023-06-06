@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Checkbox, FormControlLabel, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { VisGraphOptionsProvider } from "../contexts/VisualGraphOptionsContext";
 import BasicGraphinGraph from "./BasicGraphinGraph";
 import { DataOptions } from "./DataOptions";
@@ -13,6 +13,7 @@ import ReactLoading from "react-loading";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Typography from '@mui/material/Typography';
+import { maxHeight } from "@mui/system";
 
 
 export const GraphContainer = () => {
@@ -74,10 +75,12 @@ export const GraphContainer = () => {
     const selectActiveNodes = (
         <Box sx={{ 
             display: 'flex', 
-            flexDirection: 'row', 
+            flexDirection: 'column', 
             flexWrap: 'nowrap',  // disable wrapping
-            overflowX: 'auto',  // enable horizontal scroll
-            alignItems: 'center' 
+            overflowY: 'auto',  // enable horizontal scroll
+            overflowX: 'hidden',
+            alignItems: 'center' ,
+            maxHeight: '75%'
         }}>
             {state.nodes.map((node) => (
                 <div key={node.id} onClick={() => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}>
@@ -103,13 +106,20 @@ export const GraphContainer = () => {
 
     return (
         <>
-            {selectActiveNodes}
+            <Grid container >
+            <Grid item xs={11} style={{ maxHeight: '500px' }}>
+                    <BasicGraphinGraph />
+                </Grid>
+                <Grid item xs={1} style={{ maxHeight: '500px' }}>
+                    {selectActiveNodes}
+                </Grid>
+            </Grid>
+
+            
             <SlidingBar range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
             <SlidingBar range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
             {loading ? loadingGif : <></>}
-            <div>
-                <BasicGraphinGraph />
-            </div>
+            
 
         </>
     );

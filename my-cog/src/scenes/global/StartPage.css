@@ -42,7 +42,7 @@
   margin-right: auto;
   border: none;
   border-radius: 25px;
-  background-color: #321248;
+  background-color: purple;
   cursor: pointer;
   color: #FFFFFF;
   font-size: 16px;
@@ -70,7 +70,7 @@
     margin-right: auto;
     border: none;
     border-radius: 50%; /* This makes the button a circle */
-    background-color: #321248;
+    background-color: purple;
     color: #FFFFFF;
     cursor: pointer;
     font-size: 14px;
