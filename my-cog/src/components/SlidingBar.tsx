@@ -2,6 +2,7 @@ import { Button, Grid, Slider, TextField, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { width } from "@mui/system";
 
 
 interface SlidingBarProps {
@@ -171,40 +172,52 @@ const SlidingBar = (props: SlidingBarProps) => {
       </Tooltip>
       
       
-      <Grid container spacing={2}>
-          <Grid item xs={6}>
-          <TextField inputRef={lowerThumbRef} defaultValue={value[0]} type="number" size="small" label={"lowerThumb"}
-        onChange={(event) => {
-          // set the value of the slider to the value of the input field
-          setValue([Math.max(Number(event.target.value), 0), value[1]]);
-        }} />
-          </Grid>
+      <Grid container spacing={1} justifyContent="center">
+        <Grid item xs={6}>
+            <TextField 
+                sx= {{ width: '100%' }}
+                inputRef={lowerThumbRef} 
+                defaultValue={value[0]} 
+                type="number" 
+                size="small" 
+                label={"lowerThumb"}
+                onChange={(event) => {
+                    setValue([Math.max(Number(event.target.value), 0), value[1]]);
+                }} 
+            />
+        </Grid>
 
-          <Grid item xs={6}>
-          <TextField inputRef={upperThumbRef} defaultValue={value[1]} type="number" size="small" label={"upperThumb"}
-        onChange={(event) => {
-          // set the value of the slider to the value of the input field  
-          setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
-        }} />
-          </Grid>
+        <Grid item xs={6}>
+            <TextField 
+                sx= {{ width: '100%' }}
+                inputRef={upperThumbRef} 
+                defaultValue={value[1]} 
+                type="number" 
+                size="small" 
+                label={"upperThumb"}
+                onChange={(event) => {
+                    setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
+                }} 
+            />
+        </Grid>
 
-          <Grid item xs={12}>
-    {props.toSubmit && 
-      <div 
-        className="submit-button"
-        onClick={() => {
-          if (props.onSubmit) {
-            props.onSubmit(Number(lowerThumbRef.current?.value), Number(upperThumbRef.current?.value));
-          }
-        }}
-        
-      >
-        Submit
-      </div>}
-  </Grid>
+        <Grid item xs={12}>
+          {props.toSubmit && 
+            <div 
+              className="submit-button"
+              style={{ width: '30%', margin: '0 auto' }}
+              onClick={() => {
+                if (props.onSubmit) {
+                  props.onSubmit(Number(lowerThumbRef.current?.value), Number(upperThumbRef.current?.value));
+                }
+              }}
+            >
+              Submit
+            </div>}
+        </Grid>
       </Grid>
-      
-      
+
+
     </>
   );
 };

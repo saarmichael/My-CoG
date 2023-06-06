@@ -9,6 +9,7 @@ import { IGraph, INode, NodeConfig } from "@antv/g6";
 import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
 import { mode } from "d3";
 import { NODE_LABEL_FONT_SIZE } from "../shared/DesignConsts";
+import { height } from "@mui/system";
 
 
 export interface EditableGridProps {
@@ -223,7 +224,8 @@ export const EditableGrid = (props: EditableGridProps) => {
         backgroundPosition: 'center center',
         backgroundAttachment: 'fixed',
         backgroundSize: 'cover',
-        width: '100%'
+        width: '600px',
+        height: '600px'
     };
 
     return (
