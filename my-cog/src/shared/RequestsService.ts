@@ -9,7 +9,6 @@ const baseAddress = "http://localhost:5000";
 
 
 let singletonGraph: GraphinData;
-const coherenceMap = new Map<string, Promise<CoherenceResponse>>();
 let singletonFrequencies: number[];
 let singletonDuration: number;
 
@@ -40,11 +39,7 @@ export const getCoherenceResponse =
         if (time) {
             url += `?start=${time.start}&end=${time.end}`;
         }
-        if (!coherenceMap.has(url)) {
-            coherenceMap.set(url, apiGET<CoherenceResponse>(url));
-        }
-        let response = coherenceMap.get(url);
-        return response;
+        return apiGET<CoherenceResponse>(url);
     }
 
 export const getBasicGraph = async (): Promise<BasicGraphResponse> => {

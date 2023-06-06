@@ -135,75 +135,75 @@ const SlidingBar = (props: SlidingBarProps) => {
     <>
       <span>{props.sliderName}</span>
       <Button onClick={() => {
-          setLockThumbs(!lockThumbs);
-        }}>
-          {lockThumbs ? <LockIcon sx= {{color: 'purple'}}/> : <LockOpenIcon sx= {{color: 'purple'}}/>}
+        setLockThumbs(!lockThumbs);
+      }}>
+        {lockThumbs ? <LockIcon sx={{ color: 'purple' }} /> : <LockOpenIcon sx={{ color: 'purple' }} />}
       </Button>
-      <Tooltip 
-      open={showMicroSlider || hoverTooltipOpen}
-      title={<Slider
-        sx= {{color: 'purple'}}
-        onMouseEnter={handleTooltipHoverOpen}
-        onMouseLeave={handleTooltipHoverClose}
-        style={{width: '25vh'}}
-        value={microSliderValue}
-        onChange={handleMicroSliderChange}
-        onMouseDown={handleMouseDown}
-        min={hoverValue[0]}
-        max={hoverValue[1]}
-        step={0.001}
-        valueLabelDisplay="auto"
-      />} arrow>
-      <span style={{ width: '100%' }} onMouseOver={handleTooltipOpen} onMouseLeave={handleTooltipClose}>
-      <Slider
-        sx= {{color: 'purple'}}
-        getAriaLabel={() => 'Timeframe slider'}
-        value={value}
-        step={array[1] - array[0]}
-        marks={true}
-        onChange={handleChange}
-        valueLabelDisplay="auto"
-        onMouseDown={handleMouseDown}
-        min={array[0]}
-        max={array[array.length - 1]}
-        disableSwap={true}
-      />
-      </span>
+      <Tooltip
+        open={showMicroSlider || hoverTooltipOpen}
+        title={<Slider
+          sx={{ color: 'purple' }}
+          onMouseEnter={handleTooltipHoverOpen}
+          onMouseLeave={handleTooltipHoverClose}
+          style={{ width: '25vh' }}
+          value={microSliderValue}
+          onChange={handleMicroSliderChange}
+          onMouseDown={handleMouseDown}
+          min={hoverValue[0]}
+          max={hoverValue[1]}
+          step={0.001}
+          valueLabelDisplay="auto"
+        />} arrow>
+        <span style={{ width: '100%' }} onMouseOver={handleTooltipOpen} onMouseLeave={handleTooltipClose}>
+          <Slider
+            sx={{ color: 'purple' }}
+            getAriaLabel={() => 'Timeframe slider'}
+            value={value}
+            step={array[1] - array[0]}
+            marks={true}
+            onChange={handleChange}
+            valueLabelDisplay="auto"
+            onMouseDown={handleMouseDown}
+            min={array[0]}
+            max={array[array.length - 1]}
+            disableSwap={true}
+          />
+        </span>
       </Tooltip>
-      
-      
+
+
       <Grid container spacing={1} justifyContent="center">
         <Grid item xs={6}>
-            <TextField 
-                sx= {{ width: '100%' }}
-                inputRef={lowerThumbRef} 
-                defaultValue={value[0]} 
-                type="number" 
-                size="small" 
-                label={"lowerThumb"}
-                onChange={(event) => {
-                    setValue([Math.max(Number(event.target.value), 0), value[1]]);
-                }} 
-            />
+          <TextField
+            sx={{ width: '100%' }}
+            inputRef={lowerThumbRef}
+            defaultValue={value[0]}
+            type="number"
+            size="small"
+            label={"lowerThumb"}
+            onChange={(event) => {
+              setValue([Math.max(Number(event.target.value), 0), value[1]]);
+            }}
+          />
         </Grid>
 
         <Grid item xs={6}>
-            <TextField 
-                sx= {{ width: '100%' }}
-                inputRef={upperThumbRef} 
-                defaultValue={value[1]} 
-                type="number" 
-                size="small" 
-                label={"upperThumb"}
-                onChange={(event) => {
-                    setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
-                }} 
-            />
+          <TextField
+            sx={{ width: '100%' }}
+            inputRef={upperThumbRef}
+            defaultValue={value[1]}
+            type="number"
+            size="small"
+            label={"upperThumb"}
+            onChange={(event) => {
+              setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
+            }}
+          />
         </Grid>
 
         <Grid item xs={12}>
-          {props.toSubmit && 
-            <div 
+          {props.toSubmit &&
+            <div
               className="submit-button"
               style={{ width: '30%', margin: '0 auto' }}
               onClick={() => {

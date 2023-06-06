@@ -122,6 +122,7 @@ export const GraphContainer = () => {
                 </Grid>
                 <Grid item xs={6}>
                     <SlidingBar sliderName="Time slider" range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
+                    {loading ? loadingGif : null}
                 </Grid>
             </Grid>
         </>
