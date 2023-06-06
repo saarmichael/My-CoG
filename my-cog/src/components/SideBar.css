@@ -9,16 +9,20 @@
 .sidebar {
   display: flex;
   position: absolute;
+  justify-content: space-between;
   flex-direction: column;
-  left: -300px;
-  width: 300px;
+  z-index: 2;
+  left: -250px;
+  width: 250px;
   height: 100%;
   background-color: #f0f0f0;
+  background: linear-gradient(to right, #ffffff 95%, #adadad, #adadad);
   transition: all 0.3s ease-in-out;
 }
 
 .sidebar.open {
   left: 0;
+  height: 100%;
 }
 
 .sidebar h2 {
@@ -48,21 +52,21 @@
 
 .main-content {
   margin-left: 0;
-  width: calc(100% - 300px);
+  width: calc(100% - 250px);
 }
 
 
 .sidebar.open~.main-content {
-  margin-left: 300px;
+  margin-left: 250px;
   top: 5%;
-  width: calc(100% - 300px);
+  width: calc(100% - 250px);
 }
 
 .toggle-button {
   font-size: 15px;
   position: absolute;
   right: -15px;
-  top: 0;
+  bottom: 5vh;
   width: 15px;
   height: 25px;
   z-index: 2;
@@ -75,11 +79,11 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   border-radius: 5px;
-  background-color: rgba(34, 34, 34, 0.5);
+  background-color: purple;
 }
 
 .toggle-button:hover {
-  background-color: rgba(51, 51, 51);
+  background-color: #561f7b;
 }
 
 .toggle-button:focus {

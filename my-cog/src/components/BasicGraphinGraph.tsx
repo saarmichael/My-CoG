@@ -15,7 +15,7 @@ const SampleBehavior = () => {
 
     useEffect(() => {
 
-        graph.changeSize(580, 560);
+        graph.changeSize(1000, 600);
         // 初始化聚焦到`node-1`
         const handleClick = (evt: IG6GraphEvent) => {
             const node = evt.item as INode;
@@ -207,16 +207,16 @@ const BasicGraphinGraph = () => {
     }, [state]);
     const data = sharedGraph;
     return (
-        <>
-            <div id="mountNode">
-                <Graphin data={data} layout={{ type: 'circular', center: [275, 300] }} style={{ width: "75%" }}>
-                    <ActivateRelations trigger="click" />
-                    <SampleBehavior />
-                    <ZoomCanvas disabled={true} />
-                    <DragCanvas disabled={true} />
-                </Graphin>
-            </div>
-        </>
+<div id="mountNode" >
+    <div style={{ height: '100%', margin: 'auto', display: 'flex', alignItems: 'center' }}>
+        <Graphin data={data} layout={{ type: 'circular', center: [345, 300] }} style={{ height: '100%' }}>
+            <ActivateRelations trigger="click" />
+            <SampleBehavior />
+            <ZoomCanvas />
+            <DragCanvas  />
+        </Graphin>
+    </div>
+</div>
     );
 }
 

@@ -5,4 +5,13 @@
     padding-left: 1rem;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    content: '';
+}
+
+.purple-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.purple-checkbox input[type="checkbox"]:checked + label::before {
+    background: purple;
 }

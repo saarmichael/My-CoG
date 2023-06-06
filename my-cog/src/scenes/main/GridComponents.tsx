@@ -23,22 +23,11 @@ export const Box: React.FC<BoxProps> = () => {
   };
 
   return (
-    <>
-      <Rnd default={{
-        x: 10,
-        y: 100,
-        width: 600,
-        height: 600,
-      }}
-        bounds="#mainContent"
-        minWidth={350}
-        minHeight={400}>
-        <div className="box"
-              style={{ display: 'flex', padding: "5px", width: "100%", height: '100%', paddingBottom: '1%' }}>
+    
+        <>
             <GraphContainer />
-        </div>
-      </Rnd>
-    </>
+        </>
+    
   );
 }
 
@@ -46,31 +35,19 @@ export const Box1: React.FC<BoxProps> = () => {
   const { electrode } = useContext(GlobalDataContext) as IGlobalDataContext;
 
   return(
-    <div>
+    <>
         <GraphVisToggles />
-        <Rnd default={{
-          x: 15,
-          y: 0,
-          width: 320,
-          height: 200,
-        }}
-          bounds="#mainContent"
-          minWidth={600}
-          minHeight={550}
-          disableDragging={true}
-          >
-          <EditablesContainer />
-        </Rnd>
+        <EditablesContainer />
       
-    </div>
+    </>
   )
 }
 
 export function Box2() {
   return (
-    <div className="box">
+    <>
       <GridGraph />
-    </div>
+    </>
   );
 }
 

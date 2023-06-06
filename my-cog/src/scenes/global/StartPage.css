@@ -22,7 +22,6 @@
     flex-direction: column;
     margin-bottom: 20px;
     margin-bottom: 5px;
-    font-family: Arial, sans-serif;
     align-items: center;
   }
   
@@ -43,7 +42,7 @@
   margin-right: auto;
   border: none;
   border-radius: 25px;
-  background-color: #321248;
+  background-color: purple;
   cursor: pointer;
   color: #FFFFFF;
   font-size: 16px;
@@ -71,7 +70,7 @@
     margin-right: auto;
     border: none;
     border-radius: 50%; /* This makes the button a circle */
-    background-color: #321248;
+    background-color: purple;
     color: #FFFFFF;
     cursor: pointer;
     font-size: 14px;
@@ -91,7 +90,6 @@
 .message {
     font-size: 16px;
     font-weight: bold;
-    font-family: Arial, sans-serif;
     text-align: center; 
     margin-top: 5px; 
     padding: 10px;

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Checkbox, FormControlLabel, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { VisGraphOptionsProvider } from "../contexts/VisualGraphOptionsContext";
 import BasicGraphinGraph from "./BasicGraphinGraph";
 import { DataOptions } from "./DataOptions";
@@ -10,6 +10,10 @@ import { getDuration, getFrequencies } from "../shared/RequestsService";
 import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsService";
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import ReactLoading from "react-loading";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import Typography from '@mui/material/Typography';
+import { maxHeight } from "@mui/system";
 
 
 export const GraphContainer = () => {
@@ -69,40 +73,31 @@ export const GraphContainer = () => {
 
     // make a list of checkboxes to select the active nodes
     const selectActiveNodes = (
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', width: '100%', height: '10%' }}>
+        <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            flexWrap: 'nowrap',  // disable wrapping
+            overflowY: 'auto',  // enable horizontal scroll
+            overflowX: 'hidden',
+            alignItems: 'center' ,
+            maxHeight: '600px'
+        }}>
+            {state.nodes.map((node) => (
+                <div key={node.id} onClick={() => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}>
+                    <Checkbox
+                        style={{ transform: 'scale(0.8)', color: 'purple' }}
+                        icon={<CheckCircleOutlineIcon />}
+                        checkedIcon={<CheckCircleIcon />}
+                        checked={activeNodes.map((activeNode) => activeNode.id).includes(node.id)}
+                        inputProps={{ 'aria-labelledby': node.id }}
+                    />
+                    <Typography variant="body2" align="center" style={{ fontSize: '0.65em' }}>
+                        {node.style?.label?.value ? node.style.label.value : node.id}
+                    </Typography>
+                </div>
+            ))}
+        </Box>
 
-
-            <List sx={{
-                width: '100%',
-                maxWidth: 360,
-                bgcolor: 'background.paper',
-                position: 'relative',
-                overflow: 'auto',
-                maxHeight: 125,
-                margin: '10px'
-            }}>
-                {state.nodes.map((node) => {
-                    return (
-                        <ListItem key={node.id} >
-                            <ListItemButton role={undefined} onClick={
-                                () => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}
-                                dense>
-                                <ListItemIcon>
-                                    <Checkbox
-                                        edge="start"
-                                        checked={activeNodes.map((activeNode) => activeNode.id).includes(node.id)}
-                                        tabIndex={-1}
-                                        disableRipple
-                                        inputProps={{ 'aria-labelledby': node.id }}
-                                    />
-                                </ListItemIcon>
-                                <ListItemText id={node.id} primary={node.style?.label?.value ? node.style.label.value : node.id} />
-                            </ListItemButton>
-                        </ListItem>
-                    )
-                })}
-            </List>
-        </div >
     );
 
     const loadingGif = (
@@ -111,16 +106,24 @@ export const GraphContainer = () => {
 
     return (
         <>
-            <div>
-                {selectActiveNodes}
-            </div>
-            <SlidingBar range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
-            <SlidingBar range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
-            {loading ? loadingGif : <></>}
-            <div>
-                <BasicGraphinGraph />
-            </div>
+            <h1>Connectivity Graph</h1>
+            <Grid container maxHeight="650px">
+                <Grid item xs={11}>
+                    <BasicGraphinGraph />
+                </Grid>
+                <Grid item xs={1}>
+                    {selectActiveNodes}
+                </Grid>
+            </Grid>
 
+            <Grid container spacing={4}>
+                <Grid item xs={6}>
+                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
+                </Grid>
+                <Grid item xs={6}>
+                    <SlidingBar sliderName="Time slider" range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
+                </Grid>
+            </Grid>
         </>
     );
 

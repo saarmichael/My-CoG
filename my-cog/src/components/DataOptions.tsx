@@ -73,23 +73,9 @@ export const DataOptions = () => {
     const { timeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
     // make sure all the electrodes appear in the selection
 
-    const selection = (
-        <select onChange={(e) => setElectrode(e.target.value)} value={electrode} >
-            {electrodeList.map((elec) => (
-                <option key={elec} value={elec}>
-                    {elec}
-                </option>
-            ))}
-        </select>
-    );
-
     const [exported, setExported] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [fileName, setFileName] = useState('');
-
-
-
-
 
     const modal = (
         <div style={{ position: "absolute", bottom: "0", right: '0' }}>
@@ -101,7 +87,7 @@ export const DataOptions = () => {
         </div>);
 
     const loadingGif = (
-        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
+        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#FFFFFF" />
     );
 
     return (

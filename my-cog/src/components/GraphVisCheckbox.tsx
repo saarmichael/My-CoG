@@ -2,6 +2,8 @@ import { Checkbox, FormControlLabel } from '@mui/material';
 import { useContext, useRef } from 'react';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
 import './GraphVisCheckbox.css';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) => {
 
@@ -14,6 +16,8 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                 className='checkbox'
                 control={
                     <Checkbox
+                        icon={<CheckCircleOutlineIcon />}
+                        checkedIcon={<CheckCircleIcon />}
                         value={props.label}
                         checked={props.checked}
                         onChange={() => {
@@ -29,6 +33,7 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                             setOptions(newOptions);
                         }
                         }
+                        style={{ color: 'purple' }}
                     />
                 }
                 label={props.label}
