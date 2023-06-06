@@ -121,7 +121,7 @@ const BasicGraphinGraph = () => {
         const newEdges = state.edges.map((edge) => ({ ...edge }));
         let graph: GraphinData = { nodes: newNodes, edges: newEdges };
         // keep only the active nodes
-        let activeNodesId = activeNodes.map((node)=>(node.id))
+        let activeNodesId = activeNodes.map((node) => (node.id))
         graph.nodes = graph.nodes.filter((node) => activeNodesId.includes(node.id));
         graph.edges = graph.edges.filter((edge) => activeNodesId.includes(edge.source) && activeNodesId.includes(edge.target));
         graph = options.reduce((acc, option) => {
@@ -207,16 +207,16 @@ const BasicGraphinGraph = () => {
     }, [state]);
     const data = sharedGraph;
     return (
-<div id="mountNode" >
-    <div style={{ height: '100%', margin: 'auto', display: 'flex', alignItems: 'center' }}>
-        <Graphin data={data} layout={{ type: 'circular', center: [345, 300] }} style={{ height: '100%' }}>
-            <ActivateRelations trigger="click" />
-            <SampleBehavior />
-            <ZoomCanvas />
-            <DragCanvas  />
-        </Graphin>
-    </div>
-</div>
+        <div id="mountNode" >
+            <div style={{ height: '100%', margin: 'auto', display: 'flex', alignItems: 'center' }}>
+                <Graphin data={data} layout={{ type: 'circular', center: [345, 300] }} style={{ height: '100%' }}>
+                    <ActivateRelations trigger="click" />
+                    <SampleBehavior />
+                    <ZoomCanvas disabled={true} />
+                    <DragCanvas disabled={true} />
+                </Graphin>
+            </div>
+        </div>
     );
 }
 
