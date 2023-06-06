@@ -92,7 +92,6 @@ export const DataOptions = () => {
 
     return (
         <>
-            {selection}
             {modal}
         </>
     );
