@@ -275,19 +275,42 @@ def export_data():
     start = data["time"]["start"]
     end = data["time"]["end"]
     resolution = data["time"]["resolution"]
+    file_name = data["fileName"]
     connectivityMeasure = data["connectivityMeasure"]
     print(
         f"{bcolors.DEBUG}start: {start}, end: {end}, resolution: {resolution} connectivityMeasure: {connectivityMeasure}{bcolors.ENDC}"
     )
+    if not os.path.isdir("exported_mat"):
+        os.mkdir("exported_mat")
+
     date_time = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
-    file_name = "exported_mat/" + session["username"] + "_" + date_time
+
+    if not file_name:
+        file_name = session["username"] + "_" + date_time
+
+    file_name = "exported_mat/" + file_name
+    # check if file is already exists
+    if os.path.isfile(file_name + ".mat"):
+        return jsonify({"message": "File already exists!"}), 400
     data = data_provider.get_data()
     sfreq = data_provider.get_sampling_rate()
+    electrodes = data_provider.get_channel_names()
+    bids_file_name = session["user_data_dir"].split("/")[-1]
+    meta_data = {
+        "bids_file_name": bids_file_name,
+        "electrodes": electrodes,
+        "date_time": date_time,
+    }
     export_coherence_to_mat(
-        name=file_name, data=data, sfreq=sfreq, start=start, end=end
+        name=file_name,
+        data=data,
+        sfreq=sfreq,
+        start=start,
+        end=end,
+        meta_data=meta_data,
     )
     # do something with data
-    return "Data received"
+    return jsonify({"message": "Data exported successfully!"}), 200
 
 
 if __name__ == "__main__":

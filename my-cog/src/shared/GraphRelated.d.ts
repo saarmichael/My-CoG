@@ -12,4 +12,5 @@ export interface TimeInterval {
 export interface ExportDataProps {
     time: TimeInterval;
     connectivityMeasure: string;
+    fileName?: string;
 }
