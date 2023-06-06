@@ -1,10 +1,11 @@
-import { Button, Slider, TextField, Tooltip } from "@mui/material";
+import { Button, Grid, Slider, TextField, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getSpectrogramDataSync } from "../shared/getters";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 
+
 interface SlidingBarProps {
+  sliderName: string;
   range: number[] | number;
   onChange: (event: Event, newValue: number[]) => void;
   keepDistance: boolean;
@@ -131,9 +132,16 @@ const SlidingBar = (props: SlidingBarProps) => {
 
   return (
     <>
+      <span>{props.sliderName}</span>
+      <Button onClick={() => {
+          setLockThumbs(!lockThumbs);
+        }}>
+          {lockThumbs ? <LockIcon sx= {{color: 'purple'}}/> : <LockOpenIcon sx= {{color: 'purple'}}/>}
+      </Button>
       <Tooltip 
       open={showMicroSlider || hoverTooltipOpen}
       title={<Slider
+        sx= {{color: 'purple'}}
         onMouseEnter={handleTooltipHoverOpen}
         onMouseLeave={handleTooltipHoverClose}
         style={{width: '25vh'}}
@@ -147,6 +155,7 @@ const SlidingBar = (props: SlidingBarProps) => {
       />} arrow>
       <span style={{ width: '100%' }} onMouseOver={handleTooltipOpen} onMouseLeave={handleTooltipClose}>
       <Slider
+        sx= {{color: 'purple'}}
         getAriaLabel={() => 'Timeframe slider'}
         value={value}
         step={array[1] - array[0]}
@@ -160,30 +169,42 @@ const SlidingBar = (props: SlidingBarProps) => {
       />
       </span>
       </Tooltip>
-      <TextField inputRef={lowerThumbRef} defaultValue={value[0]} type="number" size="small" label={"lowerThumb"}
+      
+      
+      <Grid container spacing={2}>
+          <Grid item xs={6}>
+          <TextField inputRef={lowerThumbRef} defaultValue={value[0]} type="number" size="small" label={"lowerThumb"}
         onChange={(event) => {
           // set the value of the slider to the value of the input field
           setValue([Math.max(Number(event.target.value), 0), value[1]]);
         }} />
-      <TextField inputRef={upperThumbRef} defaultValue={value[1]} type="number" size="small" label={"upperThumb"}
+          </Grid>
+
+          <Grid item xs={6}>
+          <TextField inputRef={upperThumbRef} defaultValue={value[1]} type="number" size="small" label={"upperThumb"}
         onChange={(event) => {
           // set the value of the slider to the value of the input field  
           setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
         }} />
-      <Button onClick={() => {
-        setLockThumbs(!lockThumbs);
-      }}>
-        {lockThumbs ? <LockIcon /> : <LockOpenIcon />}
-      </Button>
+          </Grid>
 
-
-      {props.toSubmit && <button onClick={() => {
-        if (props.onSubmit) {
-          props.onSubmit(Number(lowerThumbRef.current?.value), Number(upperThumbRef.current?.value));
-        }
-      }
-      }
-      >Submit</button>}
+          <Grid item xs={12}>
+    {props.toSubmit && 
+      <div 
+        className="submit-button"
+        onClick={() => {
+          if (props.onSubmit) {
+            props.onSubmit(Number(lowerThumbRef.current?.value), Number(upperThumbRef.current?.value));
+          }
+        }}
+        
+      >
+        Submit
+      </div>}
+  </Grid>
+      </Grid>
+      
+      
     </>
   );
 };

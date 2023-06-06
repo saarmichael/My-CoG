@@ -16,7 +16,7 @@
   width: 250px;
   height: 100%;
   background-color: #f0f0f0;
-  background: linear-gradient(to right, #ffffff 95%, #959595, #959595);
+  background: linear-gradient(to right, #ffffff 95%, #adadad, #adadad);
   transition: all 0.3s ease-in-out;
 }
 

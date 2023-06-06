@@ -113,7 +113,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
           
           {tabs.map((tab, index) => (
             
-              <Grid container justifyContent="center" spacing={20} style={{ display: index === activeTabIndex ? '' : 'none' }}>
+              <Grid container justifyContent="center" spacing={15} style={{ display: index === activeTabIndex ? '' : 'none',  }}>
               {tab.content.props.children.map((component: JSX.Element, index: number) => (
                 <Grid item  xs={5} style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '' }}>
                   {component}

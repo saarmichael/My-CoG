@@ -80,7 +80,7 @@ export const GraphContainer = () => {
             overflowY: 'auto',  // enable horizontal scroll
             overflowX: 'hidden',
             alignItems: 'center' ,
-            maxHeight: '75%'
+            maxHeight: '600px'
         }}>
             {state.nodes.map((node) => (
                 <div key={node.id} onClick={() => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}>
@@ -106,21 +106,24 @@ export const GraphContainer = () => {
 
     return (
         <>
-            <Grid container >
-            <Grid item xs={11} style={{ maxHeight: '500px' }}>
+            <h1>Connectivity Graph</h1>
+            <Grid container maxHeight="650px">
+                <Grid item xs={11}>
                     <BasicGraphinGraph />
                 </Grid>
-                <Grid item xs={1} style={{ maxHeight: '500px' }}>
+                <Grid item xs={1}>
                     {selectActiveNodes}
                 </Grid>
             </Grid>
 
-            
-            <SlidingBar range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
-            <SlidingBar range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
-            {loading ? loadingGif : <></>}
-            
-
+            <Grid container spacing={4}>
+                <Grid item xs={6}>
+                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
+                </Grid>
+                <Grid item xs={6}>
+                    <SlidingBar sliderName="Time slider" range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
+                </Grid>
+            </Grid>
         </>
     );
 

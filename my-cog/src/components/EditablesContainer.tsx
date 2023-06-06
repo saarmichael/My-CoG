@@ -72,6 +72,7 @@ const Container = () => {
 
             <div className="sliding-bar-container">
                 <SlidingBar
+                    sliderName="Angle"
                     range={360}
                     onChange={(event, newValue) => {
                         const inputAngle = newValue[0] % 360;
