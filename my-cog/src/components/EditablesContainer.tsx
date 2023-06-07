@@ -1,12 +1,13 @@
 import { useContext, useEffect, useRef, useState } from "react";
-
+import ThreeSixtyIcon from '@mui/icons-material/ThreeSixty';
 import { GridProvider, GridContext, IGridFocusContext } from "../contexts/GridContext";
 import { EditableGrid } from "./EditableGrid";
-import { Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 import SlidingBar from "./SlidingBar";
-import { fetchImage } from "../shared/RequestsService";
+import { fetchImage, fetchImageParams } from "../shared/RequestsService";
 import "./EditableContainer.css";
 import SimpleCard from "../scenes/global/SimpleCard";
+import { BrainImageParamsResponse } from "../shared/Requests";
 
 
 const ImageSelector = () => {
@@ -17,51 +18,111 @@ const ImageSelector = () => {
     const refAzimuth = useRef<HTMLInputElement>(null);
     const refElevation = useRef<HTMLInputElement>(null);
     const refDistance = useRef<HTMLInputElement>(null);
+    const [paramsLists, setParamsLists] = useState<BrainImageParamsResponse>(
+        { azi_list: [], ele_list: [], dist_list: [] })
+    const [imageParamsIdxs, setImageParamsIdxs] = useState<{ azi_index: number, ele_index: number, dist_index: number }>(
+        { azi_index: 0, ele_index: 0, dist_index: 0 });
+    const[selectedImageName, setSelectedImageName] = useState<string>("");
 
+
+    const fetchImg = async () => {
+        const azimuth = paramsLists.azi_list[imageParamsIdxs.azi_index];
+        const elevation = paramsLists.ele_list[imageParamsIdxs.ele_index];
+        const distance = paramsLists.dist_list[imageParamsIdxs.dist_index];
+        const image = await fetchImage(
+            azimuth, elevation, distance
+        );
+        const imageName = "azimuth: " + azimuth +
+            ", elevation: " + elevation +
+            ", distance: " + distance;
+        setBackImgList(backImgList.set(imageName, image));
+        setSelectedImageName(imageName);
+        setBackgroundImg(`url(${image})`);
+    }
+
+    useEffect(() => {
+        const fetchParams = async () => {
+            return fetchImageParams();
+        }
+        fetchParams().then((lists) => {
+            setParamsLists(lists);
+            setImageParamsIdxs({ azi_index: 0, ele_index: 0, dist_index: 0 });
+        }).then(() => {
+            fetchImg()
+        });
+    }, []);
+
+    useEffect(() => {
+        fetchImg();
+    }, [imageParamsIdxs]);
 
     // return a select element with all the images
     return (
         <>
             <Grid container direction="column" alignItems="center" spacing={2}>
                 <Grid item>
-                    <TextField inputRef={refAzimuth} type="number" size="small" label={"azimuth"} />
+                    <Button onClick={() => {
+                        setImageParamsIdxs({
+                            azi_index: (imageParamsIdxs.azi_index + 1) % paramsLists.azi_list.length,
+                            ele_index: imageParamsIdxs.ele_index,
+                            dist_index: imageParamsIdxs.dist_index
+                        });
+                    }}>
+                        <ThreeSixtyIcon />
+                    </Button>
+                    <span>{paramsLists.azi_list[imageParamsIdxs.azi_index]}</span>
                 </Grid>
                 <Grid item>
-                    <TextField inputRef={refElevation} type="number" size="small" label={"elevation"} />
+                    <Button onClick={() => {
+                        setImageParamsIdxs({
+                            azi_index: imageParamsIdxs.azi_index,
+                            ele_index: (imageParamsIdxs.ele_index + 1) % paramsLists.ele_list.length,
+                            dist_index: imageParamsIdxs.dist_index
+                        });
+                    }}>
+                        <ThreeSixtyIcon />
+                    </Button>
+                    <span>{paramsLists.ele_list[imageParamsIdxs.ele_index]}</span>
                 </Grid>
                 <Grid item>
-                    <TextField inputRef={refDistance} type="number" size="small" label={"distance"} />
+                    <Button onClick={() => {
+                        setImageParamsIdxs({
+                            azi_index: imageParamsIdxs.azi_index,
+                            ele_index: imageParamsIdxs.ele_index,
+                            dist_index: (imageParamsIdxs.dist_index + 1) % paramsLists.dist_list.length
+                        });
+                    }}>
+                        <ThreeSixtyIcon />
+                    </Button>
+                    <span>{paramsLists.dist_list[imageParamsIdxs.dist_index]}</span>
                 </Grid>
-                <Grid item>
-                    <div className="submit-button"
-                        onClick={async () => {
-                        const image = await fetchImage(
-                            Number(refAzimuth.current?.value),
-                            Number(refElevation.current?.value),
-                            Number(refDistance.current?.value)
+                <Grid >
+                    <Button onClick={() => {
+                        fetchImage(0, 0, 400).then((image) => {
+                            //setBackImgList(backImgList.set("default", image));
+                            setBackgroundImg(`url(${image})`);
+                        }
                         );
-                        const imageName = "azimuth: " + refAzimuth.current?.value +
-                            ", elevation: " + refElevation.current?.value +
-                            ", distance: " + refDistance.current?.value;
-                        setBackImgList(backImgList.set(imageName, image));
-                        setBackgroundImg(`url(${image})`);
-                    }}>Add Image</div>
+                    }}>
+                        <SimpleCard content={<>Fetch Image</>} />
+                    </Button>
                 </Grid>
                 <Grid item>
-                    <SimpleCard content={<>Recent files</>} />
+                    <SimpleCard content={<>Recent Images</>} />
                 </Grid>
                 <Grid item>
                     <select onChange={(e) => {
                         const selectedImage = e.target.value;
                         setBackgroundImg(`url(${selectedImage})`);
-                    }}>
+                    }}
+                    >
                         {Array.from(backImgList.keys()).map((imageName) => {
-                            return <option value={backImgList.get(imageName)}>{imageName}</option>
+                            return <option value={backImgList.get(imageName)} selected={imageName == selectedImageName}>{imageName}</option>
                         })}
 
                     </select>
                 </Grid>
-            </Grid>
+            </Grid >
 
 
         </>
@@ -89,18 +150,18 @@ const Container = () => {
                     <ImageSelector />
                 </Grid>
                 <Grid item xs={10} >
-                    
-                <SlidingBar
-                    sliderName="Angle"
-                    range={360}
-                    onChange={(event, newValue) => {
-                        const inputAngle = newValue[0] % 360;
-                        setAngle(inputAngle);
-                    }}
-                    toSubmit={false}
-                    keepDistance={false}
-                />
-                
+
+                    <SlidingBar
+                        sliderName="Angle"
+                        range={360}
+                        onChange={(event, newValue) => {
+                            const inputAngle = newValue[0] % 360;
+                            setAngle(inputAngle);
+                        }}
+                        toSubmit={false}
+                        keepDistance={false}
+                    />
+
                 </Grid>
                 <Grid container justifyContent="center" flexDirection="column">
                     <Grid item xs={12} >
@@ -113,8 +174,8 @@ const Container = () => {
                                 setAngle(inputAngle);
                             }}
                         />
-                        </Grid>
-                
+                    </Grid>
+
                     <Grid item xs={12} >
                         <div className="button-container">
 
@@ -133,11 +194,11 @@ const Container = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            
 
 
 
-            
+
+
         </>
     )
 }

@@ -1,6 +1,6 @@
 import { GraphinData } from "@antv/graphin";
 import { ExportDataProps, FreqRange, TimeInterval } from './GraphRelated';
-import { BasicGraphResponse, CoherenceResponse } from "./Requests";
+import { BasicGraphResponse, BrainImageParamsResponse, CoherenceResponse } from "./Requests";
 import { ServerOption, apiGET, apiPOST } from "./ServerRequests";
 import { Server } from "http";
 import { IVisGraphOption } from "../contexts/VisualGraphOptionsContext";
@@ -69,6 +69,12 @@ export const fetchImage = async (azimuth: number, elevation: number, distance:nu
     let url = `${baseAddress}/brainImage?azimuth=${azimuth}&elevation=${elevation}&distance=${distance}`;
     const response =  await apiGET<Blob>(url, 'blob');
     return URL.createObjectURL(response);
+}
+
+export const fetchImageParams = async () => {
+    let url = `${baseAddress}/brainImageParamsList`;
+    const response = await apiGET<BrainImageParamsResponse>(url);
+    return response;
 }
 
 export const reorganizeOptions = (options: ServerOption[], realOptions: IVisGraphOption[]) => {
