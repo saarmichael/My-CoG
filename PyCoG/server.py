@@ -247,7 +247,9 @@ def brain_image():
     dis = request.args.get("distance")
     print(f"{bcolors.DEBUG}azi: {azi}, ele: {ele}, dis: {dis}{bcolors.ENDC}")
     # build file name
-    file_name = "brain_images/" + "brain_image_" + azi + "_" + ele + "_" + dis + ".png"
+    file_name = "brain_images/" + "brain_image-azi_{}_ele_{}_dist_{}.png".format(
+        azi, ele, dis
+    )
     # check if the file exists
     # if not os.path.isfile(file_name):
     #     t = threading.Thread(
@@ -263,7 +265,13 @@ def brain_image():
 def get_image_params():
     azi_list, rot_list, ele_list = get_azi_ele_dist_lists()
     return (
-        jsonify({"azi_list": azi_list, "ele_list": rot_list, "dist_list": ele_list}),
+        jsonify(
+            {
+                "azi_list": sorted(azi_list),
+                "ele_list": sorted(rot_list),
+                "dist_list": sorted(ele_list),
+            }
+        ),
         200,
     )
 

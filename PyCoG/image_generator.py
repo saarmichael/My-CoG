@@ -24,7 +24,7 @@ def get_azi_ele_dist_lists():
             ele_list.add(int(file_name[3]))
             dist_list.add(int(file_name[5]))
     os.chdir("..")
-    return list(azi_list), list(ele_list), list(dist_list)
+    return (list(azi_list)), (list(ele_list)), (list(dist_list))
 
 
 def generate_image(file_name, brain, azi, ele, dist):
@@ -48,10 +48,11 @@ def get_brain_image():
 
 
 def create_tons_of_images():
+    os.chdir("brain_images")
     brain = get_brain_image()
     azi_list = [0, 90, 180, 270]
     ele_list = [0, 90, 180, 270]
-    dist_list = [175, 200, 250, 300, 360]
+    dist_list = [300, 360, 400, 450]
     for azi in azi_list:
         for ele in ele_list:
             for dist in dist_list:
@@ -59,6 +60,8 @@ def create_tons_of_images():
                     azi, ele, dist
                 )
                 generate_image(file_name, brain, azi, ele, dist)
+    os.chdir("..")
 
 
+# create_tons_of_images()
 # azi_list, ele_list, dist_list = get_azi_ele_dist_lists()
