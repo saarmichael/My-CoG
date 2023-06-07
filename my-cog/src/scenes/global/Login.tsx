@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { loginRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
+import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 
 type LoginProps = {
   onLogin: () => void;
@@ -10,13 +11,16 @@ type LoginProps = {
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const { setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      await loginRequest(username, onLogin).then(async (data) => {
-        console.log(data)
-        setErrorMessage(data)
+      await loginRequest(username, onLogin).then((data) => {
+        setChosenFile(data);
+        console.log(data);
+        setErrorMessage(data);
       });
+      
     };
     
 

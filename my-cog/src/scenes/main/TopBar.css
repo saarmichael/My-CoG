@@ -8,6 +8,12 @@
   padding: 0 20px;
 }
 
+.left-section, .right-section {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .menu-item {
   position: relative;
   cursor: pointer;

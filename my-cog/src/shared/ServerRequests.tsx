@@ -9,19 +9,30 @@ const instance = axios.create({
 
 export const loginRequest = async (username: string, onLogin: () => void): Promise<string> => {
   try {
-    await instance.get('/login', {
+    const response = await instance.get('/login', {
       params: {
         username: username,
       },
     });
 
-    onLogin();
-    return '';
+    if (response.status === 200) {
+      onLogin();
+      return response.data["user_data_dir"] as string;
+    } else {
+      throw new Error(`Unexpected response status: ${response.status}`);
+    }
   } catch (error) {
-    console.log(error);
-    return 'User Not Found';
+    const axiosError = error as AxiosError;
+
+    if (axiosError.response) {
+      const message = axiosError.response.data as { message: string };
+      return message["message"] as string;
+    }
   }
+  return 'Failed to login';
 };
+
+
 
 export const registerRequest = async (username: string, data: string, settings: ServerSettings, onRegister: () => void) => {
   try {
