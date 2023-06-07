@@ -1,14 +1,12 @@
 import './TopBar.css';
 import React, { useContext, useEffect, useState } from 'react';
 import { AddFile, handleSave, handleSaveAs, handleUndo, handleRedo, handleFullscreen, handleOptions, handleLogout } from '../../shared/TopBarUtil';
-import MyDropzone from '../global/DirectoryPicker';
 import { apiGET, apiPOST } from '../../shared/ServerRequests';
 import TreeView from '../global/TreeView';
 import { Node } from '../global/TreeView';
 import ModelPopup from '../global/ModalPopup';
-import { ModalProvider } from '../../contexts/ModalContext';
+import { IModalContext, ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
-import DirectoryPicker from '../global/DirectoryPicker';
 import CreateVideoModal from './CreateVideoModal';
 import { DataOptions } from '../../components/DataOptions';
 
@@ -36,7 +34,7 @@ export const TopBar: React.FC = () => {
     }, []);
 
     
-
+    
     const fileClicked = (file: string) => {
         apiPOST<object>('/setFile', {file: file}).then((response) => {
             if (response.status === 200) {
@@ -66,12 +64,10 @@ export const TopBar: React.FC = () => {
             name: 'File',
             items: [
                 <div onClick={(e) => {e.stopPropagation()}}>
-                    <ModelPopup title='Choose from recent files:' buttonName='Recent Files' content={<TreeView treeData={recentFiles} fileClicked={fileClicked}/>}/>
+                    <ModelPopup title='Choose from recent files:' width="60%" height="75%" buttonName='Recent Files' content={<TreeView treeData={recentFiles} fileClicked={fileClicked}/>}/>
                 </div>,
                 <div onClick={(e) => {e.stopPropagation()}}>
-                    <ModalProvider>
-                        <ModelPopup title='Choose a file:' buttonName='Choose file' content={<TreeView treeData={openFileList} fileClicked={fileClicked}/>}/>
-                    </ModalProvider>
+                    <ModelPopup title='Choose a file:' width="60%" height="75%" buttonName='Choose file' content={<TreeView treeData={openFileList} fileClicked={fileClicked}/>}/>
                 </div>,
                 <div onClick={(e) => {e.stopPropagation()}}>
                     <ModelPopup title='Choose video name and duration' buttonName='Create graph video' content={<CreateVideoModal/>}/>
