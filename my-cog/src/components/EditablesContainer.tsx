@@ -22,6 +22,7 @@ const ImageSelector = () => {
         { azi_list: [], ele_list: [], dist_list: [] })
     const [imageParamsIdxs, setImageParamsIdxs] = useState<{ azi_index: number, ele_index: number, dist_index: number }>(
         { azi_index: 0, ele_index: 0, dist_index: 0 });
+    const[selectedImageName, setSelectedImageName] = useState<string>("");
 
 
     const fetchImg = async () => {
@@ -34,7 +35,8 @@ const ImageSelector = () => {
         const imageName = "azimuth: " + azimuth +
             ", elevation: " + elevation +
             ", distance: " + distance;
-        //setBackImgList(backImgList.set(imageName, image));
+        setBackImgList(backImgList.set(imageName, image));
+        setSelectedImageName(imageName);
         setBackgroundImg(`url(${image})`);
     }
 
@@ -112,9 +114,10 @@ const ImageSelector = () => {
                     <select onChange={(e) => {
                         const selectedImage = e.target.value;
                         setBackgroundImg(`url(${selectedImage})`);
-                    }}>
+                    }}
+                    >
                         {Array.from(backImgList.keys()).map((imageName) => {
-                            return <option value={backImgList.get(imageName)}>{imageName}</option>
+                            return <option value={backImgList.get(imageName)} selected={imageName == selectedImageName}>{imageName}</option>
                         })}
 
                     </select>
