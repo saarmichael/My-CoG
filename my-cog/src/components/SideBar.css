@@ -50,11 +50,6 @@
   background-color: #ddd;
 }
 
-.main-content {
-  margin-left: 0;
-  width: calc(100% - 250px);
-}
-
 
 .sidebar.open~.main-content {
   margin-left: 250px;
