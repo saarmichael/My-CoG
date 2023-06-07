@@ -1,17 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Rnd } from 'react-rnd';
-import { DataOptions } from "../../components/DataOptions";
-import { GraphVisToggles } from "../../components/GraphVisToggles";
 import "../../components/SideBar.css";
 import { Box, Box1, Box2, BoxProps } from "./GridComponents";
 import "./Tabs.css";
 import Sidebar from "../../components/SideBar";
 import { ComponentToggleBar, MenuItem } from "./ComponentToggleBar";
-import { apiGET } from "../../shared/ServerRequests";
-import { AxiosResponse } from "axios";
-import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
-import { Modal } from "@mui/material";
-import ModalPopup from "../global/ModalPopup";
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
 

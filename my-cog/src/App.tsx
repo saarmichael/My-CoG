@@ -7,6 +7,7 @@ import Register from './scenes/global/Register';
 import Tabbing from './scenes/main/Tabs';
 import { TopBar } from './scenes/main/TopBar';
 import './scenes/global/StartPage.css';
+import { ModalProvider } from './contexts/ModalContext';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -41,10 +42,12 @@ function App() {
     <Router>
       <GlobalDataProvider>
         <VisGraphOptionsProvider>
-          <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/home" element={<MainPage/>} />
-          </Routes>
+          <ModalProvider>
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/home" element={<MainPage/>} />
+            </Routes>
+          </ModalProvider>
         </VisGraphOptionsProvider>
       </GlobalDataProvider>
     </Router>

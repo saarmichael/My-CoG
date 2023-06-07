@@ -55,9 +55,10 @@ const ExportDataModal: React.FC = () => {
                 <TextField
                     label="File Name"
                     value={fileName}
+                    size="small"
                     onChange={event => setFileName(event.target.value)}
                 />
-                <input type="submit" className="submit-button" value="Export Data" />
+                <input type="submit" style={{ marginTop: '10px' }} className="submit-button" value="Export Data" />
                 {loading ? loadingGif : <></>}
                 {exported ? generateResponseMessage() : <></>}
             </form>
