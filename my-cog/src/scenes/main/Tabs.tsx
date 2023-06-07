@@ -76,7 +76,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
 
     const menuItems: MenuItem[] = [
         {
-            name: 'Select a component to hide',
+            name: 'Hide component',
             items: renderComponentOptions(),
             action: (event: React.MouseEvent<HTMLInputElement>) => {
               event.stopPropagation();
@@ -94,33 +94,34 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
     return (
       <div className="container">
         <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
-        <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-          <div className="bloc-tabs">
-            {tabs.map((tab, index) => (
-              <button
-                key={index}
-                onClick={() => handleTabClick(index)}
-                className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
-              >
-                {tab.label}
-              </button>
-            ))}
-            {onAddTab && (
-              <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
-            )}
-          </div>
-    
-          
-          {tabs.map((tab, index) => (
-            
-              <Grid container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none',  }}>
-              {tab.content.props.children.map((component: JSX.Element, index: number) => (
-                <Grid item  xs={5} style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '' }}>
-                  {component}
-                </Grid>
+
+        <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`} style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="bloc-tabs" style={{ width: '100%' }}>
+              {tabs.map((tab, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleTabClick(index)}
+                  className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
+                >
+                  {tab.label}
+                </button>
               ))}
+              {onAddTab && (
+                <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
+              )}
+          </div>
+
+          <div style={{ overflow: 'auto', flexGrow: 1 }}>
+            {tabs.map((tab, index) => (
+              <Grid container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
+                {tab.content.props.children.map((component: JSX.Element, index: number) => (
+                  <Grid item  xs={5} style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '' }}>
+                    {component}
+                  </Grid>
+                ))}
               </Grid>
-          ))}
+            ))}
+          </div>
           
           <div className="hide-component">
               <ComponentToggleBar menuItems={menuItems} activeMenu={activeMenu} toggleMenu={toggleMenu} />
