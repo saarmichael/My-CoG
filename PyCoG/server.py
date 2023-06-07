@@ -43,7 +43,7 @@ def login():
     session["username"] = user.username
     data_provider = dataProvider(session)
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
-    return jsonify({"data_dir": user.user_root_dir})
+    return jsonify({"user_data_dir": session["user_data_dir"].split("\\")[-1]})
 
 
 @app.route("/register", methods=["POST"])

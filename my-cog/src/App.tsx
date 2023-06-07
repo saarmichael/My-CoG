@@ -18,8 +18,8 @@ function LoginPage() {
   
   return (
     <div className='full-form'>
-      <Login onLogin={handleLogin} />
-      <Register onRegister={handleLogin} />
+        <Login onLogin={handleLogin} />
+        <Register onRegister={handleLogin} />
     </div>
   );
 }
@@ -27,16 +27,10 @@ function LoginPage() {
 function MainPage() {
   return (
     <div>
-    <GlobalDataProvider>
       <TopBar/>
-      <div className="app-container">
-        
-          
+      <div className="app-container"> 
             <Tabbing />
-          
-        
       </div>
-    </GlobalDataProvider>
   </div>
   );
 }
@@ -45,12 +39,14 @@ function App() {
 
   return (
     <Router>
-      <VisGraphOptionsProvider>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/home" element={<MainPage/>} />
-        </Routes>
-      </VisGraphOptionsProvider>
+      <GlobalDataProvider>
+        <VisGraphOptionsProvider>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/home" element={<MainPage/>} />
+          </Routes>
+        </VisGraphOptionsProvider>
+      </GlobalDataProvider>
     </Router>
   );
 };
