@@ -147,6 +147,25 @@ button {
   padding: 10px;
 }
 
+.select {
+    background-color: "#f1e0ff";
+    color: "#800080";
+    border-Radius: "5px";
+    height: "30px";
+    width: "120px";
+    padding: "6px 10px";
+    margin-top: "10px";
+    border: "1px solid purple";
+    outline: "none",
+}
+
+.select:focus {
+    border-color: "#a040f0";
+}
+
+.select:hover {
+    border-color: "#800080",
+}
 
 
 

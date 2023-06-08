@@ -2,7 +2,7 @@ import { Button, Grid, Slider, TextField, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { useStyles } from "../scenes/global/TextFieldStyle";
+import { useTextFieldsStyle } from "../scenes/global/Styles";
 
 interface SlidingBarProps {
   sliderName: string;
@@ -21,7 +21,7 @@ const SlidingBar = (props: SlidingBarProps) => {
   const upperThumbRef = React.useRef<HTMLInputElement>(null);
   const [lockThumbs, setLockThumbs] = useState<boolean>(false);
 
-  const classes = useStyles();
+  const classes = useTextFieldsStyle();
 
   let minDistance = 0;
   let array: number[] = [];
