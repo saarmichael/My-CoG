@@ -223,6 +223,7 @@ export const EditableGrid = (props: EditableGridProps) => {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         backgroundSize: 'cover',
+        height: '600px',
     };
 
     return (
