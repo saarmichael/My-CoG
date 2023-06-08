@@ -54,6 +54,12 @@ def get_coherence_matrices(data, fs, window="hann", overlap=0.5):
     return f, CM
 
 
+def get_coherence_squared_matrices(data, fs, window="hann", overlap=0.5):
+    f, CM = get_coherence_matrices(data, fs, window, overlap)
+    CM = np.square(CM)
+    return f, CM
+
+
 # def write_CM_to_JSON(CM, filename):
 #     """
 #     Write the coherence matrices to a JSON file.

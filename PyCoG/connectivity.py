@@ -1,10 +1,10 @@
-from coherence import get_coherence_matrices
+from coherence import get_coherence_matrices, get_coherence_squared_matrices
 
 
 class Connectivity:
     CONNECTIVITY_MAP = {
         "coherence": get_coherence_matrices,
-        "coherence2": get_coherence_matrices,
+        "coherence squared": get_coherence_squared_matrices,
     }
 
     def get_connectivity_list():
