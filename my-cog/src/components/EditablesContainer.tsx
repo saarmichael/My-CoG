@@ -1,5 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import ThreeSixtyIcon from '@mui/icons-material/ThreeSixty';
+import HeightIcon from '@mui/icons-material/Height';
+import OpenWithIcon from '@mui/icons-material/OpenWith';
 import { GridProvider, GridContext, IGridFocusContext } from "../contexts/GridContext";
 import { EditableGrid } from "./EditableGrid";
 import { Button, Grid, TextField } from "@mui/material";
@@ -80,7 +82,7 @@ const ImageSelector = () => {
                             dist_index: imageParamsIdxs.dist_index
                         });
                     }}>
-                        <ThreeSixtyIcon />
+                        <HeightIcon />
                     </Button>
                     <span>{paramsLists.ele_list[imageParamsIdxs.ele_index]}</span>
                 </Grid>
@@ -92,7 +94,7 @@ const ImageSelector = () => {
                             dist_index: (imageParamsIdxs.dist_index + 1) % paramsLists.dist_list.length
                         });
                     }}>
-                        <ThreeSixtyIcon />
+                        <OpenWithIcon />
                     </Button>
                     <span>{paramsLists.dist_list[imageParamsIdxs.dist_index]}</span>
                 </Grid>
@@ -160,6 +162,7 @@ const Container = () => {
                         }}
                         toSubmit={false}
                         keepDistance={false}
+                        miniSlider={false}
                     />
 
                 </Grid>

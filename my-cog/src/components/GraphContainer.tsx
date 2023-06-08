@@ -118,10 +118,15 @@ export const GraphContainer = () => {
 
             <Grid container spacing={4}>
                 <Grid item xs={6}>
-                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} />
+                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} miniSlider={false}/>
                 </Grid>
                 <Grid item xs={6}>
-                    <SlidingBar sliderName="Time slider" range={duration} keepDistance={true} onChange={() => { }} toSubmit={timeToSubmit} onSubmit={handleDurationChange} />
+                    <SlidingBar sliderName="Time slider" range={duration} keepDistance={true} 
+                    onChange={() => { }} 
+                    toSubmit={timeToSubmit} 
+                    onSubmit={handleDurationChange} 
+                    miniSlider={true}
+                    />
                     {loading ? loadingGif : null}
                 </Grid>
             </Grid>
