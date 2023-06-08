@@ -98,3 +98,8 @@ export const exportData = async (time: TimeInterval, connectivityMeasure?: strin
     return response;
 }
 
+export const getConnectivityMeasuresList = async () => {
+    const url = `/connectivityMeasuresList`;
+    const response = await apiGET<string[]>(url);
+    return response;
+}

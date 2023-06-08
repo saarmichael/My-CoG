@@ -17,6 +17,7 @@ import os
 import threading
 from datetime import datetime
 import math
+from connectivity import Connectivity as Conn
 
 data_provider = dataProvider(session)
 
@@ -274,6 +275,11 @@ def get_image_params():
         ),
         200,
     )
+
+
+@app.route("/connectivityMeasuresList", methods=["GET"])
+def connectivity_list():
+    return jsonify(Conn.get_connectivity_list()), 200
 
 
 ###############################################
