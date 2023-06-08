@@ -5,8 +5,8 @@ import { GraphinData, IUserEdge, IUserNode } from '@antv/graphin';
 import { interpolate } from 'd3-interpolate';
 import { IVisSettings } from '../contexts/VisualGraphOptionsContext';
 import { FreqRange, TimeInterval } from './GraphRelated';
-import { CoherenceResponse } from './Requests';
-import { getBasicGraph, getCoherenceResponse, getFrequencies } from './RequestsService';
+import { ConnectivityResponse } from './Requests';
+import { getBasicGraph, getConnectivityResponse, getFrequencies } from './RequestsService';
 import { NODE_LABEL_FONT_SIZE } from './DesignConsts';
 
 
@@ -423,7 +423,7 @@ export const getGraphinDataByCM = (CM: number[][], getPositions?: (n: number, ra
 }
 
 const buildRequest = (time?: TimeInterval) => {
-    let url = 'http://localhost:5000/time?';
+    let url = 'http://localhost:5000/connectivity?';
     if (time) {
         url += 'start=' + time?.start + '&end=' + time?.end;
     }
@@ -443,10 +443,9 @@ const applyCMOnGraph = (graph: GraphinData, CM: number[][]) => {
 
 export let singletonCM: number[][][] = [[[]]];
 
-export const getGraphCoherence = async (graph: GraphinData, freq: FreqRange, time?: TimeInterval)
+export const getGraphConnectivityMatrix = async (graph: GraphinData, freq: FreqRange, connectivity: string,  time?: TimeInterval)
     : Promise<GraphinData> => {
-    const url = buildRequest(time);
-    let response: CoherenceResponse | undefined = await getCoherenceResponse(time);
+    let response: ConnectivityResponse | undefined = await getConnectivityResponse(connectivity, time);
     if (!response) {
         return graph;
     }

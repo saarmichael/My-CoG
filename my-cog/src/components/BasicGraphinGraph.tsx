@@ -3,8 +3,8 @@ import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '
 import React, { useContext, useEffect } from 'react';
 import { ActiveNodeProps, GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
-import { getDuration, getFrequencies } from '../shared/RequestsService';
-import { getGraphBase, getGraphCoherence, updateGraphCoherence } from '../shared/GraphService';
+import { getConnectivityMeasuresList, getDuration, getFrequencies } from '../shared/RequestsService';
+import { getGraphBase, getGraphConnectivityMatrix, updateGraphCoherence } from '../shared/GraphService';
 import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
 
 
@@ -94,7 +94,8 @@ const BasicGraphinGraph = () => {
         setFreqList, freqList,
         timeRange, setDuration,
         activeNodes, setActiveNodes,
-        setLoading, chosenFile
+        setLoading, chosenFile,
+        connectivityType, setConnectivityType,
     } = useContext(GlobalDataContext) as IGlobalDataContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
 
@@ -140,7 +141,7 @@ const BasicGraphinGraph = () => {
     const createGraphData = async () => {
         // get the coherence values for the selected frequency and time ranges
         let graph = { ...state };
-        graph = await getGraphCoherence(graph, freqRange, timeRange);
+        graph = await getGraphConnectivityMatrix(graph, freqRange, connectivityType,  timeRange);
         return { ...graph };
     }
 
@@ -184,7 +185,7 @@ const BasicGraphinGraph = () => {
             setState(data);
             setChangeVis([...changeVis]);
         });
-    }, [timeRange]); // TODO: make this more generic
+    }, [timeRange, connectivityType]); // TODO: make this more generic
 
     useEffect(() => {
         if (!state.nodes.length || !state.edges.length) return;

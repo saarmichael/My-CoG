@@ -6,7 +6,7 @@ export interface BasicGraphResponse {
     edges: IUserEdge[];
 }
 
-export interface CoherenceResponse {
+export interface ConnectivityResponse {
     f: number[];
     CM: number[][][]; // coherence matrices for each frequency
 }

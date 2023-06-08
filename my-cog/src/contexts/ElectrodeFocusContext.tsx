@@ -33,6 +33,8 @@ export interface IGlobalDataContext {
     setActiveNodes: (activeNodes: ActiveNodeProps[]) => void;
     loading: boolean;
     setLoading: (loading: boolean) => void;
+    connectivityType: string;
+    setConnectivityType: (connectivityType: string) => void;
 }
 
 interface IGlobalDataProviderProps {
@@ -53,6 +55,8 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
     const [chosenFile, setChosenFile] = useState<string>("");
     const [activeNodes, setActiveNodes] = React.useState<ActiveNodeProps[]>([]);
     const [loading , setLoading] = React.useState<boolean>(false);
+    const [connectivityType, setConnectivityType] = React.useState<string>("coherence");
+
     return (
         <GlobalDataContext.Provider value={{
             state, setState,
@@ -65,7 +69,8 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
             sharedGraph, setSharedGraph,
             chosenFile, setChosenFile,
             activeNodes, setActiveNodes,
-            loading, setLoading
+            loading, setLoading,
+            connectivityType, setConnectivityType,
         }}>
             {children}
         </GlobalDataContext.Provider>
