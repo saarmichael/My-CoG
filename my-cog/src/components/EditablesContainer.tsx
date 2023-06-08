@@ -8,6 +8,7 @@ import { fetchImage, fetchImageParams } from "../shared/RequestsService";
 import "./EditableContainer.css";
 import SimpleCard from "../scenes/global/SimpleCard";
 import { BrainImageParamsResponse } from "../shared/Requests";
+import { useStyles } from "../scenes/global/TextFieldStyle";
 
 
 const ImageSelector = () => {
@@ -138,10 +139,12 @@ const Container = () => {
         setRotationReady,
     } = useContext(GridContext) as IGridFocusContext;
 
+    const classes = useStyles(); // Use the styles hook
+
     return (
         <>
 
-            <h1>Editable Grid</h1>
+            <h1 className="head">Editable Grid</h1>
             <Grid container>
                 <Grid item xs={10} >
                     <EditableGrid N={4} M={3} />
@@ -166,6 +169,7 @@ const Container = () => {
                 <Grid container justifyContent="center" flexDirection="column">
                     <Grid item xs={12} >
                         <TextField
+                            className={classes.root}
                             type="number"
                             size="small"
                             label="Angle"
@@ -194,11 +198,6 @@ const Container = () => {
                     </Grid>
                 </Grid>
             </Grid>
-
-
-
-
-
         </>
     )
 }

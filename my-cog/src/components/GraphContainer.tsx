@@ -106,7 +106,7 @@ export const GraphContainer = () => {
 
     return (
         <>
-            <h1>Connectivity Graph</h1>
+            <h1 className="head">Connectivity Graph</h1>
             <Grid container maxHeight="650px">
                 <Grid item xs={11}>
                     <BasicGraphinGraph />
