@@ -6,7 +6,7 @@ import { DataOptions } from "./DataOptions";
 import { GraphVisToggles } from "./GraphVisToggles";
 import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
 import SlidingBar from "./SlidingBar";
-import { getDuration, getFrequencies } from "../shared/RequestsService";
+import { getConnectivityMeasuresList, getDuration, getFrequencies } from "../shared/RequestsService";
 import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsService";
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import ReactLoading from "react-loading";
@@ -25,6 +25,7 @@ export const GraphContainer = () => {
         setTimeRange,
         activeNodes, setActiveNodes,
         loading,
+        setConnectivityType,
     } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const handleFreqChange = (event: Event, newValue: number[]) => {
@@ -37,6 +38,7 @@ export const GraphContainer = () => {
 
     const [fList, setFList] = useState<number[]>([0, 5]);
     const [timeToSubmit, setTimeToSubmit] = useState<boolean>(false);
+    const [connectivityMeasuresList, setConnectivityMeasuresList] = useState<string[]>([]);
 
     useEffect(() => {
         console.log("GraphContainer: useEffect: getFrequencyAndTime");
@@ -49,6 +51,9 @@ export const GraphContainer = () => {
             setFreqList(data.frequencyListAsync);
             setDuration(data.durationAsync);
             setTimeToSubmit(true);
+        });
+        getConnectivityMeasuresList().then((list) => {
+            setConnectivityMeasuresList(list);
         });
     }, []);
 
@@ -128,6 +133,17 @@ export const GraphContainer = () => {
                     miniSlider={true}
                     />
                     {loading ? loadingGif : null}
+                </Grid>
+                <Grid item xs={3}>
+                    <select
+                    onChange={(e) => {
+                        setConnectivityType(e.target.value);
+                    }}
+                    >
+                        {connectivityMeasuresList.map((measure) => (
+                            <option key={measure}>{measure}</option>
+                        ))}
+                    </select>
                 </Grid>
             </Grid>
         </>

@@ -1,6 +1,6 @@
 import { GraphinData } from "@antv/graphin";
 import { ExportDataProps, FreqRange, TimeInterval } from './GraphRelated';
-import { BasicGraphResponse, BrainImageParamsResponse, CoherenceResponse } from "./Requests";
+import { BasicGraphResponse, BrainImageParamsResponse, ConnectivityResponse } from "./Requests";
 import { ServerOption, apiGET, apiPOST } from "./ServerRequests";
 import { Server } from "http";
 import { IVisGraphOption } from "../contexts/VisualGraphOptionsContext";
@@ -33,13 +33,14 @@ export const getSingletonDuration = async (): Promise<number> => {
     return singletonDuration;
 }
 
-export const getCoherenceResponse =
-    async (time?: TimeInterval): Promise<CoherenceResponse | undefined> => {
-        let url = `${baseAddress}/time`;
+export const getConnectivityResponse =
+    async (connectivityName: string, time?: TimeInterval): Promise<ConnectivityResponse | undefined> => {
+        let url = `${baseAddress}/connectivity`
+        url += `?connectivity=${connectivityName}`;
         if (time) {
-            url += `?start=${time.start}&end=${time.end}`;
+            url += `&start=${time.start}&end=${time.end}`;
         }
-        return apiGET<CoherenceResponse>(url);
+        return apiGET<ConnectivityResponse>(url);
     }
 
 export const getBasicGraph = async (): Promise<BasicGraphResponse> => {
@@ -65,9 +66,9 @@ export const simpleGetRequest = async () => {
         .catch(error => console.error(error))
 }
 
-export const fetchImage = async (azimuth: number, elevation: number, distance:number) => {
+export const fetchImage = async (azimuth: number, elevation: number, distance: number) => {
     let url = `${baseAddress}/brainImage?azimuth=${azimuth}&elevation=${elevation}&distance=${distance}`;
-    const response =  await apiGET<Blob>(url, 'blob');
+    const response = await apiGET<Blob>(url, 'blob');
     return URL.createObjectURL(response);
 }
 
@@ -83,18 +84,18 @@ export const reorganizeOptions = (options: ServerOption[], realOptions: IVisGrap
         let option = options[i];
         let realOption = realOptions.find((realOption) => realOption.label === option.label);
         if (realOption) {
-            newOptions.push({ ...realOption, checked: option.checked});
+            newOptions.push({ ...realOption, checked: option.checked });
         }
     }
     return newOptions;
 }
 
 export const exportData = async (time: TimeInterval, connectivityMeasure?: string, fileName?: string) => {
-    if(!connectivityMeasure) {
+    if (!connectivityMeasure) {
         connectivityMeasure = 'coherence';
     }
     const url = `/exportData`
-    const response = await apiPOST<ExportDataProps>(url, {time: time, connectivityMeasure: connectivityMeasure, fileName: fileName});
+    const response = await apiPOST<ExportDataProps>(url, { time: time, connectivityMeasure: connectivityMeasure, fileName: fileName });
     return response;
 }
 

@@ -10,7 +10,7 @@ class Connectivity:
     def get_connectivity_list():
         return list(Connectivity.CONNECTIVITY_MAP.keys())
 
-    def get_connctivity_function(name):
+    def get_connectivity_function(name):
         if name not in Connectivity.CONNECTIVITY_MAP:
             raise ValueError("Connectivity function not found")
         return Connectivity.CONNECTIVITY_MAP[name]

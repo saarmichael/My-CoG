@@ -8,7 +8,7 @@ from granger import calculate_granger_for_all_pairs
 from util import convert_path_to_tree, dataProvider, find_first_eeg_file, find_file
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
-from coherence import coherence_over_time
+from coherence import coherence_over_time, get_data_by_start_end
 from coherence import coherence_time_frame, get_recording_duration
 from consts import bcolors
 from server_config import User, Calculation, db, app
@@ -146,8 +146,9 @@ def get_files():
 #       f: frequency vector
 #       CM: coherence matrix
 #       the CM that corresponds to the time frame specified by the start and end parameters
-@app.route("/time", methods=["GET"])
+@app.route("/connectivity", methods=["GET"])
 def get_coherence_matrices():
+    connectivity_name = request.args.get("connectivity")
     start = request.args.get("start")
     end = request.args.get("end")
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
@@ -166,7 +167,12 @@ def get_coherence_matrices():
     data = data_provider.get_data()
     print(f"{bcolors.DEBUG}in time/ : data shape: {data.shape}{bcolors.ENDC}")
     sfreq = data_provider.get_sampling_rate()
-    f, CM = coherence_time_frame(data, sfreq, start, end)
+    data = get_data_by_start_end(data, sfreq, start, end)
+    # Conn.get_connectivity_function(connectivity_name) is the connectivity function
+    connectivity_function = Conn.get_connectivity_function(connectivity_name)
+    f, CM = connectivity_function(
+        data, sfreq
+    )  # this is where the actual calculation happens
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
     write_calculation(file_name, request.url, result, session["username"])

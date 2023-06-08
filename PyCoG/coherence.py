@@ -26,7 +26,7 @@ def get_synchronous_coherence_matrices(data, fs, window, overlap):
     return f, CM
 
 
-def get_coherence_matrices(data, fs, window, overlap):
+def get_coherence_matrices(data, fs, window="hann", overlap=0.5):
     """
     Compute the coherence between all pairs of electrodes in data.
     """
@@ -139,3 +139,15 @@ def coherence_time_frame(data, fs, start=None, end=None, time_overlap=0.5):
 def get_recording_duration(data, fs):
     duration = data.shape[0] / fs
     return duration
+
+
+def get_data_by_start_end(data, fs, start, end, resolution="s"):
+    if start is None:
+        start = 0
+    if end is None:
+        end = data.shape[0] / fs
+    if start == end or start > end:
+        end = data.shape[0] / fs
+    start = float(start) * fs
+    end = float(end) * fs
+    return data[int(start) : int(end), :]
