@@ -1,7 +1,7 @@
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
 
-export const useStyles = makeStyles((theme: Theme) => ({
+export const useTextFieldsStyle = makeStyles((theme: Theme) => ({
   root: {
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
@@ -22,7 +22,27 @@ export const useStyles = makeStyles((theme: Theme) => ({
     },
     '& .MuiInputBase-input': {
       color: '#800080',
-      backgroundColor: '#f1e0ff', // Noticable faded purple background
+      backgroundColor: '#f1e0ff',
     },
   },
 }));
+
+export const useDropdownStyles = makeStyles({
+  customDropdown: {
+    backgroundColor: "#f1e0ff",
+    color: "#800080",
+    borderRadius: "5px",
+    height: "30px",
+    width: "120px",
+    padding: "6px 10px",
+    marginTop: "10px",
+    border: "1px solid purple",
+    outline: "none",
+    '&:focus': {
+      borderColor: "#a040f0",
+    },
+    '&:hover': {
+      borderColor: "#800080",
+    },
+  },
+});

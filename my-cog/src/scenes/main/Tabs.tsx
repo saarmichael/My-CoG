@@ -4,9 +4,11 @@ import "../../components/SideBar.css";
 import { Box, Box1, Box2, BoxProps } from "./GridComponents";
 import "./Tabs.css";
 import Sidebar from "../../components/SideBar";
-import { ComponentToggleBar, MenuItem } from "./ComponentToggleBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { useDropdownStyles } from "../global/Styles";
 
 
 interface Tab {
@@ -36,14 +38,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
         onAddTab();
       }
     };
-
-
-    
-    const [activeMenu, setActiveMenu] = useState<number | null>(null);
-
-    const toggleMenu = (index: number) => {
-        setActiveMenu(activeMenu === index ? null : index);
-    };
+  
 
     const handleComponentSelect = (index: number) => {
         setHiddenComponentIndex((prev) => {
@@ -56,33 +51,24 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
     };
 
     const renderComponentOptions = () => {
-        return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
-            const componentType = component.type as React.FC<BoxProps>;
-            const displayName = component.props.name as string;
-            return componentType === React.Fragment ? null : (
-                <div key={index} onClick={() => handleComponentSelect(index)}>
-                    {hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '} {displayName}
-                </div>
-            );
-        });
-    };
-
-    const menuItems: MenuItem[] = [
-        {
-            name: 'Hide component',
-            items: renderComponentOptions(),
-            action: (event: React.MouseEvent<HTMLInputElement>) => {
-              event.stopPropagation();
-              }
-        }
-    ];
+      return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
+          const componentType = component.type as React.FC<BoxProps>;
+          const displayName = component.props.name as string;
+  
+          return componentType === React.Fragment ? null : (
+              <MenuItem key={index} value={`${hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '}${displayName}`} onClick={() => handleComponentSelect(index)}>
+                  {`${hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '}${displayName}`}
+              </MenuItem>
+          );
+      });
+  };
 
 
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const toggleSidebar = () => {
       setIsSidebarOpen(!isSidebarOpen);
     };
-    
+    const classes = useDropdownStyles();
 
     return (
       <div className="container">
@@ -103,7 +89,15 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
                 <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
               )}
           </div>
-
+          <Select
+              className={classes.customDropdown}
+              style={{ width: '200px', position: 'absolute', right: '0', top: '30px' }}
+              value='Hide component'
+              displayEmpty
+              renderValue={() => 'Hide component'}
+          >
+              {renderComponentOptions()}
+          </Select>
           <div style={{ overflow: 'auto', flexGrow: 1 }}>
             {tabs.map((tab, index) => (
               <Grid container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
@@ -114,10 +108,6 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
                 ))}
               </Grid>
             ))}
-          </div>
-          
-          <div className="hide-component">
-              <ComponentToggleBar menuItems={menuItems} activeMenu={activeMenu} toggleMenu={toggleMenu} />
           </div>
         </div>
       </div>

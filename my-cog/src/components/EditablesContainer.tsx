@@ -8,7 +8,9 @@ import { fetchImage, fetchImageParams } from "../shared/RequestsService";
 import "./EditableContainer.css";
 import SimpleCard from "../scenes/global/SimpleCard";
 import { BrainImageParamsResponse } from "../shared/Requests";
-import { useStyles } from "../scenes/global/TextFieldStyle";
+import { useDropdownStyles, useTextFieldsStyle } from "../scenes/global/Styles";
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 
 const ImageSelector = () => {
@@ -56,6 +58,8 @@ const ImageSelector = () => {
     useEffect(() => {
         fetchImg();
     }, [imageParamsIdxs]);
+
+    const classes = useDropdownStyles();
 
     // return a select element with all the images
     return (
@@ -110,18 +114,23 @@ const ImageSelector = () => {
                 </Grid>
                 <Grid item>
                     <SimpleCard content={<>Recent Images</>} />
-                </Grid>
-                <Grid item>
-                    <select onChange={(e) => {
-                        const selectedImage = e.target.value;
-                        setBackgroundImg(`url(${selectedImage})`);
-                    }}
+                    <Select
+                        className={classes.customDropdown}
+                        value={selectedImageName}
+                        onChange={(e) => {
+                            const selectedImage = e.target.value;
+                            setSelectedImageName(selectedImage);
+                            setBackgroundImg(`url(${backImgList.get(selectedImage)})`);
+                        }}
                     >
                         {Array.from(backImgList.keys()).map((imageName) => {
-                            return <option value={backImgList.get(imageName)} selected={imageName == selectedImageName}>{imageName}</option>
+                            return (
+                                <MenuItem value={imageName}>
+                                    {imageName}
+                                </MenuItem>
+                            );
                         })}
-
-                    </select>
+                    </Select>
                 </Grid>
             </Grid >
 
@@ -139,7 +148,7 @@ const Container = () => {
         setRotationReady,
     } = useContext(GridContext) as IGridFocusContext;
 
-    const classes = useStyles(); // Use the styles hook
+    const classes = useTextFieldsStyle();
 
     return (
         <>
