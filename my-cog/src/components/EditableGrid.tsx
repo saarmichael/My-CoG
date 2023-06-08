@@ -221,11 +221,8 @@ export const EditableGrid = (props: EditableGridProps) => {
     const backgroundStyle = {
         backgroundImage: `${backgroundImg}`,
         backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center center',
-        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center',
         backgroundSize: 'cover',
-        width: '600px',
-        height: '600px'
     };
 
     return (

@@ -457,13 +457,13 @@ export const getGraphCoherence = async (graph: GraphinData, freq: FreqRange, tim
 }
 
 export const updateGraphCoherence = async (graph: GraphinData, freq: FreqRange, freqList: number[]) => {
-    if(singletonCM[0].length === 1 && singletonCM[0][0].length === 1 && singletonCM[0][0][0] === 0){
+    if (singletonCM[0].length === 1 && singletonCM[0][0].length === 1 && singletonCM[0][0][0] === 0) {
         return graph;
     }
-    if(freqList.length === 0){
+    if (freqList.length === 0) {
         return graph;
     }
-    if(freq === undefined){
+    if (freq === undefined) {
         return graph;
     }
     const CM = getAverageCMbyCM(singletonCM, freqList, freq);
@@ -484,7 +484,7 @@ export const getGraphBase = async (): Promise<GraphinData> => {
                     ...graph.edges[index].style?.keyshape?.endArrow,
                     path: '0',
                 }
-            }, 
+            },
             label: {
                 fontSize: NODE_LABEL_FONT_SIZE,
             }
@@ -619,7 +619,7 @@ export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
         newGraph.nodes[i].style = {
             ...newGraph.nodes[i].style,
             label: {
-                ...newGraph.nodes[i].style?.label, 
+                ...newGraph.nodes[i].style?.label,
                 position: 'center',
             },
             keyshape: {

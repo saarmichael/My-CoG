@@ -11,6 +11,7 @@ interface SlidingBarProps {
   keepDistance: boolean;
   toSubmit: boolean;
   onSubmit?: (val1: number, val2: number) => void;
+  miniSlider : boolean;
 }
 
 const SlidingBar = (props: SlidingBarProps) => {
@@ -141,7 +142,7 @@ const SlidingBar = (props: SlidingBarProps) => {
         {lockThumbs ? <LockIcon sx={{ color: 'purple' }} /> : <LockOpenIcon sx={{ color: 'purple' }} />}
       </Button>
       <Tooltip
-        open={showMicroSlider || hoverTooltipOpen}
+        open={(showMicroSlider || hoverTooltipOpen) && props.miniSlider}
         title={<Slider
           sx={{ color: 'purple' }}
           onMouseEnter={handleTooltipHoverOpen}

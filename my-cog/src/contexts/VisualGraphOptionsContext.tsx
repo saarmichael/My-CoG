@@ -73,13 +73,6 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             needValue: false
         },
         {
-            label: "Threshold View",
-            checked: false,
-            onChange: thresholdGraph,
-            needValue: true,
-            settingName: "threshold"
-        },
-        {
             label: "Width View",
             checked: false,
             onChange: changeEdgeWidthGraphin,
@@ -119,6 +112,13 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
             onChange: changeNodeSize,
             defaultBehavior: nodeSizeDefault,
             needValue: false
+        },
+        {
+            label: "Threshold View",
+            checked: false,
+            onChange: thresholdGraph,
+            needValue: true,
+            settingName: "threshold"
         },
     ]);
     const [settings, setSettings] = useState<IVisSettings>({
