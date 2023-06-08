@@ -4,9 +4,16 @@ import "../../components/SideBar.css";
 import { Box, Box1, Box2, BoxProps } from "./GridComponents";
 import "./Tabs.css";
 import Sidebar from "../../components/SideBar";
-import { ComponentToggleBar, MenuItem } from "./ComponentToggleBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import { customStyles, useDropdownStyles } from "../global/Styles";
+import Select from 'react-select';
+
+interface OptionType {
+  value: number;
+  label: string;
+}
 
 
 interface Tab {
@@ -36,14 +43,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
         onAddTab();
       }
     };
-
-
-    
-    const [activeMenu, setActiveMenu] = useState<number | null>(null);
-
-    const toggleMenu = (index: number) => {
-        setActiveMenu(activeMenu === index ? null : index);
-    };
+  
 
     const handleComponentSelect = (index: number) => {
         setHiddenComponentIndex((prev) => {
@@ -55,34 +55,30 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
         });
     };
 
-    const renderComponentOptions = () => {
-        return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
-            const componentType = component.type as React.FC<BoxProps>;
-            const displayName = component.props.name as string;
-            return componentType === React.Fragment ? null : (
-                <div key={index} onClick={() => handleComponentSelect(index)}>
-                    {hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '} {displayName}
-                </div>
-            );
-        });
-    };
+    const options = tabs[activeTabIndex].content.props.children
+    .filter((component: JSX.Element) => component.type !== React.Fragment)
+    .map((component: JSX.Element, index: number) => {
+      const displayName = component.props.name as string;
 
-    const menuItems: MenuItem[] = [
-        {
-            name: 'Hide component',
-            items: renderComponentOptions(),
-            action: (event: React.MouseEvent<HTMLInputElement>) => {
-              event.stopPropagation();
-              }
-        }
-    ];
+      return {
+        value: index,
+        label: `${hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '}${displayName}`
+      };
+    });
+
+    const handleChange = (selectedOption: any) => {
+      handleComponentSelect(selectedOption.value);
+    };
 
 
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const toggleSidebar = () => {
       setIsSidebarOpen(!isSidebarOpen);
     };
-    
+
+  
+    // Setting the value prop to a fixed object
+    const fixedValue = { label: "Hide component", value: 0 };
 
     return (
       <div className="container">
@@ -103,7 +99,15 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
                 <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
               )}
           </div>
-
+          <div style={{position: 'absolute',  right: '0', top: '30px'}}>
+            <Select
+              value={fixedValue}
+              isSearchable={false}
+              onChange={handleChange}
+              options={options}
+              styles={customStyles}
+            />
+          </div>
           <div style={{ overflow: 'auto', flexGrow: 1 }}>
             {tabs.map((tab, index) => (
               <Grid container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
@@ -114,10 +118,6 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
                 ))}
               </Grid>
             ))}
-          </div>
-          
-          <div className="hide-component">
-              <ComponentToggleBar menuItems={menuItems} activeMenu={activeMenu} toggleMenu={toggleMenu} />
           </div>
         </div>
       </div>
@@ -131,11 +131,8 @@ const Tabbing = () => {
       content: <div
         className="active-content"
       >
-
         <Box name="Graph"/>
         <Box1 name="Grid"/>
-        
-
       </div>,
     },
     {

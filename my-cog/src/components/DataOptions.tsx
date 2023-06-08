@@ -79,7 +79,7 @@ export const DataOptions = () => {
     const [fileName, setFileName] = useState('');
 
     const modal = (
-        <div style={{ position: "absolute", bottom: "0", right: '0' }}>
+        <div>
             <ModalPopup
                 buttonName="Export Data"
                 title="Choose file name"
