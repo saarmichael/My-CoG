@@ -1,4 +1,36 @@
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import Select, { StylesConfig, ActionMeta, GroupBase, CSSObjectWithLabel, OptionProps } from 'react-select';
+
+export type OptionType = { label: string; value: number };
+
+export const customStyles: StylesConfig<OptionType, false> = {
+  control: (base, state) => ({
+    ...base,
+    backgroundColor: "#f1e0ff",
+    borderRadius: "5px",
+    height: "25px",
+    width: "200px",
+    padding: "0px 10px",
+    marginTop: "10px",
+    borderColor: state.isFocused ? "#a040f0" : "#800080",
+    boxShadow: state.isFocused ? "0 0 0 1px #a040f0" : "none",
+    "&:hover": {
+      borderColor: "#800080"
+    },
+    outline: "none"
+  }),
+  option: (styles: CSSObjectWithLabel, { isFocused, isSelected }: OptionProps<OptionType, false, GroupBase<OptionType>>) => {
+    return {
+      ...styles,
+      backgroundColor: isSelected ? "" : (isFocused && !isSelected) ? "" : undefined, // Updated condition here
+      color: "#800080",
+    };
+  },
+  menu: (base) => ({
+    ...base,
+    width: "200px",
+  })
+}
 
 
 export const useTextFieldsStyle = makeStyles((theme: Theme) => ({
@@ -46,3 +78,4 @@ export const useDropdownStyles = makeStyles({
     },
   },
 });
+

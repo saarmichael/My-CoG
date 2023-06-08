@@ -6,9 +6,14 @@ import "./Tabs.css";
 import Sidebar from "../../components/SideBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
-import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { useDropdownStyles } from "../global/Styles";
+import { customStyles, useDropdownStyles } from "../global/Styles";
+import Select from 'react-select';
+
+interface OptionType {
+  value: number;
+  label: string;
+}
 
 
 interface Tab {
@@ -50,25 +55,30 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
         });
     };
 
-    const renderComponentOptions = () => {
-      return tabs[activeTabIndex].content.props.children.map((component: JSX.Element, index: number) => {
-          const componentType = component.type as React.FC<BoxProps>;
-          const displayName = component.props.name as string;
-  
-          return componentType === React.Fragment ? null : (
-              <MenuItem key={index} value={`${hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '}${displayName}`} onClick={() => handleComponentSelect(index)}>
-                  {`${hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '}${displayName}`}
-              </MenuItem>
-          );
-      });
-  };
+    const options = tabs[activeTabIndex].content.props.children
+    .filter((component: JSX.Element) => component.type !== React.Fragment)
+    .map((component: JSX.Element, index: number) => {
+      const displayName = component.props.name as string;
+
+      return {
+        value: index,
+        label: `${hiddenComponentIndex.includes(index) ? 'Show ' : 'Hide '}${displayName}`
+      };
+    });
+
+    const handleChange = (selectedOption: any) => {
+      handleComponentSelect(selectedOption.value);
+    };
 
 
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const toggleSidebar = () => {
       setIsSidebarOpen(!isSidebarOpen);
     };
-    const classes = useDropdownStyles();
+
+  
+    // Setting the value prop to a fixed object
+    const fixedValue = { label: "Hide component", value: 0 };
 
     return (
       <div className="container">
@@ -89,15 +99,15 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
                 <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
               )}
           </div>
-          <Select
-              className={classes.customDropdown}
-              style={{ width: '200px', position: 'absolute', right: '0', top: '30px' }}
-              value='Hide component'
-              displayEmpty
-              renderValue={() => 'Hide component'}
-          >
-              {renderComponentOptions()}
-          </Select>
+          <div style={{position: 'absolute',  right: '0', top: '30px'}}>
+            <Select
+              value={fixedValue}
+              isSearchable={false}
+              onChange={handleChange}
+              options={options}
+              styles={customStyles}
+            />
+          </div>
           <div style={{ overflow: 'auto', flexGrow: 1 }}>
             {tabs.map((tab, index) => (
               <Grid container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
@@ -121,11 +131,8 @@ const Tabbing = () => {
       content: <div
         className="active-content"
       >
-
         <Box name="Graph"/>
         <Box1 name="Grid"/>
-        
-
       </div>,
     },
     {
