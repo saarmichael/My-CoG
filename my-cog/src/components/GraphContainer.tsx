@@ -14,6 +14,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Typography from '@mui/material/Typography';
 import { maxHeight } from "@mui/system";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
 export const GraphContainer = () => {
@@ -25,7 +29,7 @@ export const GraphContainer = () => {
         setTimeRange,
         activeNodes, setActiveNodes,
         loading,
-        setConnectivityType,
+        setConnectivityType, connectivityType,
     } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const handleFreqChange = (event: Event, newValue: number[]) => {
@@ -78,13 +82,13 @@ export const GraphContainer = () => {
 
     // make a list of checkboxes to select the active nodes
     const selectActiveNodes = (
-        <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
             flexWrap: 'nowrap',  // disable wrapping
             overflowY: 'auto',  // enable horizontal scroll
             overflowX: 'hidden',
-            alignItems: 'center' ,
+            alignItems: 'center',
             maxHeight: '600px'
         }}>
             {state.nodes.map((node) => (
@@ -109,6 +113,29 @@ export const GraphContainer = () => {
         <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
     );
 
+    const selectConnectivity = (
+        <Box sx={{ minWidth: 120 }}>
+            <FormControl fullWidth>
+                <InputLabel id="connectivity-select-label">Connectivity</InputLabel>
+                <Select
+                    labelId="connectivity-select-label"
+                    id="connectivity-select"
+                    value={connectivityType}
+                    label="Connectivity type"
+                    onChange={(e) => {
+                        setConnectivityType(e.target.value);
+                    }}
+                >
+                    {connectivityMeasuresList.map((measure) => (
+                        <MenuItem key={measure} value={measure}>{measure}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </Box>
+    );
+
+  
+
     return (
         <>
             <h1 className="head">Connectivity Graph</h1>
@@ -123,27 +150,19 @@ export const GraphContainer = () => {
 
             <Grid container spacing={4}>
                 <Grid item xs={6}>
-                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} miniSlider={false}/>
+                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} miniSlider={false} />
                 </Grid>
                 <Grid item xs={6}>
-                    <SlidingBar sliderName="Time slider" range={duration} keepDistance={true} 
-                    onChange={() => { }} 
-                    toSubmit={timeToSubmit} 
-                    onSubmit={handleDurationChange} 
-                    miniSlider={true}
+                    <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
+                        onChange={() => { }}
+                        toSubmit={timeToSubmit}
+                        onSubmit={handleDurationChange}
+                        miniSlider={true}
                     />
                     {loading ? loadingGif : null}
                 </Grid>
                 <Grid item xs={3}>
-                    <select
-                    onChange={(e) => {
-                        setConnectivityType(e.target.value);
-                    }}
-                    >
-                        {connectivityMeasuresList.map((measure) => (
-                            <option key={measure}>{measure}</option>
-                        ))}
-                    </select>
+                    {selectConnectivity}
                 </Grid>
             </Grid>
         </>
