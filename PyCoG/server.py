@@ -81,7 +81,7 @@ def save_settings():
 @app.route("/setFile", methods=["POST"])
 def set_file():
     print(session["user_data_dir"])
-    session["user_data_dir"] = request.get_json()["file"]
+    session["user_data_dir"] = find_file(request.get_json()["file"], os.getcwd())
     return jsonify({"message": "File set successfully!"})
 
 
