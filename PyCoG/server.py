@@ -8,8 +8,7 @@ from granger import calculate_granger_for_all_pairs
 from util import convert_path_to_tree, dataProvider, find_first_eeg_file, find_file
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
-from coherence import coherence_over_time, get_data_by_start_end
-from coherence import coherence_time_frame, get_recording_duration
+from coherence import coherence_time_frame, get_recording_duration, get_data_by_start_end
 from consts import bcolors
 from server_config import User, Calculation, db, app
 from image_generator import get_azi_ele_dist_lists, get_brain_image

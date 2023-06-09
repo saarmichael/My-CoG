@@ -1,16 +1,30 @@
 import ast
+from datetime import datetime
 from cache_check import user_in_db
 from server_config import User, Calculation, db
+from datetime import datetime, timedelta
+
+def delete_old_calculations():
+    one_month_ago = datetime.now() - timedelta(weeks=4)
+    old_calculations = Calculation.query.filter(Calculation.time < one_month_ago).all()
+
+    for calculation in old_calculations:
+        db.session.delete(calculation)
+
+    db.session.commit()
 
 def write_calculation(file_name, url, data, created_by):
+    delete_old_calculations()
     calculation = {
         "file_name": file_name,
         "url": url,
         "data": data,
         "created_by": created_by,
     }
+    # get the time
+    date_time = datetime.now()
     cal = Calculation(
-        file_name=file_name, url=url, data=data, created_by=created_by
+        time=date_time ,file_name=file_name, url=url, data=data, created_by=created_by
     )
     db.session.add(cal)
     db.session.commit()
