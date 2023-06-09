@@ -99,7 +99,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
                 <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
               )}
           </div>
-          <div style={{position: 'absolute',  right: '0', top: '30px'}}>
+          <div style={{position: 'absolute',  right: '10px', top: '30px'}}>
             <Select
               value={fixedValue}
               isSearchable={false}
