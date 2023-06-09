@@ -1,26 +1,40 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { loginRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import { useStyles } from './Styles';
+import { AxiosError } from 'axios';
 
 type LoginProps = {
   onLogin: () => void;
 };
 
+export const loginConfig = async (username: string, setLoading:React.Dispatch<boolean>,
+  onLogin: () => void, setChosenFile:React.Dispatch<string>,
+  setErrorMessage:React.Dispatch<string>) => {
+    setLoading(true);
+    
+    await loginRequest(username, onLogin).then((data) => {
+      setChosenFile(data);
+      console.log(data);
+      setErrorMessage(data);
+    })
+    .finally(() => {
+        setLoading(false);
+    });
+};
+
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const { setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { setChosenFile, setLoading } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      setLoading(true);
       event.preventDefault();
-      await loginRequest(username, onLogin).then((data) => {
-        setChosenFile(data);
-        console.log(data);
-        setErrorMessage(data);
-      });
       
+      loginConfig(username, setLoading, onLogin, setChosenFile, setErrorMessage);
     };
     
 

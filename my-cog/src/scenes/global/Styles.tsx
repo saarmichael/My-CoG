@@ -79,3 +79,9 @@ export const useDropdownStyles = makeStyles({
   },
 });
 
+export const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    color: '#fff',
+  },
+}));
+

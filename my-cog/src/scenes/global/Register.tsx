@@ -3,6 +3,8 @@ import { ServerSettings, extractOptions, registerRequest } from '../../shared/Se
 import './StartPage.css';
 import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
 import DirectoryPicker from './DirectoryPicker';
+import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import { loginConfig } from './Login';
 
 
 interface RegisterProps {
@@ -18,19 +20,24 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [username, setUsername] = useState('');
   const [data, setData] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { setChosenFile, setLoading } = useContext(GlobalDataContext) as IGlobalDataContext;
 
   const { settings, options}= useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
   
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
     let organizedOptions = extractOptions(options);
     // add settings and options to a json object
     const reorganizedSettings: ServerSettings = {
       options: organizedOptions,
       settings: settings,
     };
-    registerRequest(username, data.split('\\').pop() as string, reorganizedSettings, onRegister).then((err) => {
+    registerRequest(username, data.split('\\').pop() as string, reorganizedSettings, onRegister).then(async (err) => {
+      if (err === '') {
+        await loginConfig(username, setLoading, onRegister, setChosenFile, setErrorMessage);
+      }
       console.log(err)
       setErrorMessage(err as string)
     });

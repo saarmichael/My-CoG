@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
-import { Button } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { exportData } from "../shared/RequestsService";
 import ReactLoading from 'react-loading';
 import ModalPopup from "../scenes/global/ModalPopup";
@@ -15,14 +15,10 @@ const ExportDataModal: React.FC = () => {
     const [error, setError] = useState<boolean>(false);
     const [response, setResponse] = useState<string>('');
 
-    const loadingGif = (
-        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
-    );
-
     const generateResponseMessage = () => {
         let className = '';
         if (!error) {
-            className = 'upload';
+            className = 'upload message';
         } else {
             className = 'error message';
         }
@@ -59,7 +55,11 @@ const ExportDataModal: React.FC = () => {
                     onChange={event => setFileName(event.target.value)}
                 />
                 <input type="submit" style={{ marginTop: '10px' }} className="submit-button" value="Export Data" />
-                {loading ? loadingGif : <></>}
+                {loading ? 
+                    <Box display="flex" justifyContent="center" alignItems="center" marginTop="5px">
+                        <CircularProgress size={20} sx= {{color:"purple"}}/> 
+                    </Box> 
+                : null}
                 {exported ? generateResponseMessage() : <></>}
             </form>
         </div>
@@ -86,10 +86,6 @@ export const DataOptions = () => {
                 content={<ExportDataModal />}
             />
         </div>);
-
-    const loadingGif = (
-        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#FFFFFF" />
-    );
 
     return (
         <>

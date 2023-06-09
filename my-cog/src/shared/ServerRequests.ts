@@ -44,8 +44,7 @@ export const registerRequest = async (username: string, data: string, settings: 
 
     if (response.status === 200) {
       console.log('Registration successful');
-      await loginRequest(username, onRegister);
-      return 'Registration successful';
+      return '';
     }
   } catch (error) {
     const axiosError = error as AxiosError;
