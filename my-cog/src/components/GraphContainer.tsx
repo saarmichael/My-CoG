@@ -19,6 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useDropdownStyles } from "../scenes/global/Styles";
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 export const GraphContainer = () => {
@@ -110,9 +111,6 @@ export const GraphContainer = () => {
 
     );
 
-    const loadingGif = (
-        <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
-    );
     const classes = useDropdownStyles();
 
     const selectConnectivity = (
@@ -138,7 +136,7 @@ export const GraphContainer = () => {
         </Box>
     );
 
-  
+  // asd
 
     return (
         <>
@@ -163,7 +161,11 @@ export const GraphContainer = () => {
                         onSubmit={handleDurationChange}
                         miniSlider={true}
                     />
-                    {loading ? loadingGif : null}
+                   {loading ? 
+                        <Box display="flex" justifyContent="center" alignItems="center" marginTop="2px">
+                            <CircularProgress size={20} sx= {{color:"purple"}}/> 
+                        </Box> 
+                    : null}
                 </Grid>
                 <Grid item xs={2}>
                     {selectConnectivity}

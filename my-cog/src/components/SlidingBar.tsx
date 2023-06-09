@@ -209,7 +209,7 @@ const SlidingBar = (props: SlidingBarProps) => {
           {props.toSubmit &&
             <div
               className="submit-button"
-              style={{ width: '30%', margin: '0 auto' }}
+              style={{ width: '40%', margin: '0 auto' }}
               onClick={() => {
                 if (props.onSubmit) {
                   props.onSubmit(Number(lowerThumbRef.current?.value), Number(upperThumbRef.current?.value));

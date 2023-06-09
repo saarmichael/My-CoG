@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes, useNavigate, Navigate } from 'react-router-dom';
 import './App.css';
-import { GlobalDataProvider } from './contexts/ElectrodeFocusContext';
+import { GlobalDataContext, GlobalDataProvider, IGlobalDataContext } from './contexts/ElectrodeFocusContext';
 import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
 import Login from './scenes/global/Login';
 import Register from './scenes/global/Register';
@@ -8,6 +8,9 @@ import Tabbing from './scenes/main/Tabs';
 import { TopBar } from './scenes/main/TopBar';
 import './scenes/global/StartPage.css';
 import { ModalProvider } from './contexts/ModalContext';
+import { useContext, useEffect } from 'react';
+import { Backdrop, Box, CircularProgress } from '@material-ui/core';
+import { useStyles } from './scenes/global/Styles';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -37,20 +40,30 @@ function MainPage() {
 }
 
 function App() {
-
   return (
     <Router>
       <GlobalDataProvider>
         <VisGraphOptionsProvider>
-          <ModalProvider>
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/home" element={<MainPage/>} />
-            </Routes>
-          </ModalProvider>
+          <Routes>
+            <Route path="/" element={<MainPageWithBackdrop />} />
+            <Route path="/home" element={<MainPage />} />
+          </Routes>
         </VisGraphOptionsProvider>
       </GlobalDataProvider>
     </Router>
+  );
+}
+
+const MainPageWithBackdrop: React.FC = () => {
+  const classes = useStyles();
+  const { loading } = useContext(GlobalDataContext) as IGlobalDataContext;
+  return (
+    <>
+      <LoginPage />
+      <Backdrop className={classes.backdrop} open={loading} style={{zIndex: '2'}}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </>
   );
 };
 
