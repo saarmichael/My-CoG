@@ -310,9 +310,9 @@ def export_data():
     end = data["time"]["end"]
     resolution = data["time"]["resolution"]
     file_name = data["fileName"]
-    connectivityMeasure = data["connectivityMeasure"]
+    connectivity_measure = data["connectivityMeasure"]
     print(
-        f"{bcolors.DEBUG}start: {start}, end: {end}, resolution: {resolution} connectivityMeasure: {connectivityMeasure}{bcolors.ENDC}"
+        f"{bcolors.DEBUG}start: {start}, end: {end}, resolution: {resolution} connectivityMeasure: {connectivity_measure}{bcolors.ENDC}"
     )
     if not os.path.isdir("exported_mat"):
         os.mkdir("exported_mat")
@@ -334,10 +334,10 @@ def export_data():
     meta_data = {
         "bids_file_name": bids_file_name,
         "electrodes": electrodes,
-        "connectivity_measure": connectivityMeasure,
+        "connectivity_measure": connectivity_measure,
         "date_time": date_time,
     }
-    connectivity_func = Conn.get_connectivity_function(connectivityMeasure)
+    connectivity_func = Conn.get_connectivity_function(connectivity_measure)
     export_connectivity_to_mat(
         conn_func=connectivity_func,
         name=file_name,

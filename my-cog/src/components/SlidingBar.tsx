@@ -11,14 +11,11 @@ interface SlidingBarProps {
   keepDistance: boolean;
   toSubmit: boolean;
   onSubmit?: (val1: number, val2: number) => void;
-  miniSlider : boolean;
+  miniSlider: boolean;
 }
 
 const SlidingBar = (props: SlidingBarProps) => {
-  // ref for input field for the lower thumb of the slider 
-  const lowerThumbRef = React.useRef<HTMLInputElement>(null);
-  // ref for input field for the upper thumb of the slider
-  const upperThumbRef = React.useRef<HTMLInputElement>(null);
+
   const [lockThumbs, setLockThumbs] = useState<boolean>(false);
 
   const classes = useTextFieldsStyle();
@@ -45,36 +42,50 @@ const SlidingBar = (props: SlidingBarProps) => {
   const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
     newValue = newValue as number[];
     newValue = newValue.map((num: number) => Math.round(num * 1000) / 1000);
+    if (lockThumbs) {
+      if (value[0] === array[0]) {
+        if (newValue[1] < value[1]) {
+          return;
+        }
+      }
+      if (value[1] === array[array.length - 1]) {
+        if (newValue[0] > value[0]) {
+          return;
+        }
+      }
+    }
+
+    const [lowerThumb, upperThumb] = value; // Destructure the current values of the thumbs
+
     if (activeThumb === 0) {
       if (lockThumbs) {
-        const stepSize = newValue[0] - value[0];
-        if (value[1] + stepSize > array[array.length - 1]) {
-          setValue([value[0], array[array.length - 1]]);
-        } else {
-          // move both thumbs in the same direction in the same time
-          setValue([value[0] + stepSize, Math.min(value[1] + stepSize, array[array.length - 1])]);
-        }
+        const stepSize = newValue[0] - lowerThumb; // Use current value as reference
+        const newUpperThumb = upperThumb + stepSize;
+        const maxUpperThumb = array[array.length - 1];
+
+        setValue([
+          Math.min(newValue[0], maxUpperThumb - minDistance), // Adjust lower thumb within limits
+          Math.min(newUpperThumb, maxUpperThumb) // Adjust upper thumb within limits
+        ]);
       } else {
-        setValue([Math.min(newValue[0], value[1] - minDistance), value[1]]);
+        setValue([Math.min(newValue[0], upperThumb - minDistance), upperThumb]);
       }
     } else {
       if (lockThumbs) {
-        const stepSize = newValue[1] - value[1];
-        if (value[0] + stepSize < array[0]) {
-          setValue([array[0], value[1]]);
-        } else {
-          // move both thumbs in the same direction in the same time
-          setValue([Math.max(value[0] + stepSize, array[0]), value[1] + stepSize]);
-        }
+        const stepSize = newValue[1] - upperThumb; // Use current value as reference
+        const newLowerThumb = lowerThumb + stepSize;
+        const minLowerThumb = array[0];
+
+        setValue([
+          Math.max(newLowerThumb, minLowerThumb), // Adjust lower thumb within limits
+          Math.max(newValue[1], minLowerThumb + minDistance) // Adjust upper thumb within limits
+        ]);
       } else {
-        setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
+        setValue([lowerThumb, Math.max(newValue[1], lowerThumb + minDistance)]);
       }
     }
-    if (lowerThumbRef.current && upperThumbRef.current) {
-      lowerThumbRef.current.value = value[0].toString();
-      upperThumbRef.current.value = value[1].toString();
-    }
-  }
+  };
+
 
   useEffect(() => {
     props.onChange(new Event('change'), value);
@@ -99,15 +110,12 @@ const SlidingBar = (props: SlidingBarProps) => {
     if (activeThumb === 0) {
       setMicroSliderValue([Math.min(newValue[0], microSliderValue[1] - 0.001), microSliderValue[1]]);
       // change the lower thumb input field value
-      if (lowerThumbRef.current) {
-        lowerThumbRef.current.value = Math.min(newValue[0], microSliderValue[1] - 0.001).toString();
-      }
+      setValue([Math.min(newValue[0], microSliderValue[1] - 0.001), microSliderValue[1]]);
+
     } else {
       setMicroSliderValue([microSliderValue[0], Math.max(newValue[1], microSliderValue[0] + 0.001)]);
       // change the upper thumb input field value
-      if (upperThumbRef.current) {
-        upperThumbRef.current.value = Math.max(newValue[1], microSliderValue[0] + 0.001).toString();
-      }
+      setValue([microSliderValue[0], Math.max(newValue[1], microSliderValue[0] + 0.001)]);
     }
   };
 
@@ -179,7 +187,7 @@ const SlidingBar = (props: SlidingBarProps) => {
           <TextField
             className={classes.root}
             sx={{ width: '100%' }}
-            inputRef={lowerThumbRef}
+            value={value[0]}
             defaultValue={value[0]}
             type="number"
             size="small"
@@ -194,7 +202,7 @@ const SlidingBar = (props: SlidingBarProps) => {
           <TextField
             className={classes.root}
             sx={{ width: '100%' }}
-            inputRef={upperThumbRef}
+            value={value[1]}
             defaultValue={value[1]}
             type="number"
             size="small"
@@ -212,7 +220,7 @@ const SlidingBar = (props: SlidingBarProps) => {
               style={{ width: '30%', margin: '0 auto' }}
               onClick={() => {
                 if (props.onSubmit) {
-                  props.onSubmit(Number(lowerThumbRef.current?.value), Number(upperThumbRef.current?.value));
+                  props.onSubmit(value[0], value[1]);
                 }
               }}
             >
