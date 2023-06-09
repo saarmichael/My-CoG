@@ -4,13 +4,13 @@ from coherence import coherence_time_frame
 from scipy.io import savemat
 
 
-def export_coherence_to_mat(name, data, sfreq, start, end, meta_data):
-    f, CM = coherence_time_frame(data, sfreq, start, end)
+def export_connectivity_to_mat(conn_func, name, data, sfreq, start, end, meta_data):
+    f, CM = conn_func(data, sfreq)  # the actual calculation
     # write results to mat file
     full_name = name + ".mat"
     vars_dict = {
         "frequencies": f,
-        "coherence": CM,
+        "connectivity_matrices": CM,
         "start": start,
         "end": end,
     }
