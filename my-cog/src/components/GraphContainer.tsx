@@ -18,6 +18,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useDropdownStyles } from "../scenes/global/Styles";
 
 
 export const GraphContainer = () => {
@@ -112,12 +113,14 @@ export const GraphContainer = () => {
     const loadingGif = (
         <ReactLoading height={'10px'} width={'10px'} type="spin" color="#000000" />
     );
+    const classes = useDropdownStyles();
 
     const selectConnectivity = (
         <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth>
+            <FormControl fullWidth style={{marginTop: '20px',}}>
                 <InputLabel id="connectivity-select-label">Connectivity</InputLabel>
                 <Select
+                    className={classes.customDropdown}
                     labelId="connectivity-select-label"
                     id="connectivity-select"
                     value={connectivityType}
@@ -125,6 +128,7 @@ export const GraphContainer = () => {
                     onChange={(e) => {
                         setConnectivityType(e.target.value);
                     }}
+                    style={{ width: '180px' }}
                 >
                     {connectivityMeasuresList.map((measure) => (
                         <MenuItem key={measure} value={measure}>{measure}</MenuItem>
@@ -149,10 +153,10 @@ export const GraphContainer = () => {
             </Grid>
 
             <Grid container spacing={4}>
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                     <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} miniSlider={false} />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={5} justifyContent="center">
                     <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
                         onChange={() => { }}
                         toSubmit={timeToSubmit}
@@ -161,7 +165,7 @@ export const GraphContainer = () => {
                     />
                     {loading ? loadingGif : null}
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     {selectConnectivity}
                 </Grid>
             </Grid>
