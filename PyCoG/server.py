@@ -3,7 +3,7 @@ import json
 from flask import request, jsonify, send_file, session
 from video import graph_video
 from db_write import update_data_dir
-from export_data import export_coherence_to_mat
+from export_data import export_connectivity_to_mat
 from granger import calculate_granger_for_all_pairs
 from util import convert_path_to_tree, dataProvider, find_first_eeg_file, find_file
 from cache_check import data_in_db, user_in_db
@@ -328,14 +328,18 @@ def export_data():
         return jsonify({"message": "File already exists!"}), 400
     data = data_provider.get_data()
     sfreq = data_provider.get_sampling_rate()
+    data = get_data_by_start_end(data=data, fs=sfreq, start=start, end=end)
     electrodes = data_provider.get_channel_names()
     bids_file_name = session["user_data_dir"].split("/")[-1]
     meta_data = {
         "bids_file_name": bids_file_name,
         "electrodes": electrodes,
+        "connectivity_measure": connectivityMeasure,
         "date_time": date_time,
     }
-    export_coherence_to_mat(
+    connectivity_func = Conn.get_connectivity_function(connectivityMeasure)
+    export_connectivity_to_mat(
+        conn_func=connectivity_func,
         name=file_name,
         data=data,
         sfreq=sfreq,

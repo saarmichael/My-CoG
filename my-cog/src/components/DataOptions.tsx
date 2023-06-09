@@ -11,7 +11,7 @@ const ExportDataModal: React.FC = () => {
     const [exported, setExported] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [fileName, setFileName] = useState('');
-    const { timeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { timeRange, connectivityType } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [error, setError] = useState<boolean>(false);
     const [response, setResponse] = useState<string>('');
 
@@ -35,7 +35,7 @@ const ExportDataModal: React.FC = () => {
                 event.preventDefault();
 
                 setLoading(true);
-                const resp = await exportData(timeRange, 'coherence', fileName);
+                const resp = await exportData(timeRange, connectivityType, fileName);
                 setLoading(false);
                 setExported(true);
                 setTimeout(() => {
