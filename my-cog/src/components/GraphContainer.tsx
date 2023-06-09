@@ -5,7 +5,7 @@ import BasicGraphinGraph from "./BasicGraphinGraph";
 import { DataOptions } from "./DataOptions";
 import { GraphVisToggles } from "./GraphVisToggles";
 import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
-import SlidingBar from "./SlidingBar";
+import {SlidingBar} from "./SlidingBar";
 import { getConnectivityMeasuresList, getDuration, getFrequencies } from "../shared/RequestsService";
 import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsService";
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
@@ -32,7 +32,8 @@ export const GraphContainer = () => {
         setConnectivityType, connectivityType,
     } = useContext(GlobalDataContext) as IGlobalDataContext;
 
-    const handleFreqChange = (event: Event, newValue: number[]) => {
+    const handleFreqChange = (event: Event, newValue: number[] | number) => {
+        newValue = newValue as number[];
         setFreqRange({ min: newValue[0], max: newValue[1] })
     }
 

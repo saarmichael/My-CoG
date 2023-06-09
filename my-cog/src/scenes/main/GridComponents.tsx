@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { GraphContainer } from "../../components/GraphContainer";
 import { GridGraph } from "../../components/GridGraph";
-import SlidingBar from "../../components/SlidingBar";
+import { SlidingBar } from "../../components/SlidingBar";
 import Spectrogram from "../../components/Spectrogram";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
@@ -23,22 +23,22 @@ export const Box: React.FC<BoxProps> = () => {
   };
 
   return (
-    
-        <>
-            <GraphContainer />
-        </>
-    
+
+    <>
+      <GraphContainer />
+    </>
+
   );
 }
 
 export const Box1: React.FC<BoxProps> = () => {
   const { electrode } = useContext(GlobalDataContext) as IGlobalDataContext;
 
-  return(
+  return (
     <>
-        <GraphVisToggles />
-        <EditablesContainer />
-      
+      <GraphVisToggles />
+      <EditablesContainer />
+
     </>
   )
 }

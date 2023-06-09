@@ -7,14 +7,47 @@ import { useTextFieldsStyle } from "../scenes/global/Styles";
 interface SlidingBarProps {
   sliderName: string;
   range: number[] | number;
-  onChange: (event: Event, newValue: number[]) => void;
+  onChange: ((event: Event, newValue: number[] | number) => void)
   keepDistance: boolean;
   toSubmit: boolean;
   onSubmit?: (val1: number, val2: number) => void;
   miniSlider: boolean;
 }
 
-const SlidingBar = (props: SlidingBarProps) => {
+
+
+export const SlidingBarOneTumb = (props: SlidingBarProps) => {
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLInputElement>) => {
+    event.stopPropagation();
+  };
+
+  const [value, setValue] = React.useState<number>(0);
+
+  useEffect(() => {
+    props.onChange(new Event('change'), value);
+  }, [value]);
+
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    setValue(newValue as number);
+  };
+
+  return (
+    <Slider
+      sx={{ color: 'purple' }}
+      getAriaLabel={() => 'Timeframe slider'}
+      value={value}
+      onChange={handleChange}
+      valueLabelDisplay="auto"
+      onMouseDown={handleMouseDown}
+      min={0}
+      max={props.range as number}
+      disableSwap={true}
+    />
+  );
+};
+
+export const SlidingBar = (props: SlidingBarProps) => {
 
   const [lockThumbs, setLockThumbs] = useState<boolean>(false);
 
@@ -234,4 +267,3 @@ const SlidingBar = (props: SlidingBarProps) => {
   );
 };
 
-export default SlidingBar;

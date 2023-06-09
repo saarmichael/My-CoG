@@ -5,7 +5,7 @@ import OpenWithIcon from '@mui/icons-material/OpenWith';
 import { GridProvider, GridContext, IGridFocusContext } from "../contexts/GridContext";
 import { EditableGrid } from "./EditableGrid";
 import { Button, Grid, TextField } from "@mui/material";
-import SlidingBar from "./SlidingBar";
+import {SlidingBarOneTumb} from "./SlidingBar";
 import { fetchImage, fetchImageParams } from "../shared/RequestsService";
 import "./EditableContainer.css";
 import SimpleCard from "../scenes/global/SimpleCard";
@@ -158,18 +158,18 @@ const Container = () => {
             <h1 className="head">Editable Grid</h1>
             <Grid container>
                 <Grid item xs={10} >
-                    <EditableGrid N={4} M={3} />
+                    <EditableGrid N={4} M={4} />
                 </Grid>
                 <Grid item xs={2} alignItems="center">
                     <ImageSelector />
                 </Grid>
                 <Grid item xs={10} >
 
-                    <SlidingBar
+                    <SlidingBarOneTumb
                         sliderName="Angle"
                         range={360}
                         onChange={(event, newValue) => {
-                            const inputAngle = newValue[0] % 360;
+                            const inputAngle = (newValue as number) % 360;
                             setAngle(inputAngle);
                         }}
                         toSubmit={false}
