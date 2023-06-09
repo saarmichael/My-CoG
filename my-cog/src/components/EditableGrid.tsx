@@ -224,6 +224,7 @@ export const EditableGrid = (props: EditableGridProps) => {
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         height: '600px',
+        width: '600px',
     };
 
     return (
