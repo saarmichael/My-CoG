@@ -1,0 +1,12 @@
+/* Hide the default arrow */
+.github-picker:before, .github-picker:after {
+    display: none !important;
+}
+
+.color-picker-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+
