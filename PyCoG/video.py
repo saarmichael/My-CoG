@@ -88,15 +88,6 @@ def graph_video(data, channels, fs, duration, video_name, epoch_duration=0.5):
             line=dict(color='#888'), 
             mode='lines'
         )
-
-        # Create annotation trace for displaying edge weights
-        annotation_trace = go.Scatter(
-            x=[],
-            y=[],
-            text=[],
-            mode='text',
-            textposition='bottom center'
-        )
         
         # Create a graph
         G = nx.Graph()
@@ -125,15 +116,12 @@ def graph_video(data, channels, fs, duration, video_name, epoch_duration=0.5):
                 x=[x0, x1], 
                 y=[y0, y1], 
                 mode='lines',
-                line=dict(width=pow(8, weight), color='#888'), 
+                line=dict(width=pow(8, weight), color='#29AB87'), 
             )
             edge_traces.append(edge_trace)
 
             x = x0 * 0.7 + x1 * 0.3 
             y = y0 * 0.7 + y1 * 0.3
-            annotation_trace['x'] += tuple([x])
-            annotation_trace['y'] += tuple([y])
-            annotation_trace['text'] += tuple([f'{weight}'])
 
         # Add nodes to the node trace
         for node in G.nodes():
@@ -143,7 +131,7 @@ def graph_video(data, channels, fs, duration, video_name, epoch_duration=0.5):
             node_trace['text'] += tuple([f'{node}'])
 
         # Create a figure
-        fig = go.Figure(data= edge_traces + [node_trace, annotation_trace],
+        fig = go.Figure(data= edge_traces + [node_trace,],
                         layout=go.Layout(showlegend=False,
                                         height=600,
                                         width=600,
