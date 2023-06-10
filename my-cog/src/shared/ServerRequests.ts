@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
-import { VisualPreferences } from "../scenes/global/Register"
-import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from "../contexts/VisualGraphOptionsContext";
+import { VisualPreferences } from "../scenes/start/Register"
+import { IVisGraphOption, IVisSettings } from "../contexts/VisualGraphOptionsContext";
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',

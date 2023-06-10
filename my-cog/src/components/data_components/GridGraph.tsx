@@ -1,10 +1,9 @@
 import Graphin, { GraphinData } from "@antv/graphin"
-import { getSimpleGraphinData } from "../shared/GraphService";
+import { getSimpleGraphinData } from "../../shared/GraphService";
 import { useState } from "react";
 import { useEffect } from "react";
-import { type } from "os";
-import { brainImages } from "../shared/brainImages";
-import { fetchImage } from "../shared/RequestsService";
+import { brainImages } from "../../shared/brainImages";
+import { fetchImage } from "../../shared/RequestsService";
 
 
 

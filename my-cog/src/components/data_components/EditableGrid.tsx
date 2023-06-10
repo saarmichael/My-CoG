@@ -1,15 +1,10 @@
 import Graphin, { Behaviors, GraphinContext, GraphinData, IUserNode } from "@antv/graphin"
-import { getSimpleGraphinData } from "../shared/GraphService";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
-import { type } from "os";
-import { brainImages } from "../shared/brainImages";
-import { GridContext, IGridFocusContext } from "../contexts/GridContext";
-import { IGraph, INode, NodeConfig } from "@antv/g6";
-import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
-import { mode } from "d3";
-import { NODE_LABEL_FONT_SIZE } from "../shared/DesignConsts";
-import { height } from "@mui/system";
+import { GridContext, IGridFocusContext } from "../../contexts/GridContext";
+import { INode, NodeConfig } from "@antv/g6";
+import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
+import { NODE_LABEL_FONT_SIZE } from "../../shared/DesignConsts";
 
 
 export interface EditableGridProps {

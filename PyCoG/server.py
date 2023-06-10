@@ -26,6 +26,11 @@ def create_tables():
     db.create_all()
 
 
+###############################################
+############### GET REQUESTS ##################
+###############################################
+
+
 @app.route("/login", methods=["GET"])
 def login():
     name = request.args.get("username")
@@ -44,62 +49,6 @@ def login():
     data_provider = dataProvider(session)
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
     return jsonify({"user_data_dir": session["user_data_dir"].split("\\")[-1]})
-
-
-@app.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-    print(f'user:{data["username"]}.')
-    # check if user exists
-    if data["username"] == "":
-        return jsonify({"message": "Username cannot be empty!"}), 400
-    if user_in_db(data["username"], User.query):
-        return jsonify({"message": "User already exists!"}), 400
-    write_user(data["username"], data["data"], data["settings"])
-    return jsonify({"message": "User created successfully!"})
-
-
-@app.route("/addFile", methods=["POST"])
-def add_file():
-    data = request.get_json()
-    update_data_dir(session["username"], data["file"])
-    return jsonify({"message": "File added successfully!"})
-
-
-@app.route("/saveSettings", methods=["POST"])
-def save_settings():
-    data = request.get_json()
-    # check if user exists
-    if not "username" in session:
-        return jsonify({"message": "Session error"}), 400
-    user = user_in_db(session["username"], User.query)
-    user.settings = data["requestSettings"]
-    db.session.commit()
-    return jsonify({"message": "Settings saved successfully!"})
-
-
-@app.route("/setFile", methods=["POST"])
-def set_file():
-    print(session["user_data_dir"])
-    session["user_data_dir"] = find_file(request.get_json()["file"], os.getcwd())
-    return jsonify({"message": "File set successfully!"})
-
-
-@app.route("/getGraphVideo", methods=["POST"])
-def get_graph_video():
-    request_data = request.get_json()
-    data = data_provider.get_data()
-    sfreq = data_provider.get_sampling_rate()
-    channels = data_provider.get_channel_names()
-    duration = request_data["duration"]
-    video_name = request_data["videoName"]
-    video = graph_video(data, channels, sfreq, duration, video_name, epoch_duration=0.5)
-    return jsonify({"message": "Video created successfully!"})
-
-
-###############################################
-############### GET REQUESTS ##################
-###############################################
 
 
 @app.route("/getSettings", methods=["GET"])
@@ -290,6 +239,56 @@ def connectivity_list():
 ###############################################
 ############### POST REQUESTS #################
 ###############################################
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    print(f'user:{data["username"]}.')
+    # check if user exists
+    if data["username"] == "":
+        return jsonify({"message": "Username cannot be empty!"}), 400
+    if user_in_db(data["username"], User.query):
+        return jsonify({"message": "User already exists!"}), 400
+    write_user(data["username"], data["data"], data["settings"])
+    return jsonify({"message": "User created successfully!"})
+
+
+@app.route("/addFile", methods=["POST"])
+def add_file():
+    data = request.get_json()
+    update_data_dir(session["username"], data["file"])
+    return jsonify({"message": "File added successfully!"})
+
+
+@app.route("/saveSettings", methods=["POST"])
+def save_settings():
+    data = request.get_json()
+    # check if user exists
+    if not "username" in session:
+        return jsonify({"message": "Session error"}), 400
+    user = user_in_db(session["username"], User.query)
+    user.settings = data["requestSettings"]
+    db.session.commit()
+    return jsonify({"message": "Settings saved successfully!"})
+
+
+@app.route("/setFile", methods=["POST"])
+def set_file():
+    print(session["user_data_dir"])
+    session["user_data_dir"] = find_file(request.get_json()["file"], os.getcwd())
+    return jsonify({"message": "File set successfully!"})
+
+
+@app.route("/getGraphVideo", methods=["POST"])
+def get_graph_video():
+    request_data = request.get_json()
+    data = data_provider.get_data()
+    sfreq = data_provider.get_sampling_rate()
+    channels = data_provider.get_channel_names()
+    duration = request_data["duration"]
+    video_name = request_data["videoName"]
+    video = graph_video(data, channels, sfreq, duration, video_name, epoch_duration=0.5)
+    return jsonify({"message": "Video created successfully!"})
 
 
 @app.route("/data", methods=["POST"])

@@ -12,9 +12,9 @@ import {
     lightningChart
 } from '@arction/lcjs';
 import { useContext, useEffect } from 'react';
-import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
-import * as elec1_spectrogram from '../shared/ecog_data/elec1_spectrogram.json';
-import { SpectrogramData, getSpectrogramData } from '../shared/getters';
+import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import * as elec1_spectrogram from '../../shared/ecog_data/elec1_spectrogram.json';
+import { SpectrogramData, getSpectrogramData } from '../../shared/getters';
 
 interface Basic3DSpectogramProps {
     data: number[][];

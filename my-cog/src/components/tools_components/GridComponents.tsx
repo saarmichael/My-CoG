@@ -1,14 +1,11 @@
 import { useContext } from "react";
-import { GraphContainer } from "../../components/GraphContainer";
-import { GridGraph } from "../../components/GridGraph";
-import { SlidingBar } from "../../components/SlidingBar";
-import Spectrogram from "../../components/Spectrogram";
+import { GraphContainer } from "../../components/data_components/GraphContainer";
+import { GridGraph } from "../../components/data_components/GridGraph";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
 import './GridStyle.css';
-import { EditablesContainer } from "../../components/EditablesContainer";
-import { GraphVisToggles } from "../../components/GraphVisToggles";
-import { Rnd } from "react-rnd";
+import { EditablesContainer } from "../../components/data_components/EditablesContainer";
+import { GraphVisToggles } from "../../components/data_components/GraphVisToggles";
 import React from "react";
 
 export interface BoxProps {

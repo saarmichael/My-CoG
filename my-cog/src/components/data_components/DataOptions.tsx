@@ -1,9 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
-import { Box, Button, CircularProgress } from "@mui/material";
-import { exportData } from "../shared/RequestsService";
-import ReactLoading from 'react-loading';
-import ModalPopup from "../scenes/global/ModalPopup";
+import { useContext, useState } from "react";
+import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
+import { Box, CircularProgress } from "@mui/material";
+import { exportData } from "../../shared/RequestsService";
+import ModalPopup from "../tools_components/ModalPopup";
 import { TextField } from "@mui/material";
 
 

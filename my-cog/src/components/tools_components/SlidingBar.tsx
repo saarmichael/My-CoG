@@ -2,7 +2,7 @@ import { Button, Grid, Slider, TextField, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { useTextFieldsStyle } from "../scenes/global/Styles";
+import { useTextFieldsStyle } from "../../components/tools_components/Styles";
 
 interface SlidingBarProps {
   sliderName: string;
