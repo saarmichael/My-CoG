@@ -75,7 +75,7 @@ const ImageSelector = () => {
                             dist_index: imageParamsIdxs.dist_index
                         });
                     }}>
-                        <ThreeSixtyIcon />
+                        <ThreeSixtyIcon sx={{ color: 'purple' }}/>
                     </Button>
                     <span>{paramsLists.azi_list[imageParamsIdxs.azi_index]}</span>
                 </Grid>
@@ -87,7 +87,7 @@ const ImageSelector = () => {
                             dist_index: imageParamsIdxs.dist_index
                         });
                     }}>
-                        <HeightIcon />
+                        <HeightIcon sx={{ color: 'purple' }}/>
                     </Button>
                     <span>{paramsLists.ele_list[imageParamsIdxs.ele_index]}</span>
                 </Grid>
@@ -99,7 +99,7 @@ const ImageSelector = () => {
                             dist_index: (imageParamsIdxs.dist_index + 1) % paramsLists.dist_list.length
                         });
                     }}>
-                        <OpenWithIcon />
+                        <OpenWithIcon sx={{ color: 'purple' }}/>
                     </Button>
                     <span>{paramsLists.dist_list[imageParamsIdxs.dist_index]}</span>
                 </Grid>

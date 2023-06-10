@@ -7,6 +7,7 @@ import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeF
 import CreateVideoModal from '../../components/tools_components/CreateVideoModal';
 import { DataOptions } from '../../components/data_components/DataOptions';
 import { Grid } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 interface MenuItem {
     name: string;
@@ -32,7 +33,6 @@ export const TopBar: React.FC = () => {
         // Further split run and file type part
         let runAndTypeParts = runAndType.split(".");
         let run = runAndTypeParts[0];  // "run-4"
-        let fileType = runAndTypeParts[1]; // "ieeg.eeg"
         
         const titleStyle = {
             color: "#add8e6"
@@ -152,7 +152,7 @@ export const TopBar: React.FC = () => {
 
             <div className="right-section">
                 <div className="menu-item top-bar__logout" onClick={handleLogout}>
-                    Logout
+                    <LogoutIcon/>
                 </div>
             </div>
         </div>
