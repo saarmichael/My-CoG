@@ -1,24 +1,17 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Checkbox, FormControlLabel, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { VisGraphOptionsProvider } from "../contexts/VisualGraphOptionsContext";
+import { Box, Checkbox, Grid } from '@mui/material';
 import BasicGraphinGraph from "./BasicGraphinGraph";
-import { DataOptions } from "./DataOptions";
-import { GraphVisToggles } from "./GraphVisToggles";
-import { GlobalDataContext, IGlobalDataContext } from "../contexts/ElectrodeFocusContext";
-import {SlidingBar} from "./SlidingBar";
-import { getConnectivityMeasuresList, getDuration, getFrequencies } from "../shared/RequestsService";
-import { getSingletonFreqList, getSingletonDuration } from "../shared/RequestsService";
-import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import ReactLoading from "react-loading";
+import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
+import {SlidingBar} from "../tools_components/SlidingBar";
+import { getConnectivityMeasuresList, getDuration, getFrequencies } from "../../shared/RequestsService";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Typography from '@mui/material/Typography';
-import { maxHeight } from "@mui/system";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { useDropdownStyles } from "../scenes/global/Styles";
+import Select from '@mui/material/Select';
+import { useDropdownStyles } from "../tools_components//Styles";
 import CircularProgress from '@mui/material/CircularProgress';
 
 
@@ -127,7 +120,7 @@ export const GraphContainer = () => {
                     onChange={(e) => {
                         setConnectivityType(e.target.value);
                     }}
-                    style={{ width: '180px' }}
+                    style={{ width: '18vh' }}
                 >
                     {connectivityMeasuresList.map((measure) => (
                         <MenuItem key={measure} value={measure}>{measure}</MenuItem>
@@ -151,27 +144,28 @@ export const GraphContainer = () => {
                 </Grid>
             </Grid>
 
+           
             <Grid container spacing={4}>
-                <Grid item xs={5}>
-                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} miniSlider={false} />
-                </Grid>
-                <Grid item xs={5} justifyContent="center">
-                    <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
-                        onChange={() => { }}
-                        toSubmit={timeToSubmit}
-                        onSubmit={handleDurationChange}
-                        miniSlider={true}
-                    />
-                   {loading ? 
-                        <Box display="flex" justifyContent="center" alignItems="center" marginTop="2px">
-                            <CircularProgress size={20} sx= {{color:"purple"}}/> 
-                        </Box> 
-                    : null}
-                </Grid>
-                <Grid item xs={2}>
-                    {selectConnectivity}
-                </Grid>
-            </Grid>
+    <Grid item xs={5}>
+        <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} miniSlider={false} />
+    </Grid>
+    <Grid item xs={5} justifyContent="center">
+        <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
+            onChange={() => { }}
+            toSubmit={timeToSubmit}
+            onSubmit={handleDurationChange}
+            miniSlider={true}
+        />
+        <Box display="flex" justifyContent="center" alignItems="center" marginTop="2px">
+            <Box>
+                {loading ? <CircularProgress size={20} sx={{color:"purple"}} /> : null}
+            </Box>
+        </Box>
+    </Grid>
+    <Grid item xs={2}>
+        {selectConnectivity}
+    </Grid>
+</Grid>
         </>
     );
 

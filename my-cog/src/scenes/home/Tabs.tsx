@@ -1,19 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Rnd } from 'react-rnd';
-import "../../components/SideBar.css";
-import { Box, Box1, Box2, BoxProps } from "./GridComponents";
+import { Box, Box1, Box2 } from "../../components/tools_components/GridComponents";
 import "./Tabs.css";
-import Sidebar from "../../components/SideBar";
+import Sidebar from "./SideBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import { customStyles, useDropdownStyles } from "../global/Styles";
+import { customStyles } from "../../components/tools_components/Styles";
 import Select from 'react-select';
 
-interface OptionType {
-  value: number;
-  label: string;
-}
 
 
 interface Tab {

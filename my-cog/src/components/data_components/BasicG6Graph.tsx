@@ -1,6 +1,6 @@
 import G6 from "@antv/g6";
 import { useEffect } from "react";
-import { changeEdgeWidth, circularPositions, getGraphData } from "../shared/GraphService";
+import { changeEdgeWidth, circularPositions, getGraphData } from "../../shared/GraphService";
 
 
 const BasicG6Graph = () => { 

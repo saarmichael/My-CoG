@@ -16,8 +16,8 @@ import {
     lightningChart
 } from '@arction/lcjs';
 import { useContext, useEffect } from 'react';
-import { GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
-import { getData, getDataSync } from '../shared/SpectrogramService';
+import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import { getData, getDataSync } from '../../shared/SpectrogramService';
 
 
 

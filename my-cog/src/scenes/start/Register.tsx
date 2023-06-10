@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { ServerSettings, extractOptions, registerRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
 import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
-import DirectoryPicker from './DirectoryPicker';
+import DirectoryPicker from '../../components/tools_components/DirectoryPicker';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 import { loginConfig } from './Login';
 

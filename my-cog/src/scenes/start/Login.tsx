@@ -1,10 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { loginRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
-import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
-import { useStyles } from './Styles';
-import { AxiosError } from 'axios';
 
 type LoginProps = {
   onLogin: () => void;

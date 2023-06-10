@@ -1,11 +1,10 @@
 import { INode, NodeConfig } from '@antv/g6';
 import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '@antv/graphin';
 import React, { useContext, useEffect } from 'react';
-import { ActiveNodeProps, GlobalDataContext, IGlobalDataContext } from '../contexts/ElectrodeFocusContext';
-import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../contexts/VisualGraphOptionsContext';
-import { getConnectivityMeasuresList, getDuration, getFrequencies } from '../shared/RequestsService';
-import { getGraphBase, getGraphConnectivityMatrix, updateGraphCoherence } from '../shared/GraphService';
-import { getSingletonDuration, getSingletonFreqList } from '../shared/RequestsService';
+import { ActiveNodeProps, GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
+import { getDuration, getFrequencies } from '../../shared/RequestsService';
+import { getGraphBase, getGraphConnectivityMatrix, updateGraphCoherence } from '../../shared/GraphService';
 
 
 const SampleBehavior = () => {

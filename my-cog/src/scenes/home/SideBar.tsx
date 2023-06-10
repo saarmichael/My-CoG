@@ -1,12 +1,11 @@
 import { FormGroup } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { IVisGraphOptionsContext, VisGraphOptionsContext } from "../contexts/VisualGraphOptionsContext";
-import { ColorPicker } from "./ColorPicker";
-import { GraphVisCheckbox } from "./GraphVisCheckbox";
+import { IVisGraphOptionsContext, VisGraphOptionsContext } from "../../contexts/VisualGraphOptionsContext";
+import { ColorPicker } from "../../components/tools_components/ColorPicker";
+import { GraphVisCheckbox } from "../../components/data_components/GraphVisCheckbox";
 import './SideBar.css';
-import { getSettings, saveSettings } from "../shared/ServerRequests";
-import { use } from "cytoscape";
-import { reorganizeOptions } from "../shared/RequestsService";
+import { getSettings, saveSettings } from "../../shared/ServerRequests";
+import { reorganizeOptions } from "../../shared/RequestsService";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 

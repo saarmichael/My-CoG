@@ -1,14 +1,12 @@
 import './TopBar.css';
 import React, { useContext, useEffect, useState } from 'react';
-import { AddFile, handleSave, handleSaveAs, handleUndo, handleRedo, handleFullscreen, handleOptions, handleLogout } from '../../shared/TopBarUtil';
-import { apiGET, apiPOST } from '../../shared/ServerRequests';
-import TreeView from '../global/TreeView';
-import { Node } from '../global/TreeView';
-import ModelPopup from '../global/ModalPopup';
-import { IModalContext, ModalContext, ModalProvider } from '../../contexts/ModalContext';
+import { apiGET, apiPOST, logoutRequest } from '../../shared/ServerRequests';
+import TreeView, { Node } from '../../components/tools_components/TreeView';
+import ModelPopup from '../../components/tools_components/ModalPopup';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
-import CreateVideoModal from './CreateVideoModal';
-import { DataOptions } from '../../components/DataOptions';
+import CreateVideoModal from '../../components/tools_components/CreateVideoModal';
+import { DataOptions } from '../../components/data_components/DataOptions';
+import { Grid } from '@mui/material';
 
 interface MenuItem {
     name: string;
@@ -22,6 +20,34 @@ export const TopBar: React.FC = () => {
     const [recentFiles, setRecentFiles] = useState<Node[]>([]);
     const { chosenFile, setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
 
+    const FileDetailsHeader = (fileName: string) => {
+        let parts = fileName.split("_");
+        
+        let subject = parts[0].split("-")[1];    
+        let session = parts[1].split("-")[1];    
+        let task = parts[2].split("-")[1];       
+        let acquisition = parts[3].split("-")[1];
+        let runAndType = parts[4].split("-")[1]; 
+        
+        // Further split run and file type part
+        let runAndTypeParts = runAndType.split(".");
+        let run = runAndTypeParts[0];  // "run-4"
+        let fileType = runAndTypeParts[1]; // "ieeg.eeg"
+        
+        const titleStyle = {
+            color: "#add8e6"
+        };
+    
+        return (
+                <Grid container spacing={10}>
+                    <Grid item><span style={titleStyle}>Subject:</span> {subject}</Grid>
+                    <Grid item><span style={titleStyle}>Session:</span> {session}</Grid>
+                    <Grid item><span style={titleStyle}>Task:</span> {task}</Grid>
+                    <Grid item><span style={titleStyle}>Acquisition:</span> {acquisition}</Grid>
+                    <Grid item><span style={titleStyle}>Run:</span> {run}</Grid>
+                </Grid>
+        );
+    };
     const toggleMenu = (index: number) => {
         setActiveMenu(activeMenu === index ? null : index);
     };
@@ -58,6 +84,18 @@ export const TopBar: React.FC = () => {
         });
     };
 
+    function handleFullscreen() {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            document.documentElement.requestFullscreen();
+        }
+    }
+    
+    function handleLogout() {
+        logoutRequest();
+    }
+
 
     const menuItems: MenuItem[] = [
         {
@@ -69,22 +107,16 @@ export const TopBar: React.FC = () => {
                 <div onClick={(e) => {e.stopPropagation()}}>
                     <ModelPopup title='Choose a file:' width="60%" height="75%" buttonName='Choose file' content={<TreeView treeData={openFileList} fileClicked={fileClicked}/>}/>
                 </div>,
+            ]
+        },
+        {
+            name: 'Export',
+            items: [
                 <div onClick={(e) => {e.stopPropagation()}}>
                     <ModelPopup title='Choose video name and duration' buttonName='Create graph video' content={<CreateVideoModal/>}/>
                 </div>,
                 <div onClick={(e) => {e.stopPropagation()}}>
                     <DataOptions />
-                </div>
-            ]
-        },
-        {
-            name: 'Edit',
-            items: [
-                <div onClick={() => handleUndo()}>
-                    Undo
-                </div>,
-                <div onClick={() => handleRedo()}>
-                    Redo
                 </div>
             ]
         },
@@ -116,12 +148,9 @@ export const TopBar: React.FC = () => {
                 ))}
             </div>
 
-            <h3>{chosenFile}</h3>
+            <h3>{FileDetailsHeader(chosenFile)}</h3>
 
             <div className="right-section">
-                <div className="menu-item top-bar__options" onClick={handleOptions}>
-                    &nbsp;⚙&nbsp;
-                </div>
                 <div className="menu-item top-bar__logout" onClick={handleLogout}>
                     Logout
                 </div>
