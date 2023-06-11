@@ -263,6 +263,25 @@ const sigmoid = (x: number) => {
     return 1 / (1 + Math.exp(-x));
 }
 
+const mapColor = (inter: ((t: number) => string), weight: number) =>{
+    // create a map with number as key and number as value
+    let map: { key: number, value: string }[] = [];
+    for (let i = 0; i < 1; i += 0.1) {
+        map.push({
+            key: i, value: inter(i),
+        });
+    }
+    // find the closest number in the map
+    let closest = map[0];
+    for (let i = 0; i < map.length; i++) {
+        if (Math.abs(map[i].key - weight) < Math.abs(closest.key - weight)) {
+            closest = map[i];
+        }
+    }
+    return closest.value;
+}
+
+
 export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
     // color code the edges based on the value of the edge
     const edges = graph.edges;
@@ -283,8 +302,8 @@ export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
         const edge = edges[i];
         const value = edge.value;
         // generate the color based on the value
-        const edgeWeight = 1 + (30 - 1) * (value / edgeSum);
-        const color = interpolate(weakColor, strongColor)(sigmoid(edgeWeight - 1.5));
+        const inter = interpolate(weakColor, strongColor);
+        const color =  mapColor(inter, value);
         newEdges.push({
             ...edge,
             style: {
@@ -443,7 +462,7 @@ const applyCMOnGraph = (graph: GraphinData, CM: number[][]) => {
 
 export let singletonCM: number[][][] = [[[]]];
 
-export const getGraphConnectivityMatrix = async (graph: GraphinData, freq: FreqRange, connectivity: string,  time?: TimeInterval)
+export const getGraphConnectivityMatrix = async (graph: GraphinData, freq: FreqRange, connectivity: string, time?: TimeInterval)
     : Promise<GraphinData> => {
     let response: ConnectivityResponse | undefined = await getConnectivityResponse(connectivity, time);
     if (!response) {
