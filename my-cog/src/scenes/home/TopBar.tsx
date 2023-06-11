@@ -22,6 +22,9 @@ export const TopBar: React.FC = () => {
     const { chosenFile, setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const FileDetailsHeader = (fileName: string) => {
+        let dirs = fileName.split("/");
+        // get the last part of the path
+        fileName = dirs[dirs.length - 1];
         let parts = fileName.split("_");
         
         let subject = parts[0].split("-")[1];    
