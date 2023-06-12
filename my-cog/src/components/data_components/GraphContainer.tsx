@@ -19,12 +19,11 @@ import PauseIcon from '@mui/icons-material/Pause';
 
 
 const GraphAnimation = () => {
-    const { duration, setTimeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { duration, setTimeRange, isAnimating, setIsAnimating } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [start, setStart] = useState<number>(0);
     const [end, setEnd] = useState<number>(0);
     const [windowSize, setWindowSize] = useState<number>(0);
     const [currentFrameStart, setCurrentFrameStart] = useState<number>(start);
-    const [isAnimating, setIsAnimating] = useState<boolean>(false);
     const isAnimatingRef = useRef<boolean>(isAnimating);
     const currentFrameStartRef = useRef<number>(currentFrameStart);
 
@@ -79,6 +78,7 @@ const GraphAnimation = () => {
                         type="number"
                         size="small"
                         label={"start"}
+                        disabled={isAnimating}
                         onChange={(event) => {
                             setStart(Math.max(Number(event.target.value), 0));
                         }}
@@ -94,6 +94,7 @@ const GraphAnimation = () => {
                         type="number"
                         size="small"
                         label={"end"}
+                        disabled={isAnimating}
                         onChange={(event) => {
                             setEnd(Math.min(Number(event.target.value), duration));
                         }}
@@ -108,6 +109,7 @@ const GraphAnimation = () => {
                         type="number"
                         size="small"
                         label={"windowSize"}
+                        disabled={isAnimating}
                         onChange={(event) => {
                             setWindowSize(Math.min(Number(event.target.value), duration));
                         }}
@@ -174,6 +176,7 @@ export const GraphContainer = () => {
         activeNodes, setActiveNodes,
         loading,
         setConnectivityType, connectivityType,
+        isAnimating, setIsAnimating
     } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const handleFreqChange = (event: Event, newValue: number[] | number) => {
@@ -266,6 +269,7 @@ export const GraphContainer = () => {
                     id="connectivity-select"
                     value={connectivityType}
                     label="Connectivity type"
+                    disabled={isAnimating}
                     onChange={(e) => {
                         setConnectivityType(e.target.value);
                     }}
@@ -296,7 +300,12 @@ export const GraphContainer = () => {
 
             <Grid container spacing={4}>
                 <Grid item xs={5}>
-                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false} onChange={handleFreqChange} toSubmit={false} miniSlider={false} />
+                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false}
+                        onChange={handleFreqChange}
+                        toSubmit={false}
+                        miniSlider={false}
+                        disabled={isAnimating}
+                    />
                 </Grid>
                 <Grid item xs={5} justifyContent="center">
                     <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
@@ -304,6 +313,7 @@ export const GraphContainer = () => {
                         toSubmit={timeToSubmit}
                         onSubmit={handleDurationChange}
                         miniSlider={true}
+                        disabled={isAnimating}
                     />
                     <Box display="flex" justifyContent="center" alignItems="center" marginTop="2px">
                         <Box>

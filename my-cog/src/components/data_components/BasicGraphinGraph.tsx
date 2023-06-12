@@ -86,7 +86,8 @@ const SampleBehavior = () => {
 const BasicGraphinGraph = () => {
 
     const { ActivateRelations, ZoomCanvas, DragCanvas, FitView } = Behaviors;
-    const { state, setState,
+    const {
+        state, setState,
         sharedGraph, setSharedGraph,
         setElectrodeList,
         freqRange,
@@ -140,7 +141,7 @@ const BasicGraphinGraph = () => {
     const createGraphData = async () => {
         // get the coherence values for the selected frequency and time ranges
         let graph = { ...state };
-        graph = await getGraphConnectivityMatrix(graph, freqRange, connectivityType,  timeRange);
+        graph = await getGraphConnectivityMatrix(graph, freqRange, connectivityType, timeRange);
         return { ...graph };
     }
 
