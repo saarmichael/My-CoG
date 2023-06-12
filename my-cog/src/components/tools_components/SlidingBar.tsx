@@ -9,8 +9,6 @@ interface SlidingBarProps {
   range: number[] | number;
   onChange: ((event: Event, newValue: number[] | number) => void)
   keepDistance: boolean;
-  toSubmit: boolean;
-  onSubmit?: (val1: number, val2: number) => void;
   miniSlider: boolean;
   disabled: boolean;
 }
@@ -248,21 +246,6 @@ export const SlidingBar = (props: SlidingBarProps) => {
               setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
             }}
           />
-        </Grid>
-
-        <Grid item xs={12}>
-          {props.toSubmit &&
-            <div
-              className="submit-button"
-              style={{ width: '40%', margin: '0 auto' }}
-              onClick={() => {
-                if (props.onSubmit) {
-                  props.onSubmit(value[0], value[1]);
-                }
-              }}
-            >
-              Submit
-            </div>}
         </Grid>
       </Grid>
 
