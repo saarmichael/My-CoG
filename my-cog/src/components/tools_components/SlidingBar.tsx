@@ -12,6 +12,7 @@ interface SlidingBarProps {
   toSubmit: boolean;
   onSubmit?: (val1: number, val2: number) => void;
   miniSlider: boolean;
+  disabled: boolean;
 }
 
 
@@ -43,6 +44,7 @@ export const SlidingBarOneTumb = (props: SlidingBarProps) => {
       min={0}
       max={props.range as number}
       disableSwap={true}
+      disabled={props.disabled}
     />
   );
 };
@@ -196,6 +198,7 @@ export const SlidingBar = (props: SlidingBarProps) => {
           max={hoverValue[1]}
           step={0.001}
           valueLabelDisplay="auto"
+          disabled={props.disabled}
         />} arrow>
         <span style={{ width: '100%' }} onMouseOver={handleTooltipOpen} onMouseLeave={handleTooltipClose}>
           <Slider
@@ -210,6 +213,7 @@ export const SlidingBar = (props: SlidingBarProps) => {
             min={array[0]}
             max={array[array.length - 1]}
             disableSwap={true}
+            disabled={props.disabled}
           />
         </span>
       </Tooltip>

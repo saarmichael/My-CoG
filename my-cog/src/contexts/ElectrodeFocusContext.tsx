@@ -35,6 +35,8 @@ export interface IGlobalDataContext {
     setLoading: (loading: boolean) => void;
     connectivityType: string;
     setConnectivityType: (connectivityType: string) => void;
+    isAnimating: boolean;
+    setIsAnimating: (isAnimating: boolean) => void;
 }
 
 interface IGlobalDataProviderProps {
@@ -56,6 +58,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
     const [activeNodes, setActiveNodes] = React.useState<ActiveNodeProps[]>([]);
     const [loading , setLoading] = React.useState<boolean>(false);
     const [connectivityType, setConnectivityType] = React.useState<string>("coherence");
+    const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
     return (
         <GlobalDataContext.Provider value={{
@@ -71,6 +74,7 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
             activeNodes, setActiveNodes,
             loading, setLoading,
             connectivityType, setConnectivityType,
+            isAnimating, setIsAnimating
         }}>
             {children}
         </GlobalDataContext.Provider>

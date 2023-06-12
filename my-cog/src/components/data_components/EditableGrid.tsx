@@ -26,7 +26,6 @@ const GridBehavior = (props: GridBehaviorProps) => {
         setSelectedNode,
         anchorsLastPosition, setAnchorsLastPosition,
         angle, applyMove,
-        rotationReady, setRotationReady,
         nodeSize,
     } = useContext(GridContext) as IGridFocusContext;
     const { sharedGraph } = useContext(GlobalDataContext) as IGlobalDataContext;
@@ -112,9 +111,6 @@ const GridBehavior = (props: GridBehaviorProps) => {
     }, [sharedGraph]);
 
     useEffect(() => {
-        // if (!rotationReady) {
-        //     return;
-        // }
         // rotate the grid by `angle` degrees`
         const angleRad = angle * Math.PI / 180;
         const nodes = graph.getNodes();
