@@ -277,14 +277,13 @@ export const GraphContainer = () => {
 
     const selectConnectivity = (
         <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth style={{ marginTop: '20px', }}>
-                <InputLabel id="connectivity-select-label">Connectivity</InputLabel>
+            <FormControl fullWidth style={{ marginTop: '20px' }}>
                 <Select
                     className={dpClasses.customDropdown}
                     labelId="connectivity-select-label"
                     id="connectivity-select"
+                    label={"Connectivity"}
                     value={connectivityType}
-                    label="Connectivity type"
                     disabled={isAnimating}
                     onChange={(e) => {
                         setConnectivityType(e.target.value);
@@ -292,12 +291,15 @@ export const GraphContainer = () => {
                     style={{ width: '18vh' }}
                 >
                     {connectivityMeasuresList.map((measure) => (
-                        <MenuItem key={measure} value={measure}>{measure}</MenuItem>
+                        <MenuItem key={measure} value={measure}>
+                            {measure}
+                        </MenuItem>
                     ))}
                 </Select>
             </FormControl>
         </Box>
     );
+
 
     // asd
 

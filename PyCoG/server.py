@@ -143,6 +143,13 @@ def granger():
     return jsonify(result)  # return the result as JSON
 
 
+@app.route("/timeSeries", methods=["GET"])
+def get_time_series():
+    channel_name = request.args.get("elecName")  # electrode (channel) id
+    XY = data_provider.get_channel_data(channel_name)
+    return jsonify(XY), 200
+
+
 # get_graph_basic_info
 #   Parameters:
 #      None
@@ -161,16 +168,18 @@ def get_graph_basic_info():
     # create the ids and labels.
     nodes = []
     for i in range(num_nodes):
-        nodes.append({"id": str(i), "style": {"label": {"value": channel_names[i]}}})
+        nodes.append(
+            {"id": channel_names[i], "style": {"label": {"value": channel_names[i]}}}
+        )
     # create the edges. theres an edge between every node
     edges = []
     for i in range(num_nodes):
         for j in range(i + 1, num_nodes):
             edges.append(
                 {
-                    "id": nodes[i]["id"] + "-" + nodes[j]["id"],
-                    "source": nodes[i]["id"],
-                    "target": nodes[j]["id"],
+                    "id": channel_names[i] + "-" + channel_names[j],
+                    "source": channel_names[i],
+                    "target": channel_names[j],
                 }
             )
     layout = "circular"
