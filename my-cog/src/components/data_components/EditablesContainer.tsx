@@ -5,7 +5,7 @@ import OpenWithIcon from '@mui/icons-material/OpenWith';
 import { GridProvider, GridContext, IGridFocusContext } from "../../contexts/GridContext";
 import { EditableGrid } from "./EditableGrid";
 import { Button, Grid, TextField } from "@mui/material";
-import {SlidingBarOneTumb} from "../tools_components/SlidingBar";
+import { SlidingBarOneTumb } from "../tools_components/SlidingBar";
 import { fetchImage, fetchImageParams } from "../../shared/RequestsService";
 import "./EditableContainer.css";
 import SimpleCard from "../tools_components/SimpleCard";
@@ -13,6 +13,7 @@ import { BrainImageParamsResponse } from "../../shared/Requests";
 import { useDropdownStyles, useTextFieldsStyle } from "../tools_components/Styles";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 
 
 const ImageSelector = () => {
@@ -27,7 +28,7 @@ const ImageSelector = () => {
         { azi_list: [], ele_list: [], dist_list: [] })
     const [imageParamsIdxs, setImageParamsIdxs] = useState<{ azi_index: number, ele_index: number, dist_index: number }>(
         { azi_index: 0, ele_index: 0, dist_index: 0 });
-    const[selectedImageName, setSelectedImageName] = useState<string>("");
+    const [selectedImageName, setSelectedImageName] = useState<string>("");
 
 
     const fetchImg = async () => {
@@ -75,7 +76,7 @@ const ImageSelector = () => {
                             dist_index: imageParamsIdxs.dist_index
                         });
                     }}>
-                        <ThreeSixtyIcon sx={{ color: 'purple' }}/>
+                        <ThreeSixtyIcon sx={{ color: 'purple' }} />
                     </Button>
                     <span>{paramsLists.azi_list[imageParamsIdxs.azi_index]}</span>
                 </Grid>
@@ -87,7 +88,7 @@ const ImageSelector = () => {
                             dist_index: imageParamsIdxs.dist_index
                         });
                     }}>
-                        <HeightIcon sx={{ color: 'purple' }}/>
+                        <HeightIcon sx={{ color: 'purple' }} />
                     </Button>
                     <span>{paramsLists.ele_list[imageParamsIdxs.ele_index]}</span>
                 </Grid>
@@ -99,7 +100,7 @@ const ImageSelector = () => {
                             dist_index: (imageParamsIdxs.dist_index + 1) % paramsLists.dist_list.length
                         });
                     }}>
-                        <OpenWithIcon sx={{ color: 'purple' }}/>
+                        <OpenWithIcon sx={{ color: 'purple' }} />
                     </Button>
                     <span>{paramsLists.dist_list[imageParamsIdxs.dist_index]}</span>
                 </Grid>
@@ -147,8 +148,10 @@ const Container = () => {
 
     const {
         setAngle,
-        setRotationReady,
     } = useContext(GridContext) as IGridFocusContext;
+    const {
+        isAnimating,
+    } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const classes = useTextFieldsStyle();
 
@@ -175,6 +178,7 @@ const Container = () => {
                         toSubmit={false}
                         keepDistance={false}
                         miniSlider={false}
+                        disabled={isAnimating}
                     />
 
                 </Grid>
@@ -190,23 +194,6 @@ const Container = () => {
                                 setAngle(inputAngle);
                             }}
                         />
-                    </Grid>
-
-                    <Grid item xs={12} >
-                        <div className="button-container">
-
-                            <button
-                                className="rotate-button"
-                                title="Set for Rotation"
-                                onClick={() => {
-                                    setRotationReady(true);
-                                }}
-                            >
-                                <SimpleCard content={<>Ready to rotate</>} />
-
-                            </button>
-
-                        </div>
                     </Grid>
                 </Grid>
             </Grid>
