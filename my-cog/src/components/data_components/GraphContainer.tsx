@@ -20,7 +20,7 @@ import { TimeInterval } from "../../shared/GraphRelated";
 
 
 const GraphAnimation = () => {
-    const { duration, setTimeRange, isAnimating, setIsAnimating } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { duration, setTimeRange, isAnimating, setIsAnimating, overlap, samplesPerSegment } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [start, setStart] = useState<number>(0);
     const [end, setEnd] = useState<number>(0);
     const [windowSize, setWindowSize] = useState<number>(0);
@@ -44,7 +44,7 @@ const GraphAnimation = () => {
                 clearInterval(intervalId);
                 return;
             }
-            setTimeRange({ resolution: 's', start: currentFrameStartRef.current, end: currentEndFrame });
+            setTimeRange({ resolution: 's', start: currentFrameStartRef.current, end: currentEndFrame, samplesPerSegment: samplesPerSegment, overlap: overlap });
             setCurrentFrameStart(prevFrameStart => prevFrameStart + windowSize);
             currentEndFrame += windowSize;
         }, 1000);
@@ -177,10 +177,18 @@ export const GraphContainer = () => {
         activeNodes, setActiveNodes,
         loading,
         setConnectivityType, connectivityType,
-        isAnimating, setIsAnimating
+        isAnimating, setIsAnimating,
+        overlap, setOverlap,
+        samplesPerSegment, setSamplesPerSegment,
     } = useContext(GlobalDataContext) as IGlobalDataContext;
 
-    const [sliderDuration, setSliderDuration] = useState<TimeInterval>({ resolution: 's', start: 0, end: 0 });
+    const [sliderDuration, setSliderDuration] = useState<TimeInterval>({
+        resolution: 's',
+        start: 0,
+        end: 0,
+        samplesPerSegment: samplesPerSegment,
+        overlap: overlap
+    });
 
     const handleFreqChange = (event: Event, newValue: number[] | number) => {
         newValue = newValue as number[];
@@ -189,7 +197,10 @@ export const GraphContainer = () => {
 
     const handleDurationChange = (event: Event, newValue: number[] | number) => {
         newValue = newValue as number[];
-        setSliderDuration({ resolution: 's', start: newValue[0], end: newValue[1] })
+        setSliderDuration({
+            resolution: 's', start: newValue[0], end: newValue[1],
+            samplesPerSegment: samplesPerSegment, overlap: overlap
+        })
     }
 
     const [fList, setFList] = useState<number[]>([0, 5]);
@@ -261,14 +272,15 @@ export const GraphContainer = () => {
 
     );
 
-    const classes = useDropdownStyles();
+    const dpClasses = useDropdownStyles();
+    const tfClasses = useTextFieldsStyle();
 
     const selectConnectivity = (
         <Box sx={{ minWidth: 120 }}>
             <FormControl fullWidth style={{ marginTop: '20px', }}>
                 <InputLabel id="connectivity-select-label">Connectivity</InputLabel>
                 <Select
-                    className={classes.customDropdown}
+                    className={dpClasses.customDropdown}
                     labelId="connectivity-select-label"
                     id="connectivity-select"
                     value={connectivityType}
@@ -321,6 +333,36 @@ export const GraphContainer = () => {
                             {loading ? <CircularProgress size={20} sx={{ color: "purple" }} /> : null}
                         </Box>
                     </Box>
+                </Grid>
+                <Grid item xs={2}>
+                    <TextField
+                        className={tfClasses.root}
+                        sx={{ width: '100%' }}
+                        value={samplesPerSegment}
+                        type="number"
+                        size="small"
+                        label={"nprseg"}
+                        onChange={(event) => {
+                            const value = parseFloat(event.target.value);
+                            if (!isNaN(value)) {
+                                setSamplesPerSegment(value);
+                            }
+                        }}
+                    />
+                    <TextField
+                        className={tfClasses.root}
+                        sx={{ width: '100%' }}
+                        value={overlap}
+                        type="number"
+                        size="small"
+                        label={"nprseg"}
+                        onChange={(event) => {
+                            const value = parseFloat(event.target.value);
+                            if (!isNaN(value)) {
+                                setOverlap(value);
+                            }
+                        }}
+                    />
                 </Grid>
                 <Grid item xs={12}>
                     {<div

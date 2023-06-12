@@ -5,13 +5,21 @@ import numpy as np
 import concurrent.futures
 
 
-def coherence(x, y, fs, window, overlap):
+def coherence(x, y, fs, window, overlap=0.5, nperseg=256):
     """
     Compute the coherence between two signals x and y.
     """
-    f, Cxy = signal.coherence(x, y, fs=fs, window=window, nperseg=256)
-    f = f[0 : int(len(f) / 2)]
-    Cxy = Cxy[0 : int(len(Cxy) / 2)]
+    f, Cxy = signal.coherence(
+        x, y, fs=fs, window=window, overlap=overlap, nperseg=nperseg
+    )
+    # now return only the part of f that corresponds to frequencies up to 250 Hz
+    limit = 0
+    for i in range(len(f)):
+        if f[i] > 250:
+            limit = i - 1
+            break
+    f = f[0:limit]
+    Cxy = Cxy[0:limit]
     return f, Cxy
 
 
@@ -26,11 +34,13 @@ def get_synchronous_coherence_matrices(data, fs, window, overlap):
     return f, CM
 
 
-def get_coherence_matrices(data, fs, window="hann", overlap=0.5):
+def get_coherence_matrices(data, fs, window="hann", overlap=0.5, nperseg=256):
     """
     Compute the coherence between all pairs of electrodes in data.
     """
-    f, _ = coherence(data[:, 0], data[:, 1], fs, window, overlap)
+    f, _ = coherence(
+        data[:, 0], data[:, 1], fs, window=window, overlap=overlap, nperseg=nperseg
+    )
 
     def coherence_worker(i, j):
         _, Cxy = coherence(data[:, i], data[:, j], fs, window, overlap)
@@ -54,8 +64,10 @@ def get_coherence_matrices(data, fs, window="hann", overlap=0.5):
     return f, CM
 
 
-def get_coherence_squared_matrices(data, fs, window="hann", overlap=0.5):
-    f, CM = get_coherence_matrices(data, fs, window, overlap)
+def get_coherence_squared_matrices(data, fs, window="hann", overlap=0.5, nperseg=256):
+    f, CM = get_coherence_matrices(
+        data, fs, window=window, overlap=overlap, nperseg=nperseg
+    )
     CM = np.square(CM)
     return f, CM
 
