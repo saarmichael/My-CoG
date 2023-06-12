@@ -16,6 +16,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useTextFieldsStyle } from "../../components/tools_components/Styles";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import { TimeInterval } from "../../shared/GraphRelated";
 
 
 const GraphAnimation = () => {
@@ -179,13 +180,16 @@ export const GraphContainer = () => {
         isAnimating, setIsAnimating
     } = useContext(GlobalDataContext) as IGlobalDataContext;
 
+    const [sliderDuration, setSliderDuration] = useState<TimeInterval>({ resolution: 's', start: 0, end: 0 });
+
     const handleFreqChange = (event: Event, newValue: number[] | number) => {
         newValue = newValue as number[];
         setFreqRange({ min: newValue[0], max: newValue[1] })
     }
 
-    const handleDurationChange = (val1: number, val2: number) => {
-        setTimeRange({ resolution: 's', start: val1, end: val2 })
+    const handleDurationChange = (event: Event, newValue: number[] | number) => {
+        newValue = newValue as number[];
+        setSliderDuration({ resolution: 's', start: newValue[0], end: newValue[1] })
     }
 
     const [fList, setFList] = useState<number[]>([0, 5]);
@@ -302,16 +306,13 @@ export const GraphContainer = () => {
                 <Grid item xs={5}>
                     <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false}
                         onChange={handleFreqChange}
-                        toSubmit={false}
                         miniSlider={false}
                         disabled={isAnimating}
                     />
                 </Grid>
                 <Grid item xs={5} justifyContent="center">
                     <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
-                        onChange={() => { }}
-                        toSubmit={timeToSubmit}
-                        onSubmit={handleDurationChange}
+                        onChange={handleDurationChange}
                         miniSlider={true}
                         disabled={isAnimating}
                     />
@@ -320,6 +321,17 @@ export const GraphContainer = () => {
                             {loading ? <CircularProgress size={20} sx={{ color: "purple" }} /> : null}
                         </Box>
                     </Box>
+                </Grid>
+                <Grid item xs={12}>
+                    {<div
+                        className="submit-button"
+                        style={{ width: '40%', margin: '0 auto' }}
+                        onClick={() => {
+                            setTimeRange(sliderDuration);
+                        }}
+                    >
+                        Submit
+                    </div>}
                 </Grid>
                 <Grid item xs={2}>
                     <GraphAnimation />

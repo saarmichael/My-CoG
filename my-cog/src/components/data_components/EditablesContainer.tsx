@@ -175,7 +175,6 @@ const Container = () => {
                             const inputAngle = (newValue as number) % 360;
                             setAngle(inputAngle);
                         }}
-                        toSubmit={false}
                         keepDistance={false}
                         miniSlider={false}
                         disabled={isAnimating}
