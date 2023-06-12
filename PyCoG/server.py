@@ -8,7 +8,11 @@ from granger import calculate_granger_for_all_pairs
 from util import convert_path_to_tree, dataProvider, find_first_eeg_file, find_file
 from cache_check import data_in_db, user_in_db
 from db_write import write_calculation, write_user
-from coherence import coherence_time_frame, get_recording_duration, get_data_by_start_end
+from coherence import (
+    coherence_time_frame,
+    get_recording_duration,
+    get_data_by_start_end,
+)
 from consts import bcolors
 from server_config import User, Calculation, db, app
 from image_generator import get_azi_ele_dist_lists, get_brain_image
@@ -99,6 +103,8 @@ def get_coherence_matrices():
     connectivity_name = request.args.get("connectivity")
     start = request.args.get("start")
     end = request.args.get("end")
+    overlap = request.args.get("overlap")
+    nperseg = request.args.get("nperseg")
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
     file_name = session["user_data_dir"]
     cal = data_in_db(file_name, request.url, Calculation.query)
@@ -119,7 +125,7 @@ def get_coherence_matrices():
     # Conn.get_connectivity_function(connectivity_name) is the connectivity function
     connectivity_function = Conn.get_connectivity_function(connectivity_name)
     f, CM = connectivity_function(
-        data, sfreq
+        data, sfreq, overlap=overlap, nperseg=nperseg
     )  # this is where the actual calculation happens
     print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
     result = {"f": f.tolist(), "CM": CM.tolist()}
@@ -239,6 +245,7 @@ def connectivity_list():
 ###############################################
 ############### POST REQUESTS #################
 ###############################################
+
 
 @app.route("/register", methods=["POST"])
 def register():

@@ -25,6 +25,10 @@ export interface IGlobalDataContext {
     setTimeRange: (timeRange: TimeInterval) => void;
     duration: number;
     setDuration: (timeList: number) => void;
+    samplesPerSegment: number;
+    setSamplesPerSegment: (samplesPerSegment: number) => void;
+    overlap: number;
+    setOverlap: (overlap: number) => void;
     sharedGraph: GraphinData;
     setSharedGraph: (sharedGraph: GraphinData) => void;
     chosenFile: string;
@@ -51,8 +55,10 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
     const [electrodeList, setElectrodeList] = useState<string[]>([]);
     const [freqRange, setFreqRange] = useState<FreqRange>({ min: 0, max: 0 });
     const [freqList, setFreqList] = useState<number[]>([0,1]);
-    const [timeRange, setTimeRange] = useState<TimeInterval>({ resolution: 's', start: 0, end: 0 });
+    const [timeRange, setTimeRange] = useState<TimeInterval>({ resolution: 's', start: 0, end: 0, overlap: 0.5, samplesPerSegment: 256 });
     const [duration, setDuration] = useState<number>(2);
+    const [samplesPerSegment, setSamplesPerSegment] = useState<number>(256);
+    const [overlap, setOverlap] = useState<number>(0.5);
     const [sharedGraph, setSharedGraph] = useState<GraphinData>({ nodes: [], edges: [] });
     const [chosenFile, setChosenFile] = useState<string>("");
     const [activeNodes, setActiveNodes] = React.useState<ActiveNodeProps[]>([]);
@@ -69,6 +75,8 @@ export const GlobalDataProvider: React.FC<IGlobalDataProviderProps> = ({ childre
             freqList, setFreqList,
             timeRange, setTimeRange,
             duration, setDuration,
+            samplesPerSegment, setSamplesPerSegment,
+            overlap, setOverlap,
             sharedGraph, setSharedGraph,
             chosenFile, setChosenFile,
             activeNodes, setActiveNodes,
