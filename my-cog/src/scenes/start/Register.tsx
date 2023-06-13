@@ -34,12 +34,13 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
       options: organizedOptions,
       settings: settings,
     };
-    registerRequest(username, data.split('\\').pop() as string, reorganizedSettings, onRegister).then(async (err) => {
+    registerRequest(username, data as string, reorganizedSettings, onRegister).then(async (err) => {
       if (err === '') {
         await loginConfig(username, setLoading, onRegister, setChosenFile, setErrorMessage);
       }
       console.log(err)
       setErrorMessage(err as string)
+      setLoading(false);
     });
 
   };
@@ -67,7 +68,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
           <DirectoryPicker onChange={setData} buttonName="📁" />
         </div>
         
-        {data && <p className='upload message'>{data.split('\\').pop()}</p>}
+        {data && <p className='upload message'>{data}</p>}
       </div>
       <button type="submit" className="submit-button">Register</button>
       {errorMessage && <p className="error message">{errorMessage}</p>}

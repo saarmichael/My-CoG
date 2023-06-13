@@ -8,6 +8,7 @@ import CreateVideoModal from '../../components/tools_components/CreateVideoModal
 import { DataOptions } from '../../components/data_components/DataOptions';
 import { Grid } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import path from 'path';
 
 interface MenuItem {
     name: string;
@@ -25,7 +26,7 @@ export const TopBar: React.FC = () => {
         if (fileName === "") {
             return <></>;
         }
-        let dirs = fileName.split("/");
+        let dirs = fileName.split(path.sep);
         // get the last part of the path
         fileName = dirs[dirs.length - 1];
         let parts = fileName.split("_");

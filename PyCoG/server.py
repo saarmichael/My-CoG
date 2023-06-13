@@ -52,7 +52,7 @@ def login():
     session["username"] = user.username
     data_provider = dataProvider(session)
     print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
-    return jsonify({"user_data_dir": session["user_data_dir"].split("\\")[-1]})
+    return jsonify({"user_data_dir": session["user_data_dir"].split(os.sep)[-1]})
 
 
 @app.route("/getSettings", methods=["GET"])
@@ -91,7 +91,7 @@ def get_files():
 
 @app.route("/getFile", methods=["GET"])
 def get_file():
-    return jsonify(session["user_data_dir"].split("\\")[-1])
+    return jsonify(session["user_data_dir"].split(os.sep)[-1])
 
 
 # get_coherence_matrices
@@ -158,7 +158,6 @@ def granger():
 def get_graph_basic_info():
     # get the number of nodes according to "coherence_over_time.json" file
     # open the json file and get the value of "coherence_matrices" key
-    file_name = session["user_data_dir"].split("/")[-1]
     data = data_provider.get_data()
     channel_names = data_provider.get_channel_names()
     num_nodes = data.shape[1]
@@ -339,7 +338,7 @@ def export_data():
     sfreq = data_provider.get_sampling_rate()
     data = get_data_by_start_end(data=data, fs=sfreq, start=start, end=end)
     electrodes = data_provider.get_channel_names()
-    bids_file_name = session["user_data_dir"].split("/")[-1]
+    bids_file_name = session["user_data_dir"].split(os.sep)[-1]
     meta_data = {
         "bids_file_name": bids_file_name,
         "electrodes": electrodes,
