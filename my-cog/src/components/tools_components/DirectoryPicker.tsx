@@ -1,4 +1,3 @@
-import path from 'path';
 import React, { ChangeEvent } from 'react';
 
 declare module 'react' {
@@ -18,7 +17,8 @@ interface DirectoryPickerProps {
 const DirectoryPicker: React.FC<DirectoryPickerProps> = ({ onChange, buttonName }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      const directoryName = event.target.files[0].webkitRelativePath.split(path.sep)[0];
+      // regex to split path by / or \
+      const directoryName = event.target.files[0].webkitRelativePath.split(/[\/\\]/)[0];
       onChange(directoryName);
     }
   };
