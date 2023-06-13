@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, TextField, Grid } from '@mui/material';
 import { useContext, useRef } from 'react';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
 import './GraphVisCheckbox.css';
@@ -38,39 +38,50 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                 }
                 label={props.label}
             />
-            {(thisOption?.needValue && thisOption.checked) ? <> {props.label}
-                <>
-                    <input
-                        type='number'
-                        step='0.1'
-                        defaultValue={thisOption.value}
-                        ref={inputRef}
-                    />
-                    <button
-                        onClick={() => {
-                            const newValue = Number(inputRef.current?.value);
-                            // change the setting in the settings object
-                            if (thisOption.settingName) {
-                                setSettings({
-                                    ...settings,
-                                    [thisOption.settingName]: newValue
-                                });
-                                setOptions(options.map((option) => {
-                                    if (option.label === props.label) {
-                                        return {
-                                            ...option,
-                                            value: newValue
-                                        };
-                                    }
-                                    return option;
-                                }));
-                            }
-                        }}>Submit</button>
-
-                </>
-
+            {(thisOption?.needValue && thisOption.checked) ? <>
+                <Grid container justifyContent='center' spacing={1}>
+                    <Grid item xs={12}>
+                        <TextField
+                            type='number'
+                            size='small'
+                            style={{paddingLeft: '20%', paddingRight: '20%'}}
+                            inputProps={{
+                                step: 0.1,
+                            }}
+                            defaultValue={thisOption.value}
+                            inputRef={inputRef}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <div className='submit-button'
+                            style={{marginBottom: '10px', width: '50%'}}
+                            
+                            onClick={() => {
+                                const newValue = Number(inputRef.current?.value);
+                                // change the setting in the settings object
+                                if (thisOption.settingName) {
+                                    setSettings({
+                                        ...settings,
+                                        [thisOption.settingName]: newValue
+                                    });
+                                    setOptions(options.map((option) => {
+                                        if (option.label === props.label) {
+                                            return {
+                                                ...option,
+                                                value: newValue
+                                            };
+                                        }
+                                        return option;
+                                    }));
+                                }
+                            }}
+                        >
+                            Submit
+                        </div>
+                    </Grid>
+                </Grid>
             </> : null}
         </>
     );
 }
-
