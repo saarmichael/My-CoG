@@ -25,7 +25,8 @@ export const TopBar: React.FC = () => {
         if (fileName === "") {
             return <></>;
         }
-        let dirs = fileName.split("/");
+        // regex to split path by / or \
+        let dirs = fileName.split(/[\/\\]/);
         // get the last part of the path
         fileName = dirs[dirs.length - 1];
         let parts = fileName.split("_");

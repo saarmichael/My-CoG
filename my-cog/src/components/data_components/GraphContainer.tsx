@@ -231,7 +231,14 @@ export const GraphContainer = () => {
                 <Grid item xs={2.5} style={{display: 'flex'}}>
                     <div
                         className="submit-button"
-                        style={{ width: '100%', padding: '10px' }}
+                        style={{  
+                            padding: '10px', 
+                            overflow: 'hidden', 
+                            width: '200px', 
+                            textAlign: 'center',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
+                        }}
                         onClick={() => {
                             setTimeRange(sliderDuration);
                         }}

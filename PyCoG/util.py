@@ -97,10 +97,6 @@ class dataProvider:
         data = raw.get_data()
         # traspose the data so that the channels are the columns
         data = data.transpose()
-        # data = loadmat(self.find_file(session["user_data_dir"], os.getcwd()))["data"]
-        # special case for finger flex data
-        # if session["user_data_dir"].split("/")[-1] == "bp_fingerflex.mat":
-        #     data = data[:, 0:9]
 
         return data[:, 0:16]
 
