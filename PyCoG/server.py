@@ -89,6 +89,10 @@ def get_files():
         convert_path_to_tree(find_file(session["user_root_dir"], os.getcwd()))
     )
 
+@app.route("/getFile", methods=["GET"])
+def get_file():
+    return jsonify(session["user_data_dir"].split("\\")[-1])
+
 
 # get_coherence_matrices
 #   Parameters:

@@ -1,5 +1,6 @@
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import Select, { StylesConfig, ActionMeta, GroupBase, CSSObjectWithLabel, OptionProps } from 'react-select';
+import { StylesConfig, GroupBase, CSSObjectWithLabel, OptionProps } from 'react-select';
+import { styled } from "@mui/system";
 
 export type OptionType = { label: string; value: number };
 
@@ -85,3 +86,14 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
+export const IconWrapper = styled('div')({
+  cursor: 'pointer',
+  display: 'inline-flex',
+  borderRadius: '50%',
+  transition: '0.3s',
+  '&:hover': {
+    boxShadow: '0 0 10px rgba(0,0,0,0.5)'
+  }
+});

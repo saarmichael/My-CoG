@@ -22,6 +22,9 @@ export const TopBar: React.FC = () => {
     const { chosenFile, setChosenFile } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const FileDetailsHeader = (fileName: string) => {
+        if (fileName === "") {
+            return <></>;
+        }
         let dirs = fileName.split("/");
         // get the last part of the path
         fileName = dirs[dirs.length - 1];
@@ -59,6 +62,10 @@ export const TopBar: React.FC = () => {
         apiGET('/getFiles').then((response) => {
             let files = response as Node[];
             setOpenFileList(files);
+        });
+        apiGET('/getFile').then((response) => {
+            let files = response as string;
+            setChosenFile(files);
         });
     }, []);
 

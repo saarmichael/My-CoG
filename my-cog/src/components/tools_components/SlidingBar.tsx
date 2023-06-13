@@ -32,18 +32,21 @@ export const SlidingBarOneTumb = (props: SlidingBarProps) => {
   };
 
   return (
-    <Slider
-      sx={{ color: 'purple' }}
-      getAriaLabel={() => 'Timeframe slider'}
-      value={value}
-      onChange={handleChange}
-      valueLabelDisplay="auto"
-      onMouseDown={handleMouseDown}
-      min={0}
-      max={props.range as number}
-      disableSwap={true}
-      disabled={props.disabled}
-    />
+    <>
+      <span>{props.sliderName}</span>
+      <Slider
+        sx={{ color: 'purple' }}
+        getAriaLabel={() => 'Timeframe slider'}
+        value={value}
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        onMouseDown={handleMouseDown}
+        min={0}
+        max={props.range as number}
+        disableSwap={true}
+        disabled={props.disabled}
+      />
+    </>
   );
 };
 

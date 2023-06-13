@@ -14,157 +14,7 @@ import Select from '@mui/material/Select';
 import { useDropdownStyles } from "../tools_components//Styles";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTextFieldsStyle } from "../../components/tools_components/Styles";
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
 import { TimeInterval } from "../../shared/GraphRelated";
-
-
-const GraphAnimation = () => {
-    const { duration, setTimeRange, isAnimating, setIsAnimating, overlap, samplesPerSegment } = useContext(GlobalDataContext) as IGlobalDataContext;
-    const [start, setStart] = useState<number>(0);
-    const [end, setEnd] = useState<number>(0);
-    const [windowSize, setWindowSize] = useState<number>(0);
-    const [currentFrameStart, setCurrentFrameStart] = useState<number>(start);
-    const isAnimatingRef = useRef<boolean>(isAnimating);
-    const currentFrameStartRef = useRef<number>(currentFrameStart);
-
-
-    const classes = useTextFieldsStyle();
-
-
-    const animate = () => {
-        let currentEndFrame = currentFrameStartRef.current + windowSize;
-        const intervalId = setInterval(() => {
-            if (currentEndFrame > end || !isAnimatingRef.current) {
-                if (currentEndFrame > end) {
-                    setCurrentFrameStart(start);
-                    setIsAnimating(false);
-                    isAnimatingRef.current = false;
-                }
-                clearInterval(intervalId);
-                return;
-            }
-            setTimeRange({ resolution: 's', start: currentFrameStartRef.current, end: currentEndFrame, samplesPerSegment: samplesPerSegment, overlap: overlap });
-            setCurrentFrameStart(prevFrameStart => prevFrameStart + windowSize);
-            currentEndFrame += windowSize;
-        }, 1000);
-    };
-
-    useEffect(() => {
-        isAnimatingRef.current = isAnimating;
-        if (isAnimating) {
-            animate();
-        }
-    }, [isAnimating])
-
-    useEffect(() => {
-        currentFrameStartRef.current = currentFrameStart;
-    }, [currentFrameStart]);
-
-
-    const handleSliderChange = (event: any, value: number | number[]) => {
-        setCurrentFrameStart(value as number);
-    };
-
-
-    return (
-        <>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <TextField
-                        className={classes.root}
-                        sx={{ width: '100%' }}
-                        value={start}
-                        defaultValue={start}
-                        type="number"
-                        size="small"
-                        label={"start"}
-                        disabled={isAnimating}
-                        onChange={(event) => {
-                            setStart(Math.max(Number(event.target.value), 0));
-                        }}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-
-                        className={classes.root}
-                        sx={{ width: '100%' }}
-                        value={end}
-                        defaultValue={end}
-                        type="number"
-                        size="small"
-                        label={"end"}
-                        disabled={isAnimating}
-                        onChange={(event) => {
-                            setEnd(Math.min(Number(event.target.value), duration));
-                        }}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        className={classes.root}
-                        sx={{ width: '100%' }}
-                        value={windowSize}
-                        defaultValue={windowSize}
-                        type="number"
-                        size="small"
-                        label={"windowSize"}
-                        disabled={isAnimating}
-                        onChange={(event) => {
-                            setWindowSize(Math.min(Number(event.target.value), duration));
-                        }}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Slider
-                        sx={{ color: 'purple' }}
-                        getAriaLabel={() => 'Animation slider'}
-                        value={currentFrameStart}
-                        min={start}
-                        max={end}
-                        onChange={handleSliderChange}
-                        disabled={isAnimating}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    {<div
-                        className="start-animation-button"
-                        style={{ width: '40%', margin: '0 auto' }}
-                        onClick={() => {
-                            setCurrentFrameStart(start);
-                            setIsAnimating(true);
-                        }}
-                    >
-                        Start Animation
-                    </div>}
-                </Grid>
-                <Grid item xs={6}>
-                    {<div
-                        className="pause-animation-button"
-                        style={{ width: '40%', margin: '0 auto' }}
-                        onClick={() => {
-                            setIsAnimating(false);
-                        }}
-                    >
-                        <PauseIcon />
-                    </div>}
-                </Grid>
-                <Grid item xs={6}>
-                    {<div
-                        className="play-animation-button"
-                        style={{ width: '40%', margin: '0 auto' }}
-                        onClick={() => {
-                            setIsAnimating(true);
-                        }}
-                    >
-                        <PlayArrowIcon />
-                    </div>}
-                </Grid>
-            </Grid>
-        </>
-    );
-}
 
 
 export const GraphContainer = () => {
@@ -277,8 +127,8 @@ export const GraphContainer = () => {
 
     const selectConnectivity = (
         <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth style={{ marginTop: '20px', }}>
-                <InputLabel id="connectivity-select-label">Connectivity</InputLabel>
+            <FormControl fullWidth >
+                <InputLabel shrink id="connectivity-select-label">Connectivity</InputLabel>
                 <Select
                     className={dpClasses.customDropdown}
                     labelId="connectivity-select-label"
@@ -289,7 +139,7 @@ export const GraphContainer = () => {
                     onChange={(e) => {
                         setConnectivityType(e.target.value);
                     }}
-                    style={{ width: '18vh' }}
+                    style={{ width: '15vh', fontSize: '0.8em' }}
                 >
                     {connectivityMeasuresList.map((measure) => (
                         <MenuItem key={measure} value={measure}>{measure}</MenuItem>
@@ -314,13 +164,21 @@ export const GraphContainer = () => {
             </Grid>
 
 
-            <Grid container spacing={4}>
-                <Grid item xs={5}>
-                    <SlidingBar sliderName="Frequency slider" range={fList} keepDistance={false}
+            <Grid container spacing={3}>
+
+                <Grid item xs={5} className="verticalLine">
+
+                    <SlidingBar
+                        sliderName="Frequency slider"
+                        range={fList}
+                        keepDistance={false}
                         onChange={handleFreqChange}
                         miniSlider={false}
                         disabled={isAnimating}
                     />
+
+                </Grid>
+                <Grid item xs={1}>
                 </Grid>
                 <Grid item xs={5} justifyContent="center">
                     <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
@@ -328,58 +186,58 @@ export const GraphContainer = () => {
                         miniSlider={true}
                         disabled={isAnimating}
                     />
-                    <Box display="flex" justifyContent="center" alignItems="center" marginTop="2px">
-                        <Box>
-                            {loading ? <CircularProgress size={20} sx={{ color: "purple" }} /> : null}
-                        </Box>
-                    </Box>
                 </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        className={tfClasses.root}
-                        sx={{ width: '100%' }}
-                        value={samplesPerSegment}
-                        type="number"
-                        size="small"
-                        label={"nprseg"}
-                        onChange={(event) => {
-                            const value = parseFloat(event.target.value);
-                            if (!isNaN(value)) {
-                                setSamplesPerSegment(value);
-                            }
-                        }}
-                    />
-                    <TextField
-                        className={tfClasses.root}
-                        sx={{ width: '100%' }}
-                        value={overlap}
-                        type="number"
-                        size="small"
-                        label={"nprseg"}
-                        onChange={(event) => {
-                            const value = parseFloat(event.target.value);
-                            if (!isNaN(value)) {
-                                setOverlap(value);
-                            }
-                        }}
-                    />
+                <Grid item xs={5}>
+                    <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                        <TextField
+                            className={tfClasses.root}
+                            sx={{ width: '100%' }}
+                            value={samplesPerSegment}
+                            type="number"
+                            size="small"
+                            label={"nprseg"}
+                            onChange={(event) => {
+                                const value = parseFloat(event.target.value);
+                                if (!isNaN(value)) {
+                                    setSamplesPerSegment(value);
+                                }
+                            }}
+                        />
+                        </Grid>
+                        <Grid item xs={6}>
+                        <TextField
+                            className={tfClasses.root}
+                            sx={{ width: '100%' }}
+                            value={overlap}
+                            type="number"
+                            size="small"
+                            label={"nprseg"}
+                            onChange={(event) => {
+                                const value = parseFloat(event.target.value);
+                                if (!isNaN(value)) {
+                                    setOverlap(value);
+                                }
+                            }}
+                        />
+                        </Grid>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                    {<div
+                <Grid item xs={1}>
+                </Grid>
+                <Grid item xs={2.5}>
+                    {selectConnectivity}
+                </Grid>
+                <Grid item xs={2.5} style={{display: 'flex'}}>
+                    <div
                         className="submit-button"
-                        style={{ width: '40%', margin: '0 auto' }}
+                        style={{ width: '100%', padding: '10px' }}
                         onClick={() => {
                             setTimeRange(sliderDuration);
                         }}
                     >
-                        Submit
-                    </div>}
-                </Grid>
-                <Grid item xs={2}>
-                    <GraphAnimation />
-                </Grid>
-                <Grid item xs={2}>
-                    {selectConnectivity}
+                        {loading ? <CircularProgress size={15} sx={{ color: "white" }} /> : <>Get {connectivityType}</>}
+                    </div>
                 </Grid>
             </Grid>
         </>
