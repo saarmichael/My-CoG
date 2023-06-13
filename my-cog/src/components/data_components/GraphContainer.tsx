@@ -15,6 +15,8 @@ import { useDropdownStyles } from "../tools_components//Styles";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTextFieldsStyle } from "../../components/tools_components/Styles";
 import { TimeInterval } from "../../shared/GraphRelated";
+import html2canvas from 'html2canvas';
+import ComponentScreenshot from "../tools_components/ComponentScreenshot";
 
 
 export const GraphContainer = () => {
@@ -149,14 +151,12 @@ export const GraphContainer = () => {
         </Box>
     );
 
-    // asd
-
     return (
         <>
             <h1 className="head">Connectivity Graph</h1>
             <Grid container maxHeight="650px">
                 <Grid item xs={11}>
-                    <BasicGraphinGraph />
+                    <ComponentScreenshot content={<BasicGraphinGraph />} />
                 </Grid>
                 <Grid item xs={1}>
                     {selectActiveNodes}
@@ -189,37 +189,37 @@ export const GraphContainer = () => {
                 </Grid>
                 <Grid item xs={5}>
                     <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                        <TextField
-                            className={tfClasses.root}
-                            sx={{ width: '100%' }}
-                            value={samplesPerSegment}
-                            type="number"
-                            size="small"
-                            label={"nprseg"}
-                            onChange={(event) => {
-                                const value = parseFloat(event.target.value);
-                                if (!isNaN(value)) {
-                                    setSamplesPerSegment(value);
-                                }
-                            }}
-                        />
+                        <Grid item xs={6}>
+                            <TextField
+                                className={tfClasses.root}
+                                sx={{ width: '100%' }}
+                                value={samplesPerSegment}
+                                type="number"
+                                size="small"
+                                label={"nprseg"}
+                                onChange={(event) => {
+                                    const value = parseFloat(event.target.value);
+                                    if (!isNaN(value)) {
+                                        setSamplesPerSegment(value);
+                                    }
+                                }}
+                            />
                         </Grid>
                         <Grid item xs={6}>
-                        <TextField
-                            className={tfClasses.root}
-                            sx={{ width: '100%' }}
-                            value={overlap}
-                            type="number"
-                            size="small"
-                            label={"nprseg"}
-                            onChange={(event) => {
-                                const value = parseFloat(event.target.value);
-                                if (!isNaN(value)) {
-                                    setOverlap(value);
-                                }
-                            }}
-                        />
+                            <TextField
+                                className={tfClasses.root}
+                                sx={{ width: '100%' }}
+                                value={overlap}
+                                type="number"
+                                size="small"
+                                label={"nprseg"}
+                                onChange={(event) => {
+                                    const value = parseFloat(event.target.value);
+                                    if (!isNaN(value)) {
+                                        setOverlap(value);
+                                    }
+                                }}
+                            />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -228,13 +228,13 @@ export const GraphContainer = () => {
                 <Grid item xs={2.5}>
                     {selectConnectivity}
                 </Grid>
-                <Grid item xs={2.5} style={{display: 'flex'}}>
+                <Grid item xs={2.5} style={{ display: 'flex' }}>
                     <div
                         className="submit-button"
-                        style={{  
-                            padding: '10px', 
-                            overflow: 'hidden', 
-                            width: '200px', 
+                        style={{
+                            padding: '10px',
+                            overflow: 'hidden',
+                            width: '200px',
                             textAlign: 'center',
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap'
