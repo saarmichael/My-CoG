@@ -61,19 +61,19 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                             );
                         })}
                     </FormGroup>
-                    <div style={{ 
-    display: "flex", 
-    flexDirection: "column", 
-    justifyContent: "center", 
-    alignItems: "center", 
-    width: "100%" 
-}}>
-    <div>{colorPickDiv}</div>
-    {showPicker ? <div><ColorPicker /></div> : null}
-</div>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%"
+                    }}>
+                        <div>{colorPickDiv}</div>
+                        {showPicker ? <div><ColorPicker /></div> : null}
+                    </div>
 
                 </div>
-                <button onClick={saveUserSettings} style={ {marginBottom: "20px"} } className="submit-button">Save Settings</button>
+                <button onClick={saveUserSettings} style={{ marginBottom: "20px" }} className="submit-button">Save Settings</button>
             </div>
         </div>
 

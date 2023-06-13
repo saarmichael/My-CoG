@@ -5,7 +5,6 @@ import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeF
 import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters";
 import './GridStyle.css';
 import { EditablesContainer } from "../../components/data_components/EditablesContainer";
-import { GraphVisToggles } from "../../components/data_components/GraphVisToggles";
 import React from "react";
 
 export interface BoxProps {
@@ -33,9 +32,7 @@ export const Box1: React.FC<BoxProps> = () => {
 
   return (
     <>
-      <GraphVisToggles />
       <EditablesContainer />
-
     </>
   )
 }

@@ -10,7 +10,7 @@ def coherence(x, y, fs, window, overlap=0.5, nperseg=256):
     Compute the coherence between two signals x and y.
     """
     f, Cxy = signal.coherence(
-        x, y, fs=fs, window=window, overlap=overlap, nperseg=nperseg
+        x, y, fs=fs, window=window, noverlap=overlap, nperseg=nperseg
     )
     # now return only the part of f that corresponds to frequencies up to 250 Hz
     limit = 0
