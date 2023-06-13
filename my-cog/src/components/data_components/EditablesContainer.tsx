@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { GraphAnimation } from "./GraphAnimation";
+import ComponentScreenshot from "../tools_components/ComponentScreenshot";
 
 
 const ImageSelector = () => {
@@ -154,7 +155,7 @@ const Container = () => {
             <h1 className="head">Editable Grid</h1>
             <Grid container spacing={1}>
                 <Grid item xs={10}>
-                    <EditableGrid N={4} M={4} />
+                    <ComponentScreenshot content={<EditableGrid N={4} M={4} />}/>
                 </Grid>
                 <Grid item xs={2}>
                     <ImageSelector />

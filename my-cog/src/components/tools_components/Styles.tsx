@@ -92,6 +92,7 @@ export const IconWrapper = styled('div')({
   cursor: 'pointer',
   display: 'inline-flex',
   borderRadius: '50%',
+  padding: '5px',
   transition: '0.3s',
   '&:hover': {
     boxShadow: '0 0 10px rgba(0,0,0,0.5)'
