@@ -78,7 +78,7 @@ class dataProvider:
 
         return self.duration
 
-    def get_data(self):
+    def get_raw(self):
         with self.lock:
             if self.bids_path == None:
                 file_name = self.session["user_data_dir"]
@@ -94,11 +94,29 @@ class dataProvider:
                 self.duration = raw.n_times / raw.info["sfreq"]
 
         # get the data from the bids_path
-        data = raw.get_data()
+        return raw
+
+    def get_data(self):
+        data = self.get_raw().get_data()
         # traspose the data so that the channels are the columns
         data = data.transpose()
-
         return data[:, 0:16]
+
+    def get_channel_data(self, channel_name, start, end, resolution="s"):
+        raw = self.get_raw()
+        sfreq = self.get_sampling_rate()
+        data = raw.get_data(picks=channel_name)
+        data = data.transpose()
+        startPoint = int(start * sfreq)
+        endPoint = int(end * sfreq)
+        data = data[startPoint:endPoint]
+        XY = []
+        for i in range(len(data)):
+            XY.append({"x": i / sfreq, "y": data[i][0]})
+        return XY
+
+
+############## END OF CLASS ######################
 
 
 def convert_to_tree(path, prefix=""):

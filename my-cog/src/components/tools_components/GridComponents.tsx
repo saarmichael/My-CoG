@@ -6,6 +6,7 @@ import { getCoherenceByTime, getSpectrogramDataSync } from "../../shared/getters
 import './GridStyle.css';
 import { EditablesContainer } from "../../components/data_components/EditablesContainer";
 import React from "react";
+import TimeSeries from "../data_components/TimeSeries";
 
 export interface BoxProps {
   name: string;
@@ -40,7 +41,7 @@ export const Box1: React.FC<BoxProps> = () => {
 export function Box2() {
   return (
     <>
-      <GridGraph />
+      <TimeSeries />
     </>
   );
 }

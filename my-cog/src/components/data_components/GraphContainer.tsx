@@ -19,6 +19,7 @@ import html2canvas from 'html2canvas';
 import ComponentScreenshot from "../tools_components/ComponentScreenshot";
 
 
+
 export const GraphContainer = () => {
 
     const { state,
@@ -93,50 +94,22 @@ export const GraphContainer = () => {
             }
         }
     }
-
-
-    // make a list of checkboxes to select the active nodes
-    const selectActiveNodes = (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            flexWrap: 'nowrap',  // disable wrapping
-            overflowY: 'auto',  // enable horizontal scroll
-            overflowX: 'hidden',
-            alignItems: 'center',
-            maxHeight: '600px'
-        }}>
-            {state.nodes.map((node) => (
-                <div key={node.id} onClick={() => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}>
-                    <Checkbox
-                        style={{ transform: 'scale(0.8)', color: 'purple' }}
-                        icon={<CheckCircleOutlineIcon />}
-                        checkedIcon={<CheckCircleIcon />}
-                        checked={activeNodes.map((activeNode) => activeNode.id).includes(node.id)}
-                        inputProps={{ 'aria-labelledby': node.id }}
-                    />
-                    <Typography variant="body2" align="center" style={{ fontSize: '0.65em' }}>
-                        {node.style?.label?.value ? node.style.label.value : node.id}
-                    </Typography>
-                </div>
-            ))}
-        </Box>
-
-    );
+    
 
     const dpClasses = useDropdownStyles();
     const tfClasses = useTextFieldsStyle();
 
     const selectConnectivity = (
         <Box sx={{ minWidth: 120 }}>
+
             <FormControl fullWidth >
                 <InputLabel shrink id="connectivity-select-label">Connectivity</InputLabel>
                 <Select
                     className={dpClasses.customDropdown}
                     labelId="connectivity-select-label"
                     id="connectivity-select"
+                    label={"Connectivity"}
                     value={connectivityType}
-                    label="Connectivity type"
                     disabled={isAnimating}
                     onChange={(e) => {
                         setConnectivityType(e.target.value);
@@ -144,12 +117,15 @@ export const GraphContainer = () => {
                     style={{ width: '15vh', fontSize: '0.8em' }}
                 >
                     {connectivityMeasuresList.map((measure) => (
-                        <MenuItem key={measure} value={measure}>{measure}</MenuItem>
+                        <MenuItem key={measure} value={measure}>
+                            {measure}
+                        </MenuItem>
                     ))}
                 </Select>
             </FormControl>
         </Box>
     );
+
 
     return (
         <>
@@ -159,7 +135,8 @@ export const GraphContainer = () => {
                     <ComponentScreenshot content={<BasicGraphinGraph />} />
                 </Grid>
                 <Grid item xs={1}>
-                    {selectActiveNodes}
+                    <NodeSelection state={state} nodesList={activeNodes}
+                        onClick={handleCheckboxClick} />
                 </Grid>
             </Grid>
 
