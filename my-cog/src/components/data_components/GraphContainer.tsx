@@ -17,6 +17,7 @@ import { useTextFieldsStyle } from "../../components/tools_components/Styles";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import { TimeInterval } from "../../shared/GraphRelated";
+import { NodeSelection } from "../tools_components/NodeSelection";
 
 
 const GraphAnimation = () => {
@@ -241,36 +242,7 @@ export const GraphContainer = () => {
             }
         }
     }
-
-
-    // make a list of checkboxes to select the active nodes
-    const selectActiveNodes = (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            flexWrap: 'nowrap',  // disable wrapping
-            overflowY: 'auto',  // enable horizontal scroll
-            overflowX: 'hidden',
-            alignItems: 'center',
-            maxHeight: '600px'
-        }}>
-            {state.nodes.map((node) => (
-                <div key={node.id} onClick={() => handleCheckboxClick(node.style?.label?.value ? node.style.label.value : node.id)}>
-                    <Checkbox
-                        style={{ transform: 'scale(0.8)', color: 'purple' }}
-                        icon={<CheckCircleOutlineIcon />}
-                        checkedIcon={<CheckCircleIcon />}
-                        checked={activeNodes.map((activeNode) => activeNode.id).includes(node.id)}
-                        inputProps={{ 'aria-labelledby': node.id }}
-                    />
-                    <Typography variant="body2" align="center" style={{ fontSize: '0.65em' }}>
-                        {node.style?.label?.value ? node.style.label.value : node.id}
-                    </Typography>
-                </div>
-            ))}
-        </Box>
-
-    );
+    
 
     const dpClasses = useDropdownStyles();
     const tfClasses = useTextFieldsStyle();
@@ -311,7 +283,8 @@ export const GraphContainer = () => {
                     <BasicGraphinGraph />
                 </Grid>
                 <Grid item xs={1}>
-                    {selectActiveNodes}
+                    <NodeSelection state={state} nodesList={activeNodes}
+                        onClick={handleCheckboxClick} />
                 </Grid>
             </Grid>
 
