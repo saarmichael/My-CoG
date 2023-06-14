@@ -146,7 +146,12 @@ def granger():
 @app.route("/timeSeries", methods=["GET"])
 def get_time_series():
     channel_name = request.args.get("elecName")  # electrode (channel) id
-    XY = data_provider.get_channel_data(channel_name)
+    start = int(request.args.get("start"))  # start time of the time frame
+    end = int(request.args.get("end"))  # end time of the time frame
+    resolution = request.args.get("resolution")  # resolution of the time series
+    XY = data_provider.get_channel_data(
+        channel_name, start=start, end=end, resolution=resolution
+    )
     return jsonify(XY), 200
 
 

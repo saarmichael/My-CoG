@@ -102,11 +102,14 @@ class dataProvider:
         data = data.transpose()
         return data[:, 0:16]
 
-    def get_channel_data(self, channel_name):
+    def get_channel_data(self, channel_name, start, end, resolution="s"):
         raw = self.get_raw()
         sfreq = self.get_sampling_rate()
         data = raw.get_data(picks=channel_name)
         data = data.transpose()
+        startPoint = int(start * sfreq)
+        endPoint = int(end * sfreq)
+        data = data[startPoint:endPoint]
         XY = []
         for i in range(len(data)):
             XY.append({"x": i / sfreq, "y": data[i][0]})

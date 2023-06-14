@@ -25,12 +25,14 @@ interface Basic3DSpectogramProps {
 
 
 const TimeSeries = () => {
-    const { electrode } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { electrode, timeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
     const elec1SpecData = elec1_spectrogram as SpectrogramData
     /* asynchronous function that generate resolutionX over resolutionY matrix of random numbers */
     const getData = async (electrodeID: string) => {
-        return await getTimeSeries(electrodeID)
+        return await getTimeSeries(electrodeID, timeRange)
     }
+
+    
 
     const createLine = () => {
         getData(electrode)
@@ -40,14 +42,14 @@ const TimeSeries = () => {
                     numberOfColumns: 1,
                     numberOfRows: 4
                 }).setRowHeight(3, 0.3)
-
+            
                 const chart = dashboard.createChartXY({
                     columnIndex: 0,
                     columnSpan: 1,
                     rowIndex: 0,
                     rowSpan: 3
                 }).setTitle('Time Series')
-
+            
                 const zoomBandChart = dashboard.createZoomBandChart({
                     columnIndex: 0,
                     columnSpan: 1,
@@ -55,7 +57,6 @@ const TimeSeries = () => {
                     rowSpan: 1,
                     axis: chart.getDefaultAxisX()
                 })
-
                 const line = chart.addLineSeries()
                 line.add(data)
             })
