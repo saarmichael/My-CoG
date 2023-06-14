@@ -1,4 +1,4 @@
-import { FormGroup } from "@mui/material";
+import { CircularProgress, FormGroup } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from "../../contexts/VisualGraphOptionsContext";
 import { ColorPicker } from "../../components/tools_components/ColorPicker";
@@ -18,6 +18,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const { setOptions, setSettings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const { options, settings } = useContext(VisGraphOptionsContext) as IVisGraphOptionsContext;
     const [showPicker, setShowPicker] = useState(false);
+    const [ message, setMessage ] = useState<JSX.Element>(<>Save Settings</>);
     useEffect(() => {
         getSettings().then((data) => {
             let reorganizedOptions = reorganizeOptions(data.options, options);
@@ -25,8 +26,13 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             setSettings(data.settings);
         });
     }, []);
-    const saveUserSettings = () => {
-        saveSettings({ options, settings });
+    const saveUserSettings = async () => {
+        setMessage(<CircularProgress size={12} sx= {{color:"white"}}/>);
+        await saveSettings({ options, settings });
+        setMessage(<>Settings Saved!</>);
+        setTimeout(() => {
+            setMessage(<>Save Settings</>);
+        }, 2500);
     };
 
     const colorPickDiv = (
@@ -61,19 +67,21 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                             );
                         })}
                     </FormGroup>
-                    <div style={{ 
-    display: "flex", 
-    flexDirection: "column", 
-    justifyContent: "center", 
-    alignItems: "center", 
-    width: "100%" 
-}}>
-    <div>{colorPickDiv}</div>
-    {showPicker ? <div><ColorPicker /></div> : null}
-</div>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%"
+                    }}>
+                        <div>{colorPickDiv}</div>
+                        {showPicker ? <div><ColorPicker /></div> : null}
+                    </div>
 
                 </div>
-                <button onClick={saveUserSettings} style={ {marginBottom: "20px"} } className="submit-button">Save Settings</button>
+                <button onClick={saveUserSettings} style={{ marginBottom: "20px", fontSize: '0.9em' }} className="submit-button">
+                    {message}
+                </button>
             </div>
         </div>
 
