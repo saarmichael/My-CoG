@@ -4,12 +4,16 @@ import {
     ColorShadingStyles,
     Dashboard,
     LUT,
+    LegendBox,
     LegendBoxBuilders,
+    LineSeries,
     PalettedFill,
+    Point,
     PointMarker,
     Themes,
     UIBackground,
     UIDraggingModes,
+    UIElement,
     UIElementBuilders,
     UIOrigins,
     ZoomBandChart,
@@ -29,85 +33,100 @@ interface Basic3DSpectogramProps {
     data: number[][];
 }
 
-
 const TimeSeries = () => {
     const { electrode, timeRange, state, isAnimating } = useContext(GlobalDataContext) as IGlobalDataContext;
-    const [selectedChannels, setSelectedChannels] = useState<ActiveNodeProps[]>([]); // 
-    /* asynchronous function that generate resolutionX over resolutionY matrix of random numbers */
+    const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
+    const [legend, setLegend] = useState<LegendBox & UIElement | null>(null);
+    const [seriesArray, setSeriesArray] = useState<Array<LineSeries> | null>(null);
+    const [seriesData, setSeriesData] = useState<Array<Point[]> | null>(null);
+
     const getData = async (electrodeID: string) => {
-        return await getTimeSeries(electrodeID, timeRange)
-    }
+        return await getTimeSeries(electrodeID, timeRange);
+    };
 
     let dashboard: Dashboard;
     let chart: ChartXY<PointMarker, UIBackground>;
     let zoomBandChart: ZoomBandChart;
 
-    const createDashboard = () => {
-
+    const createDashboard = async () => {
         dashboard = lightningChart().Dashboard({
-            container: "time-series",
+            container: 'time-series',
             numberOfColumns: 1,
-            numberOfRows: 4
-        }).setRowHeight(3, 0.3)
+            numberOfRows: 4,
+        }).setRowHeight(3, 0.3);
 
         chart = dashboard.createChartXY({
             columnIndex: 0,
             columnSpan: 1,
             rowIndex: 0,
-            rowSpan: 3
-        }).setTitle('Time Series')
+            rowSpan: 3,
+        }).setTitle('Time Series');
 
-        const seriesArray = new Array(selectedChannels.length).fill(0).map((_) =>
-            chart
+        const seriesArray: Array<LineSeries> = [];
+        for (const node of state.nodes) {
+            const series = chart
                 .addLineSeries({
                     dataPattern: {
                         pattern: 'ProgressiveX',
                     },
                 })
-                .setStrokeStyle((stroke) => stroke.setThickness(1)),
-        );
-        seriesArray.forEach(async (series, index) => {
+                .setStrokeStyle((stroke) => stroke.setThickness(1))
+                .setName(node.id);
+            seriesArray.push(series);
+        }
 
-            const data = await getData(selectedChannels[index].id)
-            series.add(data)
-        })
-    }
+        setSeriesArray(seriesArray);
+        
+        for (const series of seriesArray) {
+            const data = await getData(series.getName());
+            series.add(data);
+        }
+        const newLegend = chart.addLegendBox().add(chart)
+        .setOrigin(UIOrigins.RightTop)
+        .setMargin({ left: 10, right: 10, top: 10, bottom: 10 })
+        
+        setLegend(newLegend);
 
+        newLegend.setEntries((entry, component) => {
+            entry.onMouseClick((_, event) => {
+                if (selectedChannels.includes(entry.getText())) {
+                    setSelectedChannels(selectedChannels.filter(channel => channel !== entry.getText()));
+                } else {
+                    setSelectedChannels([...selectedChannels, entry.getText()]);
+                }
+            });
+        });
+
+    };
 
     useEffect(() => {
         if (isAnimating) return;
-        console.log('createDashboard')
-        createDashboard()
-    }, [selectedChannels, timeRange])
+        console.log('createDashboard');
+        createDashboard();
+    }, [timeRange]);
 
-    // useEffect(() => {
-    //     console.log('electrode changed')
-    //     if (!state.nodes.map(node => node.id).includes(electrode)) return; // if the electrode doesn't exist in the list, return
-    //     if (selectedChannels.map(node => node.id).includes(electrode)) return; // if the electrode is already active, return
-    //     setSelectedChannels([...selectedChannels, {id: electrode, label: electrode}]) // update the list
-    // }, [electrode])
-
-    const handleCheckboxClick = (label: string) => {
-        const selectedChannelsId = selectedChannels.map((node) => node.id);
-        const selectedChannelsLabel = selectedChannels.map((node) => node.label);
-        // if the node is already active, remove it from the active nodes list
-        if (selectedChannelsLabel.includes(label) || selectedChannelsId.includes(label)) {
-            setSelectedChannels(selectedChannels.filter((node) => node.id !== label && node.label !== label));
-        } else {
-            const node = state.nodes.find((node) => node.id === label || node.style?.label?.value === label);
-            if (node) {
-                setSelectedChannels([...selectedChannels, { id: node.id, label: node.style?.label?.value ? node.style.label.value : node.id }]);
+    useEffect(() => {
+        if (!legend) return;
+        legend.setEntries((entry, component) => {
+            if (selectedChannels.includes(entry.getText())) {
+                entry.setOn(true);
+            } else {
+                entry.setOn(false);
             }
-        }
-    }
+        });
+    }, [legend]);
+
+    useEffect(() => {
+        if (!state.nodes.length) return;
+        if (selectedChannels.length) return;
+        setSelectedChannels([state.nodes[0].id]);
+    }, [state]);
 
     return (
         <>
             <div id="time-series" style={{ width: '100%', height: '100%' }}></div>
-            <NodeSelection state={state} nodesList={selectedChannels} onClick={handleCheckboxClick} />
         </>
-    )
+    );
+};
 
-}
-
-export default TimeSeries
+export default TimeSeries;
