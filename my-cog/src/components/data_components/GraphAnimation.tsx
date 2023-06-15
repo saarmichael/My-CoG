@@ -15,11 +15,14 @@ export const GraphAnimation = () => {
     const [currentFrameStart, setCurrentFrameStart] = useState<number>(start);
     const [showSlider, setShowSlider] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
-    const [isLoding, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [aborted, setAborted] = useState<boolean>(false);
     const [buttonClass, setButtonClass] = useState<string>("submit-button");
     const [buttonText, setButtonText] = useState<string>("Start Animation");
     const isAnimatingRef = useRef<boolean>(isAnimating);
     const currentFrameStartRef = useRef<number>(currentFrameStart);
+    const isLoadingRef = useRef<boolean>(isLoading);
+    const isAbortedRef = useRef<boolean>(aborted);
 
 
     const classes = useTextFieldsStyle();
@@ -58,7 +61,7 @@ export const GraphAnimation = () => {
         if (isError) {
             setButtonClass("submit-button submit-button-error");
             setButtonText("Error!");
-        } else if (isLoding) {
+        } else if (isLoading) {
             setButtonClass("submit-button submit-button-loading");
         } else if (isAnimating) {
             setButtonClass("submit-button submit-button-animating");
@@ -67,12 +70,12 @@ export const GraphAnimation = () => {
             setButtonClass("submit-button");
             setButtonText("Start Animation");
         }
-    }, [isError, isLoding, isAnimating]);
+    }, [isError, isLoading, isAnimating]);
 
     const loadingTexts = ["Preparing 🍳", "Preparing 🧙‍♂️", "Preparing 🎰", "Caching Data 🔢", "Be Patient 😎"]
     useEffect(() => {
         // generate different texts for loading stage
-        if (isLoding) {
+        if (isLoading) {
             // generate random number between 0 and 4 and set the text untill isLoding is false
             const intervalId = setInterval(() => {
                 const randomIndex = Math.floor(Math.random() * loadingTexts.length);
@@ -81,7 +84,7 @@ export const GraphAnimation = () => {
             return () => clearInterval(intervalId);
 
         }
-    }, [isLoding]);
+    }, [isLoading]);
 
 
 
@@ -92,8 +95,19 @@ export const GraphAnimation = () => {
 
     const preCompute = async () => {
         setIsLoading(true);
+        isLoadingRef.current = true;
         await cahceInServer(connectivityType, start, end, windowSize, overlap, samplesPerSegment);
+        if (isAbortedRef.current) {
+            setAborted(false);
+            isAbortedRef.current = false;
+        } else {
+            setCurrentFrameStart(start);
+            setIsAnimating(true);
+            isAnimatingRef.current = true;
+            setShowSlider(true);
+        }
         setIsLoading(false);
+        isLoadingRef.current = false;
     }
 
     useEffect(() => {
@@ -178,9 +192,12 @@ export const GraphAnimation = () => {
                         onClick={async () => {
                             if (!checkError()) {
                                 await preCompute();
-                                setCurrentFrameStart(start);
-                                setIsAnimating(true);
-                                setShowSlider(true);
+                                if (isAbortedRef.current) {
+                                    setAborted(false);
+                                    isAbortedRef.current = false;
+                                    return;
+                                }
+
                             }
                         }}
                     >
@@ -191,6 +208,7 @@ export const GraphAnimation = () => {
                         onClick={() => {
                             if (!checkError()) {
                                 setIsAnimating(true);
+                                isAnimatingRef.current = true;
                             }
                         }}
                     >
@@ -201,6 +219,7 @@ export const GraphAnimation = () => {
                     <span
                         onClick={() => {
                             setIsAnimating(false);
+                            isAnimatingRef.current = false;
                         }}
                     >
                         <IconWrapper>
@@ -209,9 +228,13 @@ export const GraphAnimation = () => {
                     </span>
                     <span
                         onClick={() => {
+                            setAborted(true);
+                            isAbortedRef.current = true;
                             setIsAnimating(false);
+                            isAnimatingRef.current = false;
                             setShowSlider(false);
                             setIsLoading(false);
+                            isLoadingRef.current = false;
                             setStart(0);
                             setCurrentFrameStart(0);
                         }}
