@@ -12,6 +12,7 @@ export const GraphAnimation = () => {
     const [windowSize, setWindowSize] = useState<number>(0);
     const [currentFrameStart, setCurrentFrameStart] = useState<number>(start);
     const [showSlider, setShowSlider] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
     const isAnimatingRef = useRef<boolean>(isAnimating);
     const currentFrameStartRef = useRef<number>(currentFrameStart);
 
@@ -34,7 +35,7 @@ export const GraphAnimation = () => {
             setTimeRange({ resolution: 's', start: currentFrameStartRef.current, end: currentEndFrame, samplesPerSegment: samplesPerSegment, overlap: overlap });
             setCurrentFrameStart(prevFrameStart => prevFrameStart + windowSize);
             currentEndFrame += windowSize;
-        }, 1000);
+        }, 1500);
     };
 
     useEffect(() => {
@@ -61,7 +62,18 @@ export const GraphAnimation = () => {
         }
     }, [currentFrameStart, end, windowSize]);
 
-
+    const checkError = () => {
+        if (start < 0 || end > duration || windowSize >= duration || windowSize <= 0 || start >= end) {
+            setIsError(true);
+            setTimeout(() => {
+                setIsError(false);
+            }, 2000);
+            return true;
+        } else {
+            setIsError(false);
+            return false;
+        }
+    }
 
     return (
         <>
@@ -69,11 +81,11 @@ export const GraphAnimation = () => {
                 <Grid item xs={2}>
                     <TextField
                         className={classes.root}
+                        label={"start"}
                         value={start}
                         defaultValue={start}
                         type="number"
                         size="small"
-                        label={"start"}
                         disabled={isAnimating}
                         onChange={(event) => {
                             setStart(Math.max(Number(event.target.value), 0));
@@ -83,12 +95,12 @@ export const GraphAnimation = () => {
                 <Grid item xs={2}>
                     <TextField
                         className={classes.root}
+                        label={"end"}
                         sx={{ width: '100%' }}
                         value={end}
                         defaultValue={end}
                         type="number"
                         size="small"
-                        label={"end"}
                         disabled={isAnimating}
                         onChange={(event) => {
                             setEnd(Math.min(Number(event.target.value), duration));
@@ -98,12 +110,14 @@ export const GraphAnimation = () => {
                 <Grid item xs={2}>
                     <TextField
                         className={classes.root}
-
+                        label={"windowSize"}
+                        inputProps={{
+                            step: 0.1,
+                        }}
                         value={windowSize}
                         defaultValue={windowSize}
                         type="number"
                         size="small"
-                        label={"windowSize"}
                         disabled={isAnimating}
                         onChange={(event) => {
                             setWindowSize(Math.min(Number(event.target.value), duration));
@@ -116,19 +130,23 @@ export const GraphAnimation = () => {
                     xs={6} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                 >
                     <span
-                        className="submit-button"
+                        className={isError ? "submit-button submit-button-error" : "submit-button"}
                         style={{ width: '60%', margin: '0 auto' }}
                         onClick={() => {
-                            setCurrentFrameStart(start);
-                            setIsAnimating(true);
-                            setShowSlider(true);
+                            if (!checkError()) {
+                                setCurrentFrameStart(start);
+                                setIsAnimating(true);
+                                setShowSlider(true);
+                            }
                         }}
                     >
-                        Start Animation
+                        {isError ? "Error" : "Start Animation"}
                     </span>
                     <span
                         onClick={() => {
-                            setIsAnimating(true);
+                            if (!checkError()) {
+                                setIsAnimating(true);
+                            }
                         }}
                     >
                         <IconWrapper>
@@ -144,12 +162,13 @@ export const GraphAnimation = () => {
                             <PauseIcon />
                         </IconWrapper>
                     </span>
+                    { }
                 </Grid>
 
                 <Grid item xs={12}>
                     {showSlider &&
                         <Slider
-                        sx={{ color: 'purple' }}
+                            sx={{ color: 'purple' }}
                             getAriaLabel={() => 'Animation slider'}
                             value={currentFrameStart}
                             min={start}

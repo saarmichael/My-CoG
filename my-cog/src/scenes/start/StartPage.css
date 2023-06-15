@@ -52,6 +52,10 @@
   transition: background-color 0.3s ease;
 }
 
+.submit-button-error {
+  background-color: rgb(255, 0, 0) !important;
+}
+
 .submit-button:hover,
 .file-upload-button:hover {
   background-color: #561f7b;
