@@ -89,6 +89,7 @@ def get_files():
         convert_path_to_tree(find_file(session["user_root_dir"], os.getcwd()))
     )
 
+
 @app.route("/getFile", methods=["GET"])
 def get_file():
     return jsonify(session["user_data_dir"].split(os.sep)[-1])
@@ -138,6 +139,44 @@ def get_coherence_matrices():
         f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
     )
     return jsonify(result)
+
+
+@app.route("/cacheConnectivity", methods=["GET"])
+def cache_connectivity():
+    connectivity_name = request.args.get("connectivity")
+    start = request.args.get("start")
+    end = request.args.get("end")
+    overlap = float(request.args.get("overlap"))
+    nperseg = float(request.args.get("nperseg"))
+    print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
+    file_name = session["user_data_dir"]
+    cal = data_in_db(file_name, request.url, Calculation.query)
+    if not cal:
+        # error handling
+        if start is None:
+            start = "0"
+            # end will be the last time frame
+        if end is None:
+            end = "1"
+        if int(math.floor(float(start))) > int(math.floor(float(end))):
+            end = str(int(start) + 1)
+        data = data_provider.get_data()
+        print(f"{bcolors.DEBUG}in time/ : data shape: {data.shape}{bcolors.ENDC}")
+        sfreq = data_provider.get_sampling_rate()
+        data = get_data_by_start_end(data, sfreq, start, end)
+        # Conn.get_connectivity_function(connectivity_name) is the connectivity function
+        connectivity_function = Conn.get_connectivity_function(connectivity_name)
+        f, CM = connectivity_function(
+            data, sfreq, overlap=overlap, nperseg=nperseg
+        )  # this is where the actual calculation happens
+        print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
+        result = {"f": f.tolist(), "CM": CM.tolist()}
+        write_calculation(file_name, request.url, result, session["username"])
+        print(
+            f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
+        )
+
+    return "cached!", 200
 
 
 @app.route("/granger", methods=["GET"])

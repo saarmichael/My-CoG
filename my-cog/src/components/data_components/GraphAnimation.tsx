@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useContext } from "react";
 import { IconWrapper, useTextFieldsStyle } from "../tools_components/Styles";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { cahceInServer } from "../../shared/RequestsService";
+import StopIcon from '@mui/icons-material/Stop';
 
 export const GraphAnimation = () => {
     const { duration, setTimeRange, isAnimating, setIsAnimating, overlap, samplesPerSegment, connectivityType } = useContext(GlobalDataContext) as IGlobalDataContext;
@@ -14,6 +15,9 @@ export const GraphAnimation = () => {
     const [currentFrameStart, setCurrentFrameStart] = useState<number>(start);
     const [showSlider, setShowSlider] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
+    const [isLoding, setIsLoading] = useState<boolean>(false);
+    const [buttonClass, setButtonClass] = useState<string>("submit-button");
+    const [buttonText, setButtonText] = useState<string>("Start Animation");
     const isAnimatingRef = useRef<boolean>(isAnimating);
     const currentFrameStartRef = useRef<number>(currentFrameStart);
 
@@ -50,6 +54,36 @@ export const GraphAnimation = () => {
         currentFrameStartRef.current = currentFrameStart;
     }, [currentFrameStart]);
 
+    useEffect(() => {
+        if (isError) {
+            setButtonClass("submit-button submit-button-error");
+            setButtonText("Error!");
+        } else if (isLoding) {
+            setButtonClass("submit-button submit-button-loading");
+        } else if (isAnimating) {
+            setButtonClass("submit-button submit-button-animating");
+            setButtonText("Animating...");
+        } else {
+            setButtonClass("submit-button");
+            setButtonText("Start Animation");
+        }
+    }, [isError, isLoding, isAnimating]);
+
+    const loadingTexts = ["Preparing 🍳", "Preparing 🧙‍♂️", "Preparing 🎰", "Caching Data 🔢", "Be Patient 😎"]
+    useEffect(() => {
+        // generate different texts for loading stage
+        if (isLoding) {
+            // generate random number between 0 and 4 and set the text untill isLoding is false
+            const intervalId = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * loadingTexts.length);
+                setButtonText(loadingTexts[randomIndex]);
+            }, 1000);
+            return () => clearInterval(intervalId);
+
+        }
+    }, [isLoding]);
+
+
 
     const handleSliderChange = (event: any, value: number | number[]) => {
         setCurrentFrameStart(value as number);
@@ -57,7 +91,9 @@ export const GraphAnimation = () => {
 
 
     const preCompute = async () => {
+        setIsLoading(true);
         await cahceInServer(connectivityType, start, end, windowSize, overlap, samplesPerSegment);
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -69,7 +105,7 @@ export const GraphAnimation = () => {
     }, [currentFrameStart, end, windowSize]);
 
     const checkError = () => {
-        if (start < 0 || end > duration || windowSize >= duration || windowSize <= 0 || start >= end) {
+        if (start < 0 || end > duration || windowSize >= (end - start) || windowSize <= 0 || start >= end) {
             setIsError(true);
             setTimeout(() => {
                 setIsError(false);
@@ -137,23 +173,23 @@ export const GraphAnimation = () => {
                     xs={6} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                 >
                     <span
-                        className={isError ? "submit-button submit-button-error" : "submit-button"}
+                        className={buttonClass ? buttonClass : "submit-button"}
                         style={{ width: '60%', margin: '0 auto' }}
-                        onClick={() => {
+                        onClick={async () => {
                             if (!checkError()) {
+                                await preCompute();
                                 setCurrentFrameStart(start);
                                 setIsAnimating(true);
                                 setShowSlider(true);
                             }
                         }}
                     >
-                        {isError ? "Error" : "Start Animation"}
+                        {buttonText}
                     </span>
                     <span
 
-                        onClick={async () => {
+                        onClick={() => {
                             if (!checkError()) {
-                                await preCompute();
                                 setIsAnimating(true);
                             }
                         }}
@@ -171,7 +207,19 @@ export const GraphAnimation = () => {
                             <PauseIcon />
                         </IconWrapper>
                     </span>
-                    { }
+                    <span
+                        onClick={() => {
+                            setIsAnimating(false);
+                            setShowSlider(false);
+                            setIsLoading(false);
+                            setStart(0);
+                            setCurrentFrameStart(0);
+                        }}
+                    >
+                        <IconWrapper>
+                            <StopIcon />
+                        </IconWrapper>
+                    </span>
                 </Grid>
 
                 <Grid item xs={12}>
