@@ -17,6 +17,7 @@ import { useTextFieldsStyle } from "../../components/tools_components/Styles";
 import { TimeInterval } from "../../shared/GraphRelated";
 import html2canvas from 'html2canvas';
 import ComponentScreenshot from "../tools_components/ComponentScreenshot";
+import { NodeSelection } from "../tools_components/NodeSelection";
 
 
 
