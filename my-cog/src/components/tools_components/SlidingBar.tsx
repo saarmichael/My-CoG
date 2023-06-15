@@ -241,7 +241,19 @@ export const SlidingBar = (props: SlidingBarProps) => {
             size="small"
             label={props.lowText}
             onChange={(event) => {
-              setValue([Math.max(Number(event.target.value), 0), value[1]]);
+              const eventValue = Number(event.target.value);
+              const val0 = value[0];
+              const val1 = value[1];
+              const diff = val1 - val0;
+              const newVal1 = val0 + diff;
+              if (lockThumbs) {
+                if (newVal1 > array[array.length - 1]) {
+                  return;
+                }
+                setValue([Math.max(eventValue, array[0]), Math.min(eventValue + diff, array[array.length - 1])]);
+              } else {
+                setValue([Math.max(eventValue, 0), value[1]]);
+              }
             }}
             onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
               event.target.value = Number(event.target.value).toString();
@@ -258,7 +270,19 @@ export const SlidingBar = (props: SlidingBarProps) => {
             size="small"
             label={props.highText}
             onChange={(event) => {
-              setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
+              const eventValue = Number(event.target.value);
+              const val0 = value[0];
+              const val1 = value[1];
+              const diff = val1 - val0;
+              const newVal0 = val1 - diff;
+              if (lockThumbs) {
+                if(newVal0 < array[0]) {
+                  return;
+                }
+                setValue([Math.max(eventValue - diff, array[0]), Math.min(eventValue, array[array.length - 1])]);
+              } else {
+                setValue([value[0], Math.min(eventValue, array[array.length - 1])]);
+              }
             }}
             onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
               event.target.value = Number(event.target.value).toString();
