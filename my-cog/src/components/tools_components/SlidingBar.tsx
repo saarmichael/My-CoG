@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { useTextFieldsStyle } from "../../components/tools_components/Styles";
+import { TimeInterval } from "../../shared/GraphRelated";
 
 interface SlidingBarProps {
   sliderName: string;
@@ -13,6 +14,7 @@ interface SlidingBarProps {
   disabled: boolean;
   lowText?: string;
   highText?: string;
+  timeRange?: TimeInterval;
 }
 
 
@@ -130,6 +132,12 @@ export const SlidingBar = (props: SlidingBarProps) => {
   useEffect(() => {
     props.onChange(new Event('change'), value);
   }, [value]);
+
+  useEffect(() => {
+    if (props.timeRange) {
+      setValue([props.timeRange.start, props.timeRange.end]);
+    }
+  }, [props.timeRange]);
 
   // micro slider
 
