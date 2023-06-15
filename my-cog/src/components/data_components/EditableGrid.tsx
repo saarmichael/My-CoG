@@ -79,8 +79,8 @@ const GridBehavior = (props: GridBehaviorProps) => {
             const nodes = graph.getNodes();
             nodes.forEach(node => {
                 const model = node.getModel();
-                const size = model.style?.keyshape?.size - (e.wheelDelta / 20);
-                let modelFontSize = model.style?.label?.fontSize - (e.wheelDelta / 20);
+                const size = model.style?.keyshape?.size - (e.wheelDelta / 30);
+                let modelFontSize = model.style?.label?.fontSize - (e.wheelDelta / 30);
 
                 if(!modelFontSize){
                     modelFontSize = NODE_LABEL_FONT_SIZE;
