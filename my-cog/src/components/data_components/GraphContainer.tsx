@@ -20,6 +20,31 @@ import ComponentScreenshot from "../tools_components/ComponentScreenshot";
 import { NodeSelection } from "../tools_components/NodeSelection";
 
 
+export interface TimeSliderProps {
+    sliderDuration: TimeInterval;
+    setSliderDuration: (sliderDuration: TimeInterval) => void;
+}
+
+export const TimeSliderComponent = (props: TimeSliderProps) => {
+    const { duration, isAnimating, overlap, samplesPerSegment } = useContext(GlobalDataContext) as IGlobalDataContext;
+
+    const handleDurationChange = (event: Event, newValue: number[] | number) => {
+        newValue = newValue as number[];
+        props.setSliderDuration({
+            resolution: 's', start: newValue[0], end: newValue[1],
+            samplesPerSegment: samplesPerSegment, overlap: overlap
+        })
+    }
+
+    return (
+        <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
+            onChange={handleDurationChange}
+            miniSlider={true}
+            disabled={isAnimating}
+        />
+    );
+}
+
 
 export const GraphContainer = () => {
 
@@ -47,14 +72,6 @@ export const GraphContainer = () => {
     const handleFreqChange = (event: Event, newValue: number[] | number) => {
         newValue = newValue as number[];
         setFreqRange({ min: newValue[0], max: newValue[1] })
-    }
-
-    const handleDurationChange = (event: Event, newValue: number[] | number) => {
-        newValue = newValue as number[];
-        setSliderDuration({
-            resolution: 's', start: newValue[0], end: newValue[1],
-            samplesPerSegment: samplesPerSegment, overlap: overlap
-        })
     }
 
     const [fList, setFList] = useState<number[]>([0, 5]);
@@ -95,7 +112,7 @@ export const GraphContainer = () => {
             }
         }
     }
-    
+
 
     const dpClasses = useDropdownStyles();
     const tfClasses = useTextFieldsStyle();
@@ -159,11 +176,7 @@ export const GraphContainer = () => {
                 <Grid item xs={1}>
                 </Grid>
                 <Grid item xs={5} justifyContent="center">
-                    <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
-                        onChange={handleDurationChange}
-                        miniSlider={true}
-                        disabled={isAnimating}
-                    />
+                    <TimeSliderComponent sliderDuration={sliderDuration} setSliderDuration={setSliderDuration} />
                 </Grid>
                 <Grid item xs={5}>
                     <Grid container spacing={1}>

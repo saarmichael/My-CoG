@@ -28,17 +28,39 @@ import { SpectrogramData, getSpectrogramData } from '../../shared/getters';
 import { line } from 'd3';
 import { getTimeSeries } from '../../shared/ElectrodeDataService';
 import { NodeSelection } from '../tools_components/NodeSelection';
+import { TimeInterval } from '../../shared/GraphRelated';
+import { TimeSliderComponent } from './GraphContainer';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface Basic3DSpectogramProps {
     data: number[][];
 }
 
 const TimeSeries = () => {
-    const { electrode, timeRange, state, isAnimating } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { state,
+        freqList, setFreqList,
+        setFreqRange, duration,
+        setDuration,
+        setTimeRange,
+        activeNodes, setActiveNodes,
+        loading,
+        setConnectivityType, connectivityType,
+        isAnimating, setIsAnimating,
+        overlap, setOverlap,
+        samplesPerSegment, setSamplesPerSegment,
+        timeRange
+    } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [legend, setLegend] = useState<LegendBox & UIElement | null>(null);
     const [seriesArray, setSeriesArray] = useState<Array<LineSeries> | null>(null);
     const [seriesData, setSeriesData] = useState<Array<Point[]> | null>(null);
+    const [sliderDuration, setSliderDuration] = useState<TimeInterval>({
+        resolution: 's',
+        start: 0,
+        end: 0,
+        samplesPerSegment: samplesPerSegment,
+        overlap: overlap
+    });
 
     const getData = async (electrodeID: string) => {
         return await getTimeSeries(electrodeID, timeRange);
@@ -76,15 +98,15 @@ const TimeSeries = () => {
         }
 
         setSeriesArray(seriesArray);
-        
+
         for (const series of seriesArray) {
             const data = await getData(series.getName());
             series.add(data);
         }
         const newLegend = chart.addLegendBox().add(chart)
-        .setOrigin(UIOrigins.RightTop)
-        .setMargin({ left: 10, right: 10, top: 10, bottom: 10 })
-        
+            .setOrigin(UIOrigins.RightTop)
+            .setMargin({ left: 10, right: 10, top: 10, bottom: 10 })
+
         setLegend(newLegend);
 
         newLegend.setEntries((entry, component) => {
@@ -125,6 +147,25 @@ const TimeSeries = () => {
     return (
         <>
             <div id="time-series" style={{ width: '100%', height: '100%' }}></div>
+            <div>
+                <TimeSliderComponent sliderDuration={sliderDuration} setSliderDuration={setSliderDuration} />
+            </div>
+            <div
+                className="submit-button"
+                style={{
+                    padding: '10px',
+                    overflow: 'hidden',
+                    width: '200px',
+                    textAlign: 'center',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                }}
+                onClick={() => {
+                    setTimeRange(sliderDuration);
+                }}
+            >
+                {loading ? <CircularProgress size={15} sx={{ color: "white" }} /> : <>Get Time Series</>}
+            </div>
         </>
     );
 };
