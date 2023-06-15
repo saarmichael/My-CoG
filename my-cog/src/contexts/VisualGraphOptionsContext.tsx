@@ -81,7 +81,7 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
         },
         {
             label: "Show weights",
-            checked: true,
+            checked: false,
             onChange: showEdgeWeight,
             needValue: false
         },
@@ -128,12 +128,13 @@ export const VisGraphOptionsProvider: React.FC<IVisGraphOptionsProviderProps> = 
         },
         edgeWidth: {
             min: 2,
-            max: 45
+            max: 45,
+            default: 3
         },
         nodeSize: {
-            min: 20,
-            max: 50,
-            default: 20
+            min: 30,
+            max: 60,
+            default: 45
         },
         nodeColor: {
             firstColor: "#000000",

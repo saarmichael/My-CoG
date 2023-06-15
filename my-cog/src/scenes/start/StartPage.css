@@ -55,6 +55,13 @@
 .submit-button-error {
   background-color: rgb(255, 0, 0) !important;
 }
+.submit-button-loading{
+  background-color: rgb(12, 165, 226) !important;
+}
+
+.submit-button-animating {
+  background-color: rgb(0, 255, 0) !important;
+}
 
 .submit-button:hover,
 .file-upload-button:hover {

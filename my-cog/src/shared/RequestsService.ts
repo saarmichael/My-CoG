@@ -33,6 +33,17 @@ export const getSingletonDuration = async (): Promise<number> => {
     return singletonDuration;
 }
 
+const cacheConnectivityResponse =
+    async (connectivityName: string, time?: TimeInterval): Promise<ConnectivityResponse | undefined> => {
+        let url = `${baseAddress}/cacheConnectivity`
+        url += `?connectivity=${connectivityName}`;
+        if (time) {
+            url += `&start=${time.start}&end=${time.end}&nperseg=${time.samplesPerSegment}&overlap=${time.overlap}`;
+        }
+        return apiGET<ConnectivityResponse>(url);
+    }
+
+
 export const getConnectivityResponse =
     async (connectivityName: string, time?: TimeInterval): Promise<ConnectivityResponse | undefined> => {
         let url = `${baseAddress}/connectivity`
@@ -51,7 +62,7 @@ export const cahceInServer = async (connectivityName: string, start: number, end
             samplesPerSegment: nperseg,
             overlap: overlap
         }
-        await getConnectivityResponse(connectivityName, timeInter);
+        await cacheConnectivityResponse(connectivityName, timeInter);
     }
 }
 
