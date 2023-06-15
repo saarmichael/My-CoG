@@ -53,7 +53,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
+    <form onSubmit={handleSubmit} className="form-container" style={{ marginTop: '2%' }}>
       <div className="input-field">
         <label>
           Username
