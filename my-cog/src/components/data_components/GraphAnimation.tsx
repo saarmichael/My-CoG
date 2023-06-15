@@ -58,9 +58,9 @@ export const GraphAnimation = () => {
             setTimeout(() => {
                 setShowSlider(false);
             }, 1000);
-        } 
+        }
     }, [currentFrameStart, end, windowSize]);
-    
+
 
 
     return (
@@ -145,18 +145,20 @@ export const GraphAnimation = () => {
                         </IconWrapper>
                     </span>
                 </Grid>
-                
+
                 <Grid item xs={12}>
                     {showSlider &&
-                    <Slider
+                        <Slider
                         sx={{ color: 'purple' }}
-                        getAriaLabel={() => 'Animation slider'}
-                        value={currentFrameStart}
-                        min={start}
-                        max={end}
-                        onChange={handleSliderChange}
-                        disabled={isAnimating}
-                    />}
+                            getAriaLabel={() => 'Animation slider'}
+                            value={currentFrameStart}
+                            min={start}
+                            max={end}
+                            onChange={handleSliderChange}
+                            disabled={isAnimating}
+                            valueLabelDisplay={isAnimating ? "on" : "auto"}
+
+                        />}
                 </Grid>
             </Grid>
         </>
