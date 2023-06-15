@@ -55,7 +55,7 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                     </Grid>
                     <Grid item xs={12}>
                         <div className='submit-button'
-                            style={{marginBottom: '10px', width: '50%'}}
+                            style={{marginBottom: '10px', width: '65%'}}
                             
                             onClick={() => {
                                 const newValue = Number(inputRef.current?.value);
@@ -77,7 +77,7 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                                 }
                             }}
                         >
-                            Submit
+                            Set threshold
                         </div>
                     </Grid>
                 </Grid>

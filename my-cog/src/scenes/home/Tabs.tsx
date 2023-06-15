@@ -121,7 +121,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
 const Tabbing = () => {
   const [tabs, setTabs] = useState([
     {
-      label: "Tab 1",
+      label: "Connectivity",
       content: <div
         className="active-content"
       >
@@ -130,7 +130,7 @@ const Tabbing = () => {
       </div>,
     },
     {
-      label: "Tab 2",
+      label: "Raw Signal",
       content: <div
         className="active-content"
       >
@@ -148,14 +148,6 @@ const Tabbing = () => {
           <Box2 />
         </Rnd>
         <></>
-      </div>,
-    },
-    {
-      label: "Tab 3",
-      content: <div className="active-content">
-        <h2>Tab 1 Content</h2>
-        <p>This is the first paragraph.</p>
-        <p>This is the second paragraph.</p>
       </div>,
     },
   ]);
