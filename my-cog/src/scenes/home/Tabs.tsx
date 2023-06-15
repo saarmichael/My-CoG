@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Rnd } from 'react-rnd';
-import { Box, Box1, Box2 } from "../../components/tools_components/GridComponents";
+import { Box } from "../../components/tools_components/GridComponents";
 import "./Tabs.css";
 import Sidebar from "./SideBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
 import { customStyles } from "../../components/tools_components/Styles";
 import Select from 'react-select';
+import TimeSeries from "../../components/data_components/TimeSeries";
+import { GraphContainer } from "../../components/data_components/GraphContainer";
+import { EditablesContainer } from "../../components/data_components/EditablesContainer";
 
 
 
@@ -105,7 +108,9 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
           <div style={{ overflow: 'auto', flexGrow: 1 }}>
             {tabs.map((tab, index) => (
               <Grid container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
-                {tab.content.props.children.map((component: JSX.Element, index: number) => (
+                {tab.content.props.children
+                .filter((component: JSX.Element) => component.type !== React.Fragment)
+                .map((component: JSX.Element, index: number) => (
                   <Grid item  xs={5} style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '' }}>
                     {component}
                   </Grid>
@@ -122,33 +127,21 @@ const Tabbing = () => {
   const [tabs, setTabs] = useState([
     {
       label: "Connectivity",
-      content: <div
-        className="active-content"
-      >
-        <Box name="Graph"/>
-        <Box1 name="Grid"/>
-      </div>,
+      content: (
+        <div className="active-content">
+          <Box name="Graph" content={<GraphContainer />} />
+          <Box name="Grid" content={<EditablesContainer />} />
+        </div>
+      ),
     },
     {
       label: "Raw Signal",
-      content: <div
-        className="active-content"
-      >
-        <Rnd default={{
-          x: 15,
-          y: 100,
-          width: 450,
-          height: 300,
-        }}
-          bounds="parent"
-          minWidth={500}
-          minHeight={190}
-          disableDragging={true}
-        >
-          <Box2 />
-        </Rnd>
-        <></>
-      </div>,
+      content: (
+        <div className="active-content">
+          <Box name="Time Series" content={<TimeSeries />} />
+          <></>
+        </div>
+      ),
     },
   ]);
 

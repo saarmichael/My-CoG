@@ -1,36 +1,24 @@
 import {
     ChartXY,
-    ColorRGBA,
-    ColorShadingStyles,
+    Themes,
     Dashboard,
-    LUT,
     LegendBox,
-    LegendBoxBuilders,
     LineSeries,
-    PalettedFill,
     Point,
     PointMarker,
-    Themes,
     UIBackground,
-    UIDraggingModes,
     UIElement,
-    UIElementBuilders,
     UIOrigins,
     ZoomBandChart,
-    emptyLine,
     lightningChart,
 } from '@arction/lcjs';
-import { createProgressiveTraceGenerator } from '@arction/xydata';
 import { useContext, useEffect, useState } from 'react';
-import { ActiveNodeProps, GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
-import * as elec1_spectrogram from '../../shared/ecog_data/elec1_spectrogram.json';
-import { SpectrogramData, getSpectrogramData } from '../../shared/getters';
-import { line } from 'd3';
+import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 import { getTimeSeries } from '../../shared/ElectrodeDataService';
-import { NodeSelection } from '../tools_components/NodeSelection';
 import { TimeInterval } from '../../shared/GraphRelated';
 import { TimeSliderComponent } from './GraphContainer';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Grid } from '@mui/material';
 
 interface Basic3DSpectogramProps {
     data: number[][];
@@ -75,14 +63,16 @@ const TimeSeries = () => {
             container: 'time-series',
             numberOfColumns: 1,
             numberOfRows: 4,
+            theme: Themes.lightNew,
         }).setRowHeight(3, 0.3);
 
         chart = dashboard.createChartXY({
             columnIndex: 0,
             columnSpan: 1,
             rowIndex: 0,
-            rowSpan: 3,
-        }).setTitle('Time Series');
+            rowSpan: 4,
+            theme: Themes.lightNew,
+        }).setTitle('');
 
         const seriesArray: Array<LineSeries> = [];
         for (const node of state.nodes) {
@@ -105,8 +95,7 @@ const TimeSeries = () => {
         }
         const newLegend = chart.addLegendBox().add(chart)
             .setOrigin(UIOrigins.RightTop)
-            .setMargin({ left: 10, right: 10, top: 10, bottom: 10 })
-
+            .setPosition({ x: 100, y: 100 })
         setLegend(newLegend);
 
         newLegend.setEntries((entry, component) => {
@@ -145,28 +134,43 @@ const TimeSeries = () => {
     }, [state]);
 
     return (
-        <>
-            <div id="time-series" style={{ width: '100%', height: '100%' }}></div>
-            <div>
-                <TimeSliderComponent lowText="Start" highText="End" sliderDuration={sliderDuration} setSliderDuration={setSliderDuration} />
-            </div>
-            <div
-                className="submit-button"
-                style={{
-                    padding: '10px',
-                    overflow: 'hidden',
-                    width: '200px',
-                    textAlign: 'center',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                }}
-                onClick={() => {
-                    setTimeRange(sliderDuration);
-                }}
-            >
-                {loading ? <CircularProgress size={15} sx={{ color: "white" }} /> : <>Get Time Series</>}
-            </div>
-        </>
+        <Grid container style={{ height: '70vh', width: '100%', flexDirection: 'column', justifyContent: 'center', padding: 0, margin: 0 }}>
+            <h1 className="head" >Time Series Chart</h1>
+            <Grid item style={{ height: '85%' }}>
+                <div id="time-series" style={{ width: '100%', height: '100%' }}></div>
+            </Grid>
+
+            <Grid item style={{ height: '5%' }}>
+                <TimeSliderComponent
+                    lowText="Start"
+                    highText="End"
+                    sliderDuration={sliderDuration}
+                    setSliderDuration={setSliderDuration}
+                />
+                <div
+                    className="submit-button"
+                    style={{
+                        padding: '10px',
+                        overflow: 'hidden',
+                        width: '200px',
+                        textAlign: 'center',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        marginTop: '10px',
+                    }}
+                    onClick={() => {
+                        setTimeRange(sliderDuration);
+                    }}
+                >
+                    {loading ? (
+                        <CircularProgress size={15} sx={{ color: 'white' }} />
+                    ) : (
+                        <>Get Time Series</>
+                    )}
+                </div>
+            </Grid>
+        </Grid>
+
     );
 };
 
