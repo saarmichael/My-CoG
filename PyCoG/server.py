@@ -107,8 +107,8 @@ def get_coherence_matrices():
     connectivity_name = request.args.get("connectivity")
     start = request.args.get("start")
     end = request.args.get("end")
-    overlap = request.args.get("overlap")
-    nperseg = request.args.get("nperseg")
+    overlap = float(request.args.get("overlap"))
+    nperseg = float(request.args.get("nperseg"))
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
     file_name = session["user_data_dir"]
     cal = data_in_db(file_name, request.url, Calculation.query)

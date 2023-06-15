@@ -38,10 +38,22 @@ export const getConnectivityResponse =
         let url = `${baseAddress}/connectivity`
         url += `?connectivity=${connectivityName}`;
         if (time) {
-            url += `&start=${time.start}&end=${time.end}`;
+            url += `&start=${time.start}&end=${time.end}&nperseg=${time.samplesPerSegment}&overlap=${time.overlap}`;
         }
         return apiGET<ConnectivityResponse>(url);
     }
+
+export const cahceInServer = async (connectivityName: string, start: number, end: number, windowSize: number, overlap: number, nperseg: number): Promise<void> => {
+    for (let i = start; i < end; i += windowSize) {
+        const timeInter: TimeInterval = {
+            start: i,
+            end: i + windowSize,
+            samplesPerSegment: nperseg,
+            overlap: overlap
+        }
+        await getConnectivityResponse(connectivityName, timeInter);
+    }
+}
 
 export const getBasicGraph = async (): Promise<BasicGraphResponse> => {
     const url = `${baseAddress}/graph`;
