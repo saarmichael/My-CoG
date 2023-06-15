@@ -197,13 +197,11 @@ export const GraphAnimation = () => {
                         style={{ width: '60%', margin: '0 auto' }}
                         onClick={async () => {
                             if (!checkError()) {
-                                await preCompute();
                                 if (isAbortedRef.current) {
                                     setAborted(false);
                                     isAbortedRef.current = false;
-                                    return;
                                 }
-
+                                await preCompute();
                             }
                         }}
                     >
