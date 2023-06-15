@@ -11,6 +11,8 @@ interface SlidingBarProps {
   keepDistance: boolean;
   miniSlider: boolean;
   disabled: boolean;
+  lowText?: string;
+  highText?: string;
 }
 
 
@@ -229,7 +231,7 @@ export const SlidingBar = (props: SlidingBarProps) => {
             defaultValue={value[0]}
             type="number"
             size="small"
-            label={"lowerThumb"}
+            label={props.lowText}
             onChange={(event) => {
               setValue([Math.max(Number(event.target.value), 0), value[1]]);
             }}
@@ -244,7 +246,7 @@ export const SlidingBar = (props: SlidingBarProps) => {
             defaultValue={value[1]}
             type="number"
             size="small"
-            label={"upperThumb"}
+            label={props.highText}
             onChange={(event) => {
               setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
             }}

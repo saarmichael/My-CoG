@@ -148,7 +148,7 @@ const TimeSeries = () => {
         <>
             <div id="time-series" style={{ width: '100%', height: '100%' }}></div>
             <div>
-                <TimeSliderComponent sliderDuration={sliderDuration} setSliderDuration={setSliderDuration} />
+                <TimeSliderComponent lowText="Start" highText="End" sliderDuration={sliderDuration} setSliderDuration={setSliderDuration} />
             </div>
             <div
                 className="submit-button"

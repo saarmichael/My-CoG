@@ -11,6 +11,7 @@ export const GraphAnimation = () => {
     const [end, setEnd] = useState<number>(0);
     const [windowSize, setWindowSize] = useState<number>(0);
     const [currentFrameStart, setCurrentFrameStart] = useState<number>(start);
+    const [showSlider, setShowSlider] = useState<boolean>(false);
     const isAnimatingRef = useRef<boolean>(isAnimating);
     const currentFrameStartRef = useRef<number>(currentFrameStart);
 
@@ -51,6 +52,15 @@ export const GraphAnimation = () => {
     const handleSliderChange = (event: any, value: number | number[]) => {
         setCurrentFrameStart(value as number);
     };
+
+    useEffect(() => {
+        if (currentFrameStart >= end) {
+            setTimeout(() => {
+                setShowSlider(false);
+            }, 1000);
+        } 
+    }, [currentFrameStart, end, windowSize]);
+    
 
 
     return (
@@ -111,6 +121,7 @@ export const GraphAnimation = () => {
                         onClick={() => {
                             setCurrentFrameStart(start);
                             setIsAnimating(true);
+                            setShowSlider(true);
                         }}
                     >
                         Start Animation
@@ -134,7 +145,9 @@ export const GraphAnimation = () => {
                         </IconWrapper>
                     </span>
                 </Grid>
+                
                 <Grid item xs={12}>
+                    {showSlider &&
                     <Slider
                         sx={{ color: 'purple' }}
                         getAriaLabel={() => 'Animation slider'}
@@ -143,7 +156,7 @@ export const GraphAnimation = () => {
                         max={end}
                         onChange={handleSliderChange}
                         disabled={isAnimating}
-                    />
+                    />}
                 </Grid>
             </Grid>
         </>

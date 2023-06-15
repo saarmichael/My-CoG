@@ -38,13 +38,13 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const colorPickDiv = (
         <div className="submit-button"
             style={{
-                backgroundColor: settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#000000",
+                width: '100%', backgroundColor: settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#000000",
             }}
             onClick={() => {
                 setShowPicker(!showPicker);
             }}
         >
-            Color Picker
+            Choose color
         </div>
     );
 

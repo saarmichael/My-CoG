@@ -22,6 +22,8 @@ import { NodeSelection } from "../tools_components/NodeSelection";
 
 export interface TimeSliderProps {
     sliderDuration: TimeInterval;
+    highText: string;
+    lowText: string;
     setSliderDuration: (sliderDuration: TimeInterval) => void;
 }
 
@@ -38,6 +40,7 @@ export const TimeSliderComponent = (props: TimeSliderProps) => {
 
     return (
         <SlidingBar sliderName="Time slider" range={duration} keepDistance={true}
+            lowText="Start" highText="End"
             onChange={handleDurationChange}
             miniSlider={true}
             disabled={isAnimating}
@@ -165,6 +168,8 @@ export const GraphContainer = () => {
 
                     <SlidingBar
                         sliderName="Frequency slider"
+                        lowText="Lower bound"
+                        highText="High bound"
                         range={fList}
                         keepDistance={false}
                         onChange={handleFreqChange}
@@ -176,7 +181,7 @@ export const GraphContainer = () => {
                 <Grid item xs={1}>
                 </Grid>
                 <Grid item xs={5} justifyContent="center">
-                    <TimeSliderComponent sliderDuration={sliderDuration} setSliderDuration={setSliderDuration} />
+                    <TimeSliderComponent lowText="Start" highText="End" sliderDuration={sliderDuration} setSliderDuration={setSliderDuration} />
                 </Grid>
                 <Grid item xs={5}>
                     <Grid container spacing={1}>
@@ -187,7 +192,7 @@ export const GraphContainer = () => {
                                 value={samplesPerSegment}
                                 type="number"
                                 size="small"
-                                label={"nprseg"}
+                                label={"nperseg"}
                                 onChange={(event) => {
                                     const value = parseFloat(event.target.value);
                                     if (!isNaN(value)) {
@@ -203,7 +208,7 @@ export const GraphContainer = () => {
                                 value={overlap}
                                 type="number"
                                 size="small"
-                                label={"nprseg"}
+                                label={"Window overlap"}
                                 onChange={(event) => {
                                     const value = parseFloat(event.target.value);
                                     if (!isNaN(value)) {
