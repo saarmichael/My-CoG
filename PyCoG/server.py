@@ -153,10 +153,18 @@ def get_time_series():
     start = int(request.args.get("start"))  # start time of the time frame
     end = int(request.args.get("end"))  # end time of the time frame
     resolution = request.args.get("resolution")  # resolution of the time series
-    XY = data_provider.get_channel_data(
-        channel_name, start=start, end=end, resolution=resolution
-    )
-    return jsonify(XY), 200
+    file_name = session["user_data_dir"]
+    url = "http://localhost:5000/timeSeries?elecName=" + channel_name + "&start=" + str(start) + "&end=" + str(end) + "&resolution=" + str(resolution)
+    cal = data_in_db(file_name=file_name, url=url, table=Calculation.query)
+    if cal:
+        print("Cached")
+        return cal.data
+    else:
+        XY = data_provider.get_channel_data(
+            channel_name, start=start, end=end, resolution=resolution
+        )
+        write_calculation(file_name=file_name, url=url, data=XY, created_by=session["username"])
+        return jsonify(XY), 200
 
 
 # get_graph_basic_info

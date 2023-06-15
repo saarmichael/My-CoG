@@ -94,12 +94,14 @@ export const SlidingBar = (props: SlidingBarProps) => {
     }
 
     const [lowerThumb, upperThumb] = value; // Destructure the current values of the thumbs
+    setMicroSliderValue([Math.floor(newValue[0]), Math.floor(newValue[0]) + 2]);
 
     if (activeThumb === 0) {
       if (lockThumbs) {
         const stepSize = newValue[0] - lowerThumb; // Use current value as reference
         const newUpperThumb = upperThumb + stepSize;
         const maxUpperThumb = array[array.length - 1];
+
 
         setValue([
           Math.min(newValue[0], maxUpperThumb - minDistance), // Adjust lower thumb within limits
@@ -138,7 +140,7 @@ export const SlidingBar = (props: SlidingBarProps) => {
 
   const handleHoverChange = (event: any, newValue: number | number[]) => {
     newValue = newValue as number[];
-    setHoverValue([Math.floor(newValue[0]), Math.floor(newValue[0]) + 2]); // get the floor value to define a range for micro slider
+    setHoverValue([Math.floor(newValue[0]), Math.floor(newValue[0]) + 2]);
     setShowMicroSlider(true); // show the micro slider when user moves the thumb
   };
 
@@ -149,7 +151,6 @@ export const SlidingBar = (props: SlidingBarProps) => {
       setMicroSliderValue([Math.min(newValue[0], microSliderValue[1] - 0.001), microSliderValue[1]]);
       // change the lower thumb input field value
       setValue([Math.min(newValue[0], microSliderValue[1] - 0.001), microSliderValue[1]]);
-
     } else {
       setMicroSliderValue([microSliderValue[0], Math.max(newValue[1], microSliderValue[0] + 0.001)]);
       // change the upper thumb input field value
@@ -228,12 +229,14 @@ export const SlidingBar = (props: SlidingBarProps) => {
             className={classes.root}
             sx={{ width: '100%' }}
             value={value[0]}
-            defaultValue={value[0]}
             type="number"
             size="small"
             label={props.lowText}
             onChange={(event) => {
               setValue([Math.max(Number(event.target.value), 0), value[1]]);
+            }}
+            onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
+              event.target.value = Number(event.target.value).toString();
             }}
           />
         </Grid>
@@ -243,17 +246,18 @@ export const SlidingBar = (props: SlidingBarProps) => {
             className={classes.root}
             sx={{ width: '100%' }}
             value={value[1]}
-            defaultValue={value[1]}
             type="number"
             size="small"
             label={props.highText}
             onChange={(event) => {
               setValue([value[0], Math.min(Number(event.target.value), array[array.length - 1])]);
             }}
+            onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
+              event.target.value = Number(event.target.value).toString();
+            }}
           />
         </Grid>
       </Grid>
-
 
     </>
   );

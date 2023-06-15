@@ -209,8 +209,8 @@ const BasicGraphinGraph = () => {
     const data = sharedGraph;
     return (
         <div id="mountNode" >
-            <div style={{ height: '100%', margin: 'auto', display: 'flex', alignItems: 'center' }}>
-                <Graphin data={data} layout={{ type: 'circular', center: [345, 300] }} style={{ height: '100%' }}>
+            <div style={{ height: '100%', margin: 'auto', display: 'flex', alignItems: 'center', maxHeight: '600px' }}>
+                <Graphin data={data} layout={{ type: 'circular', center: [345, 300] }}>
                     <ActivateRelations trigger="click" />
                     <SampleBehavior />
                     <ZoomCanvas disabled={true} />
