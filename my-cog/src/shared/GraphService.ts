@@ -173,7 +173,7 @@ export const changeEdgeWidthGraphin = (graph: GraphinData, settings: IVisSetting
 
                 keyshape: {
                     ...edges[i].style?.keyshape,
-                    lineWidth: min + ((1.5 * max) - min) * (edges[i].value / edgeSum),
+                    lineWidth: min + ((2 * max) - min) * (edges[i].value / edgeSum),
                 },
             }
         });
@@ -221,8 +221,9 @@ export const showEdgeWeight = (graph: GraphinData, settings?: IVisSettings) => {
                 ...edges[i].style,
                 label: {
                     value: edges[i].value?.toFixed(2),
-                    fontSize: 10,
+                    fontSize: 12,
                     fill: '#000000',
+                    stroke: '#ffffff',
                 }
             }
         });
@@ -263,7 +264,7 @@ const sigmoid = (x: number) => {
     return 1 / (1 + Math.exp(-x));
 }
 
-const mapColor = (inter: ((t: number) => string), weight: number) =>{
+const mapColor = (inter: ((t: number) => string), weight: number) => {
     // create a map with number as key and number as value
     let map: { key: number, value: string }[] = [];
     for (let i = 0; i < 1; i += 0.1) {
@@ -303,7 +304,7 @@ export const colorCodeEdges = (graph: GraphinData, settings: IVisSettings) => {
         const value = edge.value;
         // generate the color based on the value
         const inter = interpolate(weakColor, strongColor);
-        const color =  mapColor(inter, value);
+        const color = mapColor(inter, value);
         newEdges.push({
             ...edge,
             style: {
@@ -389,12 +390,16 @@ export const changeNodeOpacity = (graph: GraphinData, settings: IVisSettings) =>
 }
 
 export const nodeOpacityDefault = (graph: GraphinData, settings: IVisSettings) => {
+    let opacity = 0.2;
+    if(settings.nodeOpacity !== undefined) {
+        opacity = settings.nodeOpacity;
+    }
     for (let i = 0; i < graph.nodes.length; i++) {
         graph.nodes[i].style = {
             ...graph.nodes[i].style,
             keyshape: {
                 ...graph.nodes[i].style?.keyshape,
-                fillOpacity: 0.2,
+                fillOpacity: opacity,
             }
         }
     }
@@ -640,9 +645,7 @@ export const showNodeLabel = (graph: GraphinData, settings: IVisSettings) => {
                 ...newGraph.nodes[i].style?.label,
                 position: 'center',
             },
-            keyshape: {
-                ...newGraph.nodes[i].style?.keyshape,
-            }
+            
         };
 
 
