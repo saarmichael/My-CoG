@@ -236,7 +236,7 @@ export const GraphContainer = () => {
                             setTimeRange(sliderDuration);
                         }}
                     >
-                        {loading ? <CircularProgress size={15} sx={{ color: "white" }} /> : <>Get {connectivityType}</>}
+                        {(loading && !isAnimating) ? <CircularProgress size={15} sx={{ color: "white" }} /> : <>Get {connectivityType}</>}
                     </div>
                 </Grid>
             </Grid>

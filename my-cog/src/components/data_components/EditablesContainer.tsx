@@ -26,7 +26,7 @@ const ImageSelector = () => {
     const refElevation = useRef<HTMLInputElement>(null);
     const refDistance = useRef<HTMLInputElement>(null);
     const [paramsLists, setParamsLists] = useState<BrainImageParamsResponse>(
-        { azi_list: [], ele_list: [], dist_list: [] })
+        { azi_list: [0], ele_list: [0], dist_list: [300] })
     const [imageParamsIdxs, setImageParamsIdxs] = useState<{ azi_index: number, ele_index: number, dist_index: number }>(
         { azi_index: 0, ele_index: 0, dist_index: 0 });
     const [selectedImageName, setSelectedImageName] = useState<string>("");
