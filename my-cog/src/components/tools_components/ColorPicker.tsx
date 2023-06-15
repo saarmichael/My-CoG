@@ -26,54 +26,61 @@ export const ColorPicker = () => {
 
     return (
         <div className="color-picker-wrapper">
-            <GithubPicker
-                triangle="hide"
-                className="picker"
-                styles={pickerStyle}
-                color={settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#A9A9A9"}
-                onChange={(c) => {
-                    setSettings({
-                        ...settings,
-                        edgeColor: {
-                            ...settings.edgeColor,
-                            firstColor: c.hex,
-                            secondColor: settings.edgeColor?.secondColor
-                        },
-                        nodeColor: {
-                            ...settings.nodeColor,
-                            firstColor: c.hex,
-                            secondColor: settings.nodeColor?.secondColor
-                        }
-                    });
-                }}
-            />
+
+            <div className="picker-container">
+                <div className="picker-title">Main color</div>
+                <GithubPicker
+                    triangle="hide"
+                    className="picker"
+                    styles={pickerStyle}
+                    color={settings.edgeColor?.firstColor ? (settings.edgeColor?.firstColor) : "#A9A9A9"}
+                    onChange={(c) => {
+                        setSettings({
+                            ...settings,
+                            edgeColor: {
+                                ...settings.edgeColor,
+                                firstColor: c.hex,
+                                secondColor: settings.edgeColor?.secondColor
+                            },
+                            nodeColor: {
+                                ...settings.nodeColor,
+                                firstColor: c.hex,
+                                secondColor: settings.nodeColor?.secondColor
+                            }
+                        });
+                    }}
+                />
+            </div>
             {
                 // if color-coding is enabled, show the second color picker
                 ((options.find((option) => option.label === "Color Coded View")?.checked)
                     || (options.find((option) => option.label === "Color coded nodes")?.checked))
                 &&
-                <GithubPicker
-                    triangle="hide"
-                    color={settings.edgeColor?.secondColor ? (settings.edgeColor?.secondColor) : "#000000"}
-                    onChange={(c) => {
-                        if (c.hex !== settings.edgeColor?.secondColor) {
-                            setSettings({
-                                ...settings,
-                                edgeColor: {
-                                    ...settings.edgeColor,
-                                    firstColor: settings.edgeColor?.firstColor,
-                                    secondColor: c.hex
-                                },
-                                nodeColor: {
-                                    ...settings.nodeColor,
-                                    firstColor: settings.nodeColor?.firstColor,
-                                    secondColor: c.hex
-                                }
+                <div className="picker-container">
+                    <div className="picker-title">Secondary color</div>
+                    <GithubPicker
+                        triangle="hide"
+                        color={settings.edgeColor?.secondColor ? (settings.edgeColor?.secondColor) : "#000000"}
+                        onChange={(c) => {
+                            if (c.hex !== settings.edgeColor?.secondColor) {
+                                setSettings({
+                                    ...settings,
+                                    edgeColor: {
+                                        ...settings.edgeColor,
+                                        firstColor: settings.edgeColor?.firstColor,
+                                        secondColor: c.hex
+                                    },
+                                    nodeColor: {
+                                        ...settings.nodeColor,
+                                        firstColor: settings.nodeColor?.firstColor,
+                                        secondColor: c.hex
+                                    }
 
-                            });
-                        }
-                    }}
-                />}
+                                });
+                            }
+                        }}
+                    />
+                </div>}
         </div>
     );
 };

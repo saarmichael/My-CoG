@@ -152,7 +152,7 @@ const Container = () => {
     return (
         <>
 
-            <h1 className="head">Editable Grid</h1>
+            <h1 className="head">Brain View</h1>
             <Grid container spacing={1}>
                 <Grid item xs={10}>
                     <ComponentScreenshot content={<EditableGrid N={4} M={4} />}/>
@@ -161,7 +161,7 @@ const Container = () => {
                     <ImageSelector />
                 </Grid>
                 
-                <Grid item xs={8} >
+                <Grid item xs={10} >
 
                     <SlidingBarOneTumb
                         sliderName="Angle"
@@ -176,21 +176,7 @@ const Container = () => {
                     />
 
                 </Grid>
-
-                <Grid item xs={4} style={{display: 'flex', justifyContent: 'flex-end'}}>
-                    <TextField
-                        className={classes.root}
-                        type="number"
-                        size="small"
-                        label="Angle"
-                        onChange={(event) => {
-                            const inputAngle = Number(event.target.value) % 360;
-                            setAngle(inputAngle);
-                        }}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
+                <Grid item xs={10}>
                     <GraphAnimation />
                 </Grid>
             </Grid>
