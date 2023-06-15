@@ -4,9 +4,10 @@ import PauseIcon from '@mui/icons-material/Pause';
 import { useEffect, useRef, useState, useContext } from "react";
 import { IconWrapper, useTextFieldsStyle } from "../tools_components/Styles";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
+import { cahceInServer } from "../../shared/RequestsService";
 
 export const GraphAnimation = () => {
-    const { duration, setTimeRange, isAnimating, setIsAnimating, overlap, samplesPerSegment } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { duration, setTimeRange, isAnimating, setIsAnimating, overlap, samplesPerSegment, connectivityType } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [start, setStart] = useState<number>(0);
     const [end, setEnd] = useState<number>(0);
     const [windowSize, setWindowSize] = useState<number>(0);
@@ -54,6 +55,11 @@ export const GraphAnimation = () => {
         setCurrentFrameStart(value as number);
     };
 
+
+    const preCompute = async () => {
+        await cahceInServer(connectivityType, start, end, windowSize, overlap, samplesPerSegment);
+    }
+
     useEffect(() => {
         if (currentFrameStart >= end) {
             setTimeout(() => {
@@ -74,6 +80,7 @@ export const GraphAnimation = () => {
             return false;
         }
     }
+
 
     return (
         <>
@@ -143,8 +150,10 @@ export const GraphAnimation = () => {
                         {isError ? "Error" : "Start Animation"}
                     </span>
                     <span
+
                         onClick={() => {
                             if (!checkError()) {
+                                await preCompute();
                                 setIsAnimating(true);
                             }
                         }}
