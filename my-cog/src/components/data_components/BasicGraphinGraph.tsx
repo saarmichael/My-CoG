@@ -14,7 +14,7 @@ const SampleBehavior = () => {
 
     useEffect(() => {
 
-        graph.changeSize(1000, 600);
+        graph.changeSize(700, 600);
         // 初始化聚焦到`node-1`
         const handleClick = (evt: IG6GraphEvent) => {
             const node = evt.item as INode;
