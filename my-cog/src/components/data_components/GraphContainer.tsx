@@ -4,9 +4,6 @@ import BasicGraphinGraph from "./BasicGraphinGraph";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { SlidingBar } from "../tools_components/SlidingBar";
 import { getConnectivityMeasuresList, getDuration, getFrequencies } from "../../shared/RequestsService";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import Typography from '@mui/material/Typography';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -15,7 +12,6 @@ import { useDropdownStyles } from "../tools_components//Styles";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTextFieldsStyle } from "../../components/tools_components/Styles";
 import { TimeInterval } from "../../shared/GraphRelated";
-import html2canvas from 'html2canvas';
 import ComponentScreenshot from "../tools_components/ComponentScreenshot";
 import { NodeSelection } from "../tools_components/NodeSelection";
 
@@ -153,7 +149,7 @@ export const GraphContainer = () => {
             <h1 className="head">Connectivity Graph</h1>
             <Grid container maxHeight="650px">
                 <Grid item xs={11}>
-                    <ComponentScreenshot content={<BasicGraphinGraph />} />
+                    <ComponentScreenshot showDetails={true} content={<BasicGraphinGraph />} />
                 </Grid>
                 <Grid item xs={1}>
                     <NodeSelection state={state} nodesList={activeNodes}
@@ -168,7 +164,7 @@ export const GraphContainer = () => {
 
                     <SlidingBar
                         sliderName="Frequency slider"
-                        lowText="Lower bound"
+                        lowText="Low bound"
                         highText="High bound"
                         range={fList}
                         keepDistance={false}

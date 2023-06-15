@@ -1,21 +1,8 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { Box, Checkbox, Grid, TextField, Slider } from '@mui/material';
-import { ActiveNodeProps, GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
-import { SlidingBar } from "../tools_components/SlidingBar";
-import { getConnectivityMeasuresList, getDuration, getFrequencies } from "../../shared/RequestsService";
+import { Box, Checkbox } from '@mui/material';
+import { ActiveNodeProps } from "../../contexts/ElectrodeFocusContext";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { useDropdownStyles } from "./Styles";
-import CircularProgress from '@mui/material/CircularProgress';
-import { useTextFieldsStyle } from "./Styles";
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import { TimeInterval } from "../../shared/GraphRelated";
 import { GraphinData } from "@antv/graphin";
 
 export interface NodeSelectionProps {

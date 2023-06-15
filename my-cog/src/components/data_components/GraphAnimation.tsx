@@ -10,7 +10,7 @@ export const GraphAnimation = () => {
     const { duration, setTimeRange, isAnimating, setIsAnimating, overlap, samplesPerSegment, connectivityType } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [start, setStart] = useState<number>(0);
     const [end, setEnd] = useState<number>(0);
-    const [windowSize, setWindowSize] = useState<number>(0);
+    const [windowSize, setWindowSize] = useState<number>(0.5);
     const [currentFrameStart, setCurrentFrameStart] = useState<number>(start);
     const [showSlider, setShowSlider] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
@@ -89,13 +89,15 @@ export const GraphAnimation = () => {
                     <TextField
                         className={classes.root}
                         label={"start"}
-                        value={start}
-                        defaultValue={start}
                         type="number"
                         size="small"
                         disabled={isAnimating}
+                        value={start}
                         onChange={(event) => {
                             setStart(Math.max(Number(event.target.value), 0));
+                        }}
+                        onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            event.target.value = Number(event.target.value).toString();
                         }}
                     />
                 </Grid>
@@ -104,13 +106,16 @@ export const GraphAnimation = () => {
                         className={classes.root}
                         label={"end"}
                         sx={{ width: '100%' }}
-                        value={end}
-                        defaultValue={end}
                         type="number"
                         size="small"
                         disabled={isAnimating}
+                        value={end}
                         onChange={(event) => {
-                            setEnd(Math.min(Number(event.target.value), duration));
+                            let dur = Number(duration.toFixed(2));
+                            setEnd(Math.min(Number(event.target.value), dur));
+                        }}
+                        onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            event.target.value = Number(event.target.value).toString();
                         }}
                     />
                 </Grid>
@@ -127,7 +132,8 @@ export const GraphAnimation = () => {
                         size="small"
                         disabled={isAnimating}
                         onChange={(event) => {
-                            setWindowSize(Math.min(Number(event.target.value), duration));
+                            let dur = Number(duration.toFixed(2));
+                            setWindowSize(Math.min(Number(event.target.value), dur));
                         }}
                     />
                 </Grid>

@@ -4,11 +4,10 @@ import HeightIcon from '@mui/icons-material/Height';
 import OpenWithIcon from '@mui/icons-material/OpenWith';
 import { GridProvider, GridContext, IGridFocusContext } from "../../contexts/GridContext";
 import { EditableGrid } from "./EditableGrid";
-import { Button, FormControl, Grid, InputLabel, TextField } from "@mui/material";
+import { Button, FormControl, Grid, InputLabel } from "@mui/material";
 import { SlidingBarOneTumb } from "../tools_components/SlidingBar";
 import { fetchImage, fetchImageParams } from "../../shared/RequestsService";
 import "./EditableContainer.css";
-import SimpleCard from "../tools_components/SimpleCard";
 import { BrainImageParamsResponse } from "../../shared/Requests";
 import { useDropdownStyles, useTextFieldsStyle } from "../tools_components/Styles";
 import Select from '@mui/material/Select';
@@ -146,8 +145,6 @@ const Container = () => {
     const {
         isAnimating,
     } = useContext(GlobalDataContext) as IGlobalDataContext;
-
-    const classes = useTextFieldsStyle();
 
     return (
         <>
