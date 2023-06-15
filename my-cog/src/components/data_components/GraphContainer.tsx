@@ -24,7 +24,7 @@ export interface TimeSliderProps {
 }
 
 export const TimeSliderComponent = (props: TimeSliderProps) => {
-    const { duration, isAnimating, overlap, samplesPerSegment } = useContext(GlobalDataContext) as IGlobalDataContext;
+    const { duration, isAnimating, overlap, samplesPerSegment, timeRange } = useContext(GlobalDataContext) as IGlobalDataContext;
 
     const handleDurationChange = (event: Event, newValue: number[] | number) => {
         newValue = newValue as number[];
@@ -40,6 +40,7 @@ export const TimeSliderComponent = (props: TimeSliderProps) => {
             onChange={handleDurationChange}
             miniSlider={true}
             disabled={isAnimating}
+            timeRange={timeRange}
         />
     );
 }
