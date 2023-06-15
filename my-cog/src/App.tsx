@@ -18,11 +18,12 @@ function LoginPage() {
     console.log('logged in');
     navigate('/home');
   };
-  
+
   return (
     <div className='full-form'>
-        <Login onLogin={handleLogin} />
-        <Register onRegister={handleLogin} />
+      <h1 className='head'>Welcome to My CoG!</h1>
+      <Login onLogin={handleLogin} />
+      <Register onRegister={handleLogin} />
     </div>
   );
 }
@@ -30,11 +31,11 @@ function LoginPage() {
 function MainPage() {
   return (
     <div>
-      <TopBar/>
-      <div className="app-container"> 
-            <Tabbing />
+      <TopBar />
+      <div className="app-container">
+        <Tabbing />
       </div>
-  </div>
+    </div>
   );
 }
 
@@ -59,7 +60,7 @@ const MainPageWithBackdrop: React.FC = () => {
   return (
     <>
       <LoginPage />
-      <Backdrop className={classes.backdrop} open={loading} style={{zIndex: '2'}}>
+      <Backdrop className={classes.backdrop} open={loading} style={{ zIndex: '2' }}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </>
