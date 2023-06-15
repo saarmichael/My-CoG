@@ -151,7 +151,7 @@ export const GraphAnimation = () => {
                     </span>
                     <span
 
-                        onClick={() => {
+                        onClick={async () => {
                             if (!checkError()) {
                                 await preCompute();
                                 setIsAnimating(true);
