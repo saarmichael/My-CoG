@@ -19,12 +19,7 @@ def export_connectivity_to_mat(conn_func, name, data, sfreq, start, end, meta_da
         CM = data["CM"]
     else:
         f, CM = conn_func(data, sfreq)  # the actual calculation
-        cal = Calculation(
-            file_name=file_name,
-            url=url,
-            data={"f": f, "CM": CM},
-        )
-        write_calculation(file_name=file_name, url=url, data={"f": f, "CM": CM}, created_by=session["username"])
+        write_calculation(file_name=file_name, url=url, data={"f": f.tolist(), "CM": CM.tolist()}, created_by=session["username"])
     
     # write results to mat file
     full_name = name + ".mat"
