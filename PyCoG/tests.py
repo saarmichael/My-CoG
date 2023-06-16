@@ -1,7 +1,7 @@
 import pytest
 from flask import session
-from app import app, db
-from app import User, Calculation
+from server_config import app, db
+from server_config import User, Calculation
 
 
 @pytest.fixture
