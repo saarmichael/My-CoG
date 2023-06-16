@@ -122,9 +122,9 @@ const ImageSelector = () => {
                 }}
             >
                 
-                {Array.from(backImgList.keys()).map((imageName) => {
+                {Array.from(backImgList.keys()).map((imageName, key) => {
                     return (
-                        <MenuItem value={imageName}>
+                        <MenuItem value={imageName} key={key}>
                             {imageName}
                         </MenuItem>
                     );

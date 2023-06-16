@@ -26,33 +26,33 @@ interface TabsProps {
 type Data = Promise<number[][]>;
 
 const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
-    
-    const [activeTabIndex, setActiveTabIndex] = useState(0);
-    const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);
 
-    const handleTabClick = (index: number) => {
-      setActiveTabIndex(index);
-      setHiddenComponentIndex([]);
-    };
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [hiddenComponentIndex, setHiddenComponentIndex] = useState<number[]>([]);
 
-    const handleAddTabClick = () => {
-      if (onAddTab) {
-        onAddTab();
+  const handleTabClick = (index: number) => {
+    setActiveTabIndex(index);
+    setHiddenComponentIndex([]);
+  };
+
+  const handleAddTabClick = () => {
+    if (onAddTab) {
+      onAddTab();
+    }
+  };
+
+
+  const handleComponentSelect = (index: number) => {
+    setHiddenComponentIndex((prev) => {
+      if (prev.includes(index)) {
+        return prev.filter((i) => i !== index);
+      } else {
+        return [...prev, index];
       }
-    };
-  
+    });
+  };
 
-    const handleComponentSelect = (index: number) => {
-        setHiddenComponentIndex((prev) => {
-            if (prev.includes(index)) {
-                return prev.filter((i) => i !== index);
-            } else {
-                return [...prev, index];
-            }
-        });
-    };
-
-    const options = tabs[activeTabIndex].content.props.children
+  const options = tabs[activeTabIndex].content.props.children
     .filter((component: JSX.Element) => component.type !== React.Fragment)
     .map((component: JSX.Element, index: number) => {
       const displayName = component.props.name as string;
@@ -63,64 +63,64 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
       };
     });
 
-    const handleChange = (selectedOption: any) => {
-      handleComponentSelect(selectedOption.value);
-    };
+  const handleChange = (selectedOption: any) => {
+    handleComponentSelect(selectedOption.value);
+  };
 
 
-    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
-    const toggleSidebar = () => {
-      setIsSidebarOpen(!isSidebarOpen);
-    };
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-  
-    // Setting the value prop to a fixed object
-    const fixedValue = { label: "Hide component", value: 0 };
 
-    return (
-      <div className="container">
-        <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
+  // Setting the value prop to a fixed object
+  const fixedValue = { label: "Hide component", value: 0 };
 
-        <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`} style={{ display: 'flex', flexDirection: 'column' }}>
-          <div className="bloc-tabs" style={{ width: '100%' }}>
-              {tabs.map((tab, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleTabClick(index)}
-                  className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
-                >
-                  {tab.label}
-                </button>
-              ))}
-              {onAddTab && (
-                <button className="plus" onClick={handleAddTabClick}><AddIcon/></button>
-              )}
-          </div>
-          <div style={{position: 'absolute',  right: '10px', top: '30px'}}>
-            <Select
-              value={fixedValue}
-              isSearchable={false}
-              onChange={handleChange}
-              options={options}
-              styles={customStyles}
-            />
-          </div>
-          <div style={{ overflow: 'auto', flexGrow: 1 }}>
-            {tabs.map((tab, index) => (
-              <Grid container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
-                {tab.content.props.children
+  return (
+    <div className="container">
+      <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
+
+      <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`} style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="bloc-tabs" style={{ width: '100%' }}>
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              onClick={() => handleTabClick(index)}
+              className={index === activeTabIndex ? "tabs active-tabs" : "tabs"}
+            >
+              {tab.label}
+            </button>
+          ))}
+          {onAddTab && (
+            <button className="plus" onClick={handleAddTabClick}><AddIcon /></button>
+          )}
+        </div>
+        <div style={{ position: 'absolute', right: '10px', top: '30px' }}>
+          <Select
+            value={fixedValue}
+            isSearchable={false}
+            onChange={handleChange}
+            options={options}
+            styles={customStyles}
+          />
+        </div>
+        <div style={{ overflow: 'auto', flexGrow: 1 }}>
+          {tabs.map((tab, index) => (
+            <Grid key={index} container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
+              {tab.content.props.children
                 .filter((component: JSX.Element) => component.type !== React.Fragment)
-                .map((component: JSX.Element, index: number) => (
-                  <Grid item  xs={5} style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '' }}>
+                .map((component: JSX.Element, compIndex: number) => (
+                  <Grid key={compIndex} item xs={5} style={{ display: hiddenComponentIndex.includes(compIndex) ? 'none' : '' }}>
                     {component}
                   </Grid>
                 ))}
-              </Grid>
-            ))}
-          </div>
+            </Grid>
+          ))}
         </div>
       </div>
-    );    
+    </div>
+  );
 };
 
 const Tabbing = () => {

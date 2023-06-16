@@ -241,12 +241,13 @@ export const SlidingBar = (props: SlidingBarProps) => {
             size="small"
             label={props.lowText}
             onChange={(event) => {
-              const eventValue = Number(event.target.value);
+              const eventValue = Number(parseFloat(event.target.value).toFixed(1));
               const val0 = value[0];
               const val1 = value[1];
               const diff = val1 - val0;
               const newVal1 = val0 + diff;
               if (lockThumbs) {
+                
                 if (newVal1 > array[array.length - 1]) {
                   return;
                 }

@@ -189,8 +189,8 @@ def granger():
 @app.route("/timeSeries", methods=["GET"])
 def get_time_series():
     channel_name = request.args.get("elecName")  # electrode (channel) id
-    start = int(request.args.get("start"))  # start time of the time frame
-    end = int(request.args.get("end"))  # end time of the time frame
+    start = float(request.args.get("start"))  # start time of the time frame
+    end = float(request.args.get("end"))  # end time of the time frame
     resolution = request.args.get("resolution")  # resolution of the time series
     file_name = session["user_data_dir"]
     url = "http://localhost:5000/timeSeries?elecName=" + channel_name + "&start=" + str(start) + "&end=" + str(end) + "&resolution=" + str(resolution)
