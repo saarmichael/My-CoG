@@ -4,7 +4,7 @@ import { IVisGraphOptionsContext, VisGraphOptionsContext } from "../../contexts/
 import { ColorPicker } from "../../components/tools_components/ColorPicker";
 import { GraphVisCheckbox } from "../../components/data_components/GraphVisCheckbox";
 import './SideBar.css';
-import { getSettings, saveSettings } from "../../shared/ServerRequests";
+import { ServerSettings, getSettings, saveSettings } from "../../shared/ServerRequests";
 import { reorganizeOptions } from "../../shared/RequestsService";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -21,9 +21,10 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const [ message, setMessage ] = useState<JSX.Element>(<>Save Settings</>);
     useEffect(() => {
         getSettings().then((data) => {
-            let reorganizedOptions = reorganizeOptions(data.options, options);
+            let settData = data as unknown as { requestSettings: ServerSettings};
+            let reorganizedOptions = reorganizeOptions(settData.requestSettings.options, options);
             setOptions(reorganizedOptions);
-            setSettings(data.settings);
+            setSettings(settData.requestSettings.settings);
         });
     }, []);
     const saveUserSettings = async () => {
