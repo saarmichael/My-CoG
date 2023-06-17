@@ -1,7 +1,6 @@
 import ast
-from flask import Flask, request, jsonify, send_file, session
-from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
+import json
+from flask import request, jsonify, send_file, session
 from video import graph_video
 from db_write import update_data_dir
 from export_data import export_connectivity_to_mat
@@ -15,36 +14,16 @@ from coherence import (
     get_data_by_start_end,
 )
 from consts import bcolors
-from server import User, Calculation
+from server_config import User, Calculation, db, app
 from image_generator import get_azi_ele_dist_lists, get_brain_image
 import os
+import threading
 from datetime import datetime
 import math
 from connectivity import Connectivity as Conn
 
-
-app = Flask(__name__, static_url_path='/videos')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CogDb.db'
-db = SQLAlchemy(app)
-
-CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
-app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
 data_provider = dataProvider(session)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False)
-    user_root_dir = db.Column(db.String(50), nullable=False)
-    settings = db.Column(db.JSON, nullable=True)
-    load_instance = True
-
-class Calculation(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.DateTime, nullable=False)
-    file_name = db.Column(db.String(50), nullable=False)
-    url = db.Column(db.String(50), nullable=False)
-    data = db.Column(db.JSON, nullable=False)
-    created_by = db.Column(db.String(50), nullable=False)
 
 @app.before_first_request
 def create_tables():
@@ -439,9 +418,6 @@ def export_data():
     )
     # do something with data
     return jsonify({"message": "Data exported successfully!"}), 200
-
-def main():
-    return app, db
 
 
 if __name__ == "__main__":
