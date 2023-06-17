@@ -43,7 +43,7 @@ def get_coherence_matrices(data, fs, window="hann", overlap=0.5, nperseg=256):
     )
 
     def coherence_worker(i, j):
-        _, Cxy = coherence(data[:, i], data[:, j], fs, window, overlap)
+        _, Cxy = coherence(data[:, i], data[:, j], fs, window, overlap, nperseg=nperseg)
         return Cxy, i, j
 
     with concurrent.futures.ThreadPoolExecutor() as executor:

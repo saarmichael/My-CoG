@@ -8,11 +8,25 @@ from src.main.tools.export_data import export_connectivity_to_mat
 from src.main.tools.video import graph_video
 from src.main.tools.image_generator import get_azi_ele_dist_lists, get_brain_image
 from src.main.analysis.granger import calculate_granger_for_all_pairs
-from src.main.analysis.coherence import coherence_time_frame, get_data_by_start_end, get_recording_duration
+from src.main.analysis.coherence import (
+    coherence_time_frame,
+    get_data_by_start_end,
+    get_recording_duration,
+)
 from src.main.tools.consts import bcolors
-from src.main.tools.db_write import update_data_dir, write_calculation, write_settings, write_user
+from src.main.tools.db_write import (
+    update_data_dir,
+    write_calculation,
+    write_settings,
+    write_user,
+)
 from src.models.calculation import Calculation
-from src.main.tools.bids_handler import convert_path_to_tree, dataProvider, find_file, find_first_eeg_file
+from src.main.tools.bids_handler import (
+    convert_path_to_tree,
+    dataProvider,
+    find_file,
+    find_first_eeg_file,
+)
 from src.main.tools.cache_check import data_in_db, user_in_db
 from src.main import bp
 from src.models.user import User
@@ -39,7 +53,7 @@ def login():
     session.permanent = True
     session["user_root_dir"] = user.user_root_dir
     # get the parent directory of routes.py
-    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
     session["user_data_dir"] = find_first_eeg_file(
         find_file(user.user_root_dir, directory)
     )
@@ -79,10 +93,8 @@ def get_time_range():
 
 @bp.route("/getFiles", methods=["GET"])
 def get_files():
-    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-    return jsonify(
-        convert_path_to_tree(find_file(session["user_root_dir"], directory))
-    )
+    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+    return jsonify(convert_path_to_tree(find_file(session["user_root_dir"], directory)))
 
 
 @bp.route("/getFile", methods=["GET"])
@@ -101,8 +113,8 @@ def get_file():
 @bp.route("/connectivity", methods=["GET"])
 def get_coherence_matrices():
     connectivity_name = request.args.get("connectivity")
-    start = request.args.get("start")
-    end = request.args.get("end")
+    start = float(request.args.get("start"))
+    end = float(request.args.get("end"))
     overlap = float(request.args.get("overlap"))
     nperseg = float(request.args.get("nperseg"))
     print(f"{bcolors.DEBUG}start: {start}, end: {end}{bcolors.ENDC}")
@@ -188,7 +200,16 @@ def get_time_series():
     end = float(request.args.get("end"))  # end time of the time frame
     resolution = request.args.get("resolution")  # resolution of the time series
     file_name = session["user_data_dir"]
-    url = "http://localhost:5000/timeSeries?elecName=" + channel_name + "&start=" + str(start) + "&end=" + str(end) + "&resolution=" + str(resolution)
+    url = (
+        "http://localhost:5000/timeSeries?elecName="
+        + channel_name
+        + "&start="
+        + str(start)
+        + "&end="
+        + str(end)
+        + "&resolution="
+        + str(resolution)
+    )
     cal = data_in_db(file_name=file_name, url=url, table=Calculation.query)
     if cal:
         print("Cached")
@@ -197,7 +218,9 @@ def get_time_series():
         XY = data_provider.get_channel_data(
             channel_name, start=start, end=end, resolution=resolution
         )
-        write_calculation(file_name=file_name, url=url, data=XY, created_by=session["username"])
+        write_calculation(
+            file_name=file_name, url=url, data=XY, created_by=session["username"]
+        )
         return jsonify(XY), 200
 
 
@@ -339,7 +362,7 @@ def save_settings():
 @bp.route("/setFile", methods=["POST"])
 def set_file():
     print(session["user_data_dir"])
-    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
     session["user_data_dir"] = find_file(request.get_json()["file"], directory)
     return jsonify({"message": "File set successfully!"})
 
