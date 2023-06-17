@@ -34,6 +34,7 @@ export const GraphAnimation = () => {
             if (currentEndFrame > end || !isAnimatingRef.current) {
                 if (currentEndFrame > end) {
                     setCurrentFrameStart(start);
+                    currentFrameStartRef.current = start;
                     setIsAnimating(false);
                     isAnimatingRef.current = false;
                 }
@@ -42,6 +43,7 @@ export const GraphAnimation = () => {
             }
             setTimeRange({ resolution: 's', start: currentFrameStartRef.current, end: currentEndFrame, samplesPerSegment: samplesPerSegment, overlap: overlap });
             setCurrentFrameStart(prevFrameStart => prevFrameStart + windowSize);
+            currentFrameStartRef.current += windowSize;
             currentEndFrame += windowSize;
         }, 1500);
     };
@@ -90,6 +92,7 @@ export const GraphAnimation = () => {
 
     const handleSliderChange = (event: any, value: number | number[]) => {
         setCurrentFrameStart(value as number);
+        currentFrameStartRef.current = value as number;
     };
 
 
@@ -102,6 +105,7 @@ export const GraphAnimation = () => {
             isAbortedRef.current = false;
         } else {
             setCurrentFrameStart(start);
+            currentFrameStartRef.current = start;
             setIsAnimating(true);
             isAnimatingRef.current = true;
             setShowSlider(true);
@@ -239,8 +243,8 @@ export const GraphAnimation = () => {
                             setShowSlider(false);
                             setIsLoading(false);
                             isLoadingRef.current = false;
-                            setStart(0);
-                            setCurrentFrameStart(0);
+                            setCurrentFrameStart(start);
+                            currentFrameStartRef.current = start;
                         }}
                     >
                         <IconWrapper>

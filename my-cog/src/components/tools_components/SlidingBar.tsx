@@ -134,7 +134,7 @@ export const SlidingBar = (props: SlidingBarProps) => {
   }, [value]);
 
   useEffect(() => {
-    if (props.timeRange) {
+    if (props.timeRange && !props.disabled) {
       setValue([props.timeRange.start, props.timeRange.end]);
     }
   }, [props.timeRange]);

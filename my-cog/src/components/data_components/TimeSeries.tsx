@@ -65,7 +65,7 @@ const TimeSeries = () => {
             numberOfRows: 4,
             theme: Themes.lightNew,
         }).setRowHeight(3, 0.3);
-
+        
         chart = dashboard.createChartXY({
             columnIndex: 0,
             columnSpan: 1,
