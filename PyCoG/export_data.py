@@ -1,7 +1,7 @@
 from flask import session
 import numpy as np
 from db_write import write_calculation
-from server_config import Calculation
+from server import Calculation
 from cache_check import data_in_db
 
 from coherence import coherence_time_frame

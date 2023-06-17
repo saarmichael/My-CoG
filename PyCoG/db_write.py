@@ -1,10 +1,10 @@
 import ast
 from datetime import datetime
 from cache_check import user_in_db
-from server_config import User, Calculation, db
+from server_config import User, Calculation
 from datetime import datetime, timedelta
 
-def delete_old_calculations():
+def delete_old_calculations(db):
     one_month_ago = datetime.now() - timedelta(weeks=4)
     old_calculations = Calculation.query.filter(Calculation.time < one_month_ago).all()
 
@@ -13,7 +13,7 @@ def delete_old_calculations():
 
     db.session.commit()
 
-def write_calculation(file_name, url, data, created_by):
+def write_calculation(file_name, url, data, created_by, db):
     delete_old_calculations()
     calculation = {
         "file_name": file_name,
@@ -31,7 +31,7 @@ def write_calculation(file_name, url, data, created_by):
     return calculation
 
 
-def write_user(username, data_dir, settings):
+def write_user(username, data_dir, settings, db):
     user = User(username=username, user_root_dir='[]', settings=settings)
     db.session.add(user)
     db.session.commit()
@@ -39,7 +39,7 @@ def write_user(username, data_dir, settings):
     return user
 
 
-def update_data_dir(username, new_data_dir):
+def update_data_dir(username, new_data_dir, db):
     user = user_in_db(username, User.query)
     data_dirs = ast.literal_eval(user.user_root_dir)
     data_dirs.append(new_data_dir)

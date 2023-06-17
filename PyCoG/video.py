@@ -1,6 +1,5 @@
 from matplotlib import pyplot as plt
 from moviepy.editor import ImageSequenceClip
-import mne_bids
 import os
 import numpy as np
 import pandas as pd

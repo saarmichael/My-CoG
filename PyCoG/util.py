@@ -1,6 +1,5 @@
 import glob
 import os
-from scipy.io import loadmat
 from flask import session
 import mne_bids
 import pandas as pd
