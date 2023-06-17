@@ -37,10 +37,11 @@ def login():
         return jsonify({"message": "No user found!"}), 404
     # return user's data directory
     session.permanent = True
-    print(find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd()))
-    session["user_root_dir"] = ast.literal_eval(user.user_root_dir)[0]
+    session["user_root_dir"] = user.user_root_dir
+    # get the parent directory of routes.py
+    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
     session["user_data_dir"] = find_first_eeg_file(
-        find_file(ast.literal_eval(user.user_root_dir)[0], os.getcwd())
+        find_file(user.user_root_dir, directory)
     )
     session["username"] = user.username
     data_provider = dataProvider(session)
@@ -78,8 +79,9 @@ def get_time_range():
 
 @bp.route("/getFiles", methods=["GET"])
 def get_files():
+    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
     return jsonify(
-        convert_path_to_tree(find_file(session["user_root_dir"], os.getcwd()))
+        convert_path_to_tree(find_file(session["user_root_dir"], directory))
     )
 
 
@@ -306,7 +308,6 @@ def connectivity_list():
 
 @bp.route("/register", methods=["POST"])
 def register():
-    print('in register')
     data = request.get_json()
     print(f'user:{data["username"]}.')
     # check if user exists
@@ -314,9 +315,7 @@ def register():
         return jsonify({"message": "Username cannot be empty!"}), 400
     if user_in_db(data["username"], User.query):
         return jsonify({"message": "User already exists!"}), 400
-    print('before write_user')
     write_user(data["username"], data["data"], data["settings"])
-    print('after write_user')
     return jsonify({"message": "User created successfully!"})
 
 
@@ -340,7 +339,8 @@ def save_settings():
 @bp.route("/setFile", methods=["POST"])
 def set_file():
     print(session["user_data_dir"])
-    session["user_data_dir"] = find_file(request.get_json()["file"], os.getcwd())
+    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+    session["user_data_dir"] = find_file(request.get_json()["file"], directory)
     return jsonify({"message": "File set successfully!"})
 
 

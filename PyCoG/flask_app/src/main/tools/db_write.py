@@ -1,5 +1,4 @@
 import ast
-from datetime import datetime
 from src.main.tools.cache_check import user_in_db
 from src.models.user import User
 from src.models.calculation import Calculation
@@ -34,10 +33,10 @@ def write_calculation(file_name, url, data, created_by):
 
 
 def write_user(username, data_dir, settings):
-    user = User(username=username, user_root_dir='[]', settings=settings)
+    user = User(username=username, user_root_dir=data_dir, settings=settings)
     db.session.add(user)
     db.session.commit()
-    update_data_dir(username, data_dir)
+    # update_data_dir(username, data_dir)
     return user
 
 
