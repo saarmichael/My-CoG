@@ -1,8 +1,6 @@
 .vscode
 *.pyc
-*.db
 *.gif
 *.bmp
 *.mat
-users_data
 videos
