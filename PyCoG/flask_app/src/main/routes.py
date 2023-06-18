@@ -50,6 +50,9 @@ def login():
 def get_settings():
     return manager.get_settings()
 
+@bp.route("/getDataDir", methods=["GET"])
+def get_data_dir():
+    return convert_path_to_tree(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../users_data')))
 
 @bp.route("/frequencies", methods=["GET"])
 def getFrequencies():
