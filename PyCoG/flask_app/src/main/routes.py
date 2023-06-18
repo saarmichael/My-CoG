@@ -14,12 +14,7 @@ from src.main.analysis.coherence import (
     get_recording_duration,
 )
 from src.main.tools.consts import bcolors
-from src.main.tools.db_write import (
-    update_data_dir,
-    write_calculation,
-    write_settings,
-    write_user,
-)
+from src.main.tools.db_write import DB_manager
 from src.models.calculation import Calculation
 from src.main.tools.bids_handler import (
     convert_path_to_tree,
@@ -31,11 +26,14 @@ from src.main.tools.cache_check import data_in_db, user_in_db
 from src.main import bp
 from src.models.user import User
 from src.main.analysis.connectivity import Connectivity as Conn
+from src.main.request_manager import requestManager
 
 # @bp.before_first_request
 # def create_tables():
 #     db.create_all()
 data_provider = dataProvider(session)
+manager = requestManager(session=session)
+db_manager = DB_manager()
 
 ###############################################
 ############### GET REQUESTS ##################
@@ -45,61 +43,32 @@ data_provider = dataProvider(session)
 @bp.route("/login", methods=["GET"])
 def login():
     name = request.args.get("username")
-    # get user from db
-    user = user_in_db(name, User.query)
-    if not user:
-        return jsonify({"message": "No user found!"}), 404
-    # return user's data directory
-    session.permanent = True
-    session["user_root_dir"] = user.user_root_dir
-    # get the parent directory of routes.py
-    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-    session["user_data_dir"] = find_first_eeg_file(
-        find_file(user.user_root_dir, directory)
-    )
-    session["username"] = user.username
-    data_provider = dataProvider(session)
-    print(f"{bcolors.GETREQUEST}user logged in: {user.username}{bcolors.ENDC}")
-    return jsonify({"user_data_dir": session["user_data_dir"].split(os.sep)[-1]})
+    return manager.login(name)
 
 
 @bp.route("/getSettings", methods=["GET"])
 def get_settings():
-    if not "username" in session:
-        return jsonify({"message": "Session error"}), 400
-    user = user_in_db(session["username"], User.query)
-    return jsonify(user.settings)
+    return manager.get_settings()
 
 
 @bp.route("/frequencies", methods=["GET"])
 def getFrequencies():
-    file = data_provider.get_data()
-    sfreq = data_provider.get_sampling_rate()
-    f, _ = coherence_time_frame(file, sfreq, 0, 1)
-    print(
-        f"{bcolors.GETREQUEST}frequencies returned with {len(f)} frequencies{bcolors.ENDC}"
-    )
-    return jsonify(f.tolist())
+    return manager.get_frequencies()
 
 
 @bp.route("/duration", methods=["GET"])
 def get_time_range():
-    data = data_provider.get_data()
-    sfreq = data_provider.get_sampling_rate()
-    result = get_recording_duration(data, sfreq)
-    print(f"{bcolors.GETREQUEST}returned duration: {result}{bcolors.ENDC}")
-    return jsonify(result)
+    return manager.get_time_range()
 
 
 @bp.route("/getFiles", methods=["GET"])
 def get_files():
-    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-    return jsonify(convert_path_to_tree(find_file(session["user_root_dir"], directory)))
+    return manager.get_files()
 
 
 @bp.route("/getFile", methods=["GET"])
 def get_file():
-    return jsonify(session["user_data_dir"].split(os.sep)[-1])
+    return manager.get_file()
 
 
 # get_coherence_matrices
@@ -111,7 +80,7 @@ def get_file():
 #       CM: coherence matrix
 #       the CM that corresponds to the time frame specified by the start and end parameters
 @bp.route("/connectivity", methods=["GET"])
-def get_coherence_matrices():
+def get_connectivity_matrices():
     connectivity_name = request.args.get("connectivity")
     start = float(request.args.get("start"))
     end = float(request.args.get("end"))
@@ -124,28 +93,20 @@ def get_coherence_matrices():
         return jsonify(cal.data)
     # error handling
     if start is None:
-        start = "0"
+        start = 0
         # end will be the last time frame
     if end is None:
-        end = "1"
+        end = 1
     if int(math.floor(float(start))) > int(math.floor(float(end))):
         end = str(int(start) + 1)
-    data = data_provider.get_data()
-    print(f"{bcolors.DEBUG}in time/ : data shape: {data.shape}{bcolors.ENDC}")
-    sfreq = data_provider.get_sampling_rate()
-    data = get_data_by_start_end(data, sfreq, start, end)
-    # Conn.get_connectivity_function(connectivity_name) is the connectivity function
-    connectivity_function = Conn.get_connectivity_function(connectivity_name)
-    f, CM = connectivity_function(
-        data, sfreq, overlap=overlap, nperseg=nperseg
-    )  # this is where the actual calculation happens
-    print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
-    result = {"f": f.tolist(), "CM": CM.tolist()}
-    write_calculation(file_name, request.url, result, session["username"])
-    print(
-        f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
+    return manager.get_connectivity_matrices(
+        connectivity_name=connectivity_name,
+        request=request,
+        start=start,
+        end=end,
+        overlap=overlap,
+        nperseg=nperseg,
     )
-    return jsonify(result)
 
 
 @bp.route("/cacheConnectivity", methods=["GET"])
@@ -161,36 +122,21 @@ def cache_connectivity():
     if not cal:
         # error handling
         if start is None:
-            start = "0"
+            start = 0
             # end will be the last time frame
         if end is None:
-            end = "1"
+            end = 1
         if int(math.floor(float(start))) > int(math.floor(float(end))):
             end = str(int(start) + 1)
-        data = data_provider.get_data()
-        print(f"{bcolors.DEBUG}in time/ : data shape: {data.shape}{bcolors.ENDC}")
-        sfreq = data_provider.get_sampling_rate()
-        data = get_data_by_start_end(data, sfreq, start, end)
-        # Conn.get_connectivity_function(connectivity_name) is the connectivity function
-        connectivity_function = Conn.get_connectivity_function(connectivity_name)
-        f, CM = connectivity_function(
-            data, sfreq, overlap=overlap, nperseg=nperseg
-        )  # this is where the actual calculation happens
-        print(f"{bcolors.DEBUG}{CM.tolist()[0][0]}{bcolors.ENDC}")
-        result = {"f": f.tolist(), "CM": CM.tolist()}
-        write_calculation(file_name, request.url, result, session["username"])
-        print(
-            f"{bcolors.GETREQUEST}CM returned with {len(f)} frequencies and {len(CM[0][0])} edges {bcolors.ENDC}"
+        manager.get_connectivity_matrices(
+            request, connectivity_name, start, end, overlap, nperseg
         )
-
     return "cached!", 200
 
 
 @bp.route("/granger", methods=["GET"])
 def granger():
-    data = data_provider.get_data()
-    result = calculate_granger_for_all_pairs(data)  # calculate Granger causality
-    return jsonify(result)  # return the result as JSON
+    return manager.granger()
 
 
 @bp.route("/timeSeries", methods=["GET"])
@@ -215,13 +161,13 @@ def get_time_series():
         print("Cached")
         return cal.data
     else:
-        XY = data_provider.get_channel_data(
-            channel_name, start=start, end=end, resolution=resolution
+        return manager.get_time_series(
+            channel_name=channel_name,
+            start=start,
+            end=end,
+            resolution=resolution,
+            url=url,
         )
-        write_calculation(
-            file_name=file_name, url=url, data=XY, created_by=session["username"]
-        )
-        return jsonify(XY), 200
 
 
 # get_graph_basic_info
@@ -233,34 +179,7 @@ def get_time_series():
 #     edges: { id, from, to, label?, }
 @bp.route("/graph", methods=["GET"])
 def get_graph_basic_info():
-    # get the number of nodes according to "coherence_over_time.json" file
-    # open the json file and get the value of "coherence_matrices" key
-    data = data_provider.get_data()
-    channel_names = data_provider.get_channel_names()
-    num_nodes = data.shape[1]
-    # create the ids and labels.
-    nodes = []
-    for i in range(num_nodes):
-        nodes.append(
-            {"id": channel_names[i], "style": {"label": {"value": channel_names[i]}}}
-        )
-    # create the edges. theres an edge between every node
-    edges = []
-    for i in range(num_nodes):
-        for j in range(i + 1, num_nodes):
-            edges.append(
-                {
-                    "id": channel_names[i] + "-" + channel_names[j],
-                    "source": channel_names[i],
-                    "target": channel_names[j],
-                }
-            )
-    layout = "circular"
-    # return the result
-    print(
-        f"{bcolors.GETREQUEST}graph returned with {num_nodes} nodes and {len(edges)} edges{bcolors.ENDC}"
-    )
-    return jsonify({"layout": layout, "nodes": nodes, "edges": edges})
+    return manager.get_graph_basic_info()
 
 
 @bp.route("/logout", methods=["GET"])
@@ -290,38 +209,18 @@ def brain_image():
     dis = request.args.get("distance")
     print(f"{bcolors.DEBUG}azi: {azi}, ele: {ele}, dis: {dis}{bcolors.ENDC}")
     # build file name
-    file_name = "brain_images/" + "brain_image-azi_{}_ele_{}_dist_{}.png".format(
-        azi, ele, dis
-    )
-    # check if the file exists
-    # if not os.path.isfile(file_name):
-    #     t = threading.Thread(
-    #         target=get_brain_image_async, args=(file_name, azi, ele, dis)
-    #     )
-    #     t.start()
-    #     t.join()
-    # return the png file to the client side
+    file_name = manager.brain_image(azi=azi, ele=ele, dis=dis)
     return send_file(file_name, mimetype="image/gif")
 
 
 @bp.route("/brainImageParamsList", methods=["GET"])
 def get_image_params():
-    azi_list, rot_list, ele_list = get_azi_ele_dist_lists()
-    return (
-        jsonify(
-            {
-                "azi_list": sorted(azi_list),
-                "ele_list": sorted(rot_list),
-                "dist_list": sorted(ele_list),
-            }
-        ),
-        200,
-    )
+    return manager.get_image_params()
 
 
 @bp.route("/connectivityMeasuresList", methods=["GET"])
 def connectivity_list():
-    return jsonify(Conn.get_connectivity_list()), 200
+    return manager.connectivity_list()
 
 
 ###############################################
@@ -331,60 +230,27 @@ def connectivity_list():
 
 @bp.route("/register", methods=["POST"])
 def register():
-    data = request.get_json()
-    print(f'user:{data["username"]}.')
-    # check if user exists
-    if data["username"] == "":
-        return jsonify({"message": "Username cannot be empty!"}), 400
-    if user_in_db(data["username"], User.query):
-        return jsonify({"message": "User already exists!"}), 400
-    write_user(data["username"], data["data"], data["settings"])
-    return jsonify({"message": "User created successfully!"})
+    return manager.register(request=request)
 
 
 @bp.route("/addFile", methods=["POST"])
 def add_file():
-    data = request.get_json()
-    update_data_dir(session["username"], data["file"])
-    return jsonify({"message": "File added successfully!"})
+    return manager.add_file(request=request)
 
 
 @bp.route("/saveSettings", methods=["POST"])
 def save_settings():
-    data = request.get_json()
-    # check if user exists
-    if not "username" in session:
-        return jsonify({"message": "Session error"}), 400
-    write_settings(session["username"], data)
-    return jsonify({"message": "Settings saved successfully!"})
+    return manager.save_settings(request=request)
 
 
 @bp.route("/setFile", methods=["POST"])
 def set_file():
-    print(session["user_data_dir"])
-    directory = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-    session["user_data_dir"] = find_file(request.get_json()["file"], directory)
-    return jsonify({"message": "File set successfully!"})
+    return manager.set_file(request=request)
 
 
 @bp.route("/getGraphVideo", methods=["POST"])
 def get_graph_video():
-    request_data = request.get_json()
-    data = data_provider.get_data()
-    sfreq = data_provider.get_sampling_rate()
-    channels = data_provider.get_channel_names()
-    duration = request_data["duration"]
-    video_name = request_data["videoName"]
-    video = graph_video(data, channels, sfreq, duration, video_name, epoch_duration=0.5)
-    return jsonify({"message": "Video created successfully!"})
-
-
-@bp.route("/data", methods=["POST"])
-def receive_data():
-    data = request.json
-    print(data)
-    # do something with data
-    return "Data received"
+    return manager.get_graph_video(request=request)
 
 
 @bp.route("/exportData", methods=["POST"])
@@ -400,38 +266,10 @@ def export_data():
     print(
         f"{bcolors.DEBUG}start: {start}, end: {end}, resolution: {resolution} connectivityMeasure: {connectivity_measure}{bcolors.ENDC}"
     )
-    if not os.path.isdir("exported_mat"):
-        os.mkdir("exported_mat")
-
-    date_time = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
-
-    if not file_name:
-        file_name = session["username"] + "_" + date_time
-
-    file_name = "exported_mat/" + file_name
-    # check if file is already exists
-    if os.path.isfile(file_name + ".mat"):
-        return jsonify({"message": "File already exists!"}), 400
-    data = data_provider.get_data()
-    sfreq = data_provider.get_sampling_rate()
-    data = get_data_by_start_end(data=data, fs=sfreq, start=start, end=end)
-    electrodes = data_provider.get_channel_names()
-    bids_file_name = session["user_data_dir"].split(os.sep)[-1]
-    meta_data = {
-        "bids_file_name": bids_file_name,
-        "electrodes": electrodes,
-        "connectivity_measure": connectivity_measure,
-        "date_time": date_time,
-    }
-    connectivity_func = Conn.get_connectivity_function(connectivity_measure)
-    export_connectivity_to_mat(
-        conn_func=connectivity_func,
-        name=file_name,
-        data=data,
-        sfreq=sfreq,
+    return manager.export_data(
         start=start,
         end=end,
-        meta_data=meta_data,
+        resolution=resolution,
+        file_name=file_name,
+        connectivity_measure=connectivity_measure,
     )
-    # do something with data
-    return jsonify({"message": "Data exported successfully!"}), 200

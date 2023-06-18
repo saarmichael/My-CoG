@@ -13,6 +13,7 @@ def get_azi_ele_dist_lists():
     azi_list = set()
     ele_list = set()
     dist_list = set()
+    os.chdir("flask_app/src/main/tools")
     # check if the directory exists
     if not os.path.exists("brain_images"):
         os.mkdir("brain_images")
