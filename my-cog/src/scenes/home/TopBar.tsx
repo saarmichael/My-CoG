@@ -73,9 +73,9 @@ export const TopBar: React.FC = () => {
     
     
     const fileClicked = (file: string) => {
+        setChosenFile(file);
         apiPOST<object>('/setFile', {file: file}).then((response) => {
             if (response.status === 200) {
-                setChosenFile(file);
                 // check if file in recent files
                 let found = false;
                 recentFiles.forEach((recentFile) => {

@@ -1,10 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DirectoryPicker from '../../components/tools_components/DirectoryPicker';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
-import { ServerSettings, extractOptions, registerRequest } from '../../shared/ServerRequests';
+import { ServerSettings, apiGET, extractOptions, registerRequest } from '../../shared/ServerRequests';
 import { loginConfig } from './Login';
 import './StartPage.css';
+import ModalPopup from '../../components/tools_components/ModalPopup';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import TreeView, { Node } from '../../components/tools_components/TreeView';
 
 
 interface RegisterProps {
@@ -19,6 +22,7 @@ export interface VisualPreferences {
 const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [username, setUsername] = useState('');
   const [data, setData] = useState('');
+  const [dataDir, setDataDir] = useState<Node[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const { setChosenFile, setLoading } = useContext(GlobalDataContext) as IGlobalDataContext;
 
@@ -46,11 +50,19 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   };
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  const handleFileButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
+  useEffect(() => {
+    apiGET('getDataDir').then((res) => {
+      let files = res as Node[];
+      setDataDir(files);
+    })
+  }, []);
+  const [counter, setCounter] = useState(0);
+  const handleFolderClicked = (folder: string) => {
+    setData(folder);
+    // small trick to close modal
+    setChosenFile('register' + counter);
+    setCounter(counter + 1);
+  }
 
   return (
     <form onSubmit={handleSubmit} className="form-container" style={{ marginTop: '2%' }}>
@@ -65,7 +77,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
           Data
         </label>
         <div className='file-upload-button'>
-          <DirectoryPicker onChange={setData} buttonName="📁" />
+          <ModalPopup title={'Choose Your BIDS project (using a right click)'} buttonName={<FolderOpenIcon fontSize='small'/>} content={<TreeView treeData={dataDir} folderClicked={handleFolderClicked}/>} />
         </div>
         
         {data && <p className='upload message'>{data}</p>}

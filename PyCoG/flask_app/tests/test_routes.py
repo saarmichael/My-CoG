@@ -5,7 +5,7 @@ import pytest
 from flask import session
 from flask.testing import FlaskClient
 # get the parent of the current directory
-sys.path.insert(0, r'D:\Users\user\Desktop\biu\cs\YearC\Project\final_project\My-CoG-1\PyCoG\flask_app')
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 from src import create_app
 from src.main.tools.bids_handler import dataProvider
 from src.models.user import User

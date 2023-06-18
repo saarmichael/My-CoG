@@ -8,7 +8,7 @@ import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeF
 
 type ModalPopupProps = {
     title: string;
-    buttonName: string;
+    buttonName: string | JSX.Element;
     content: JSX.Element;
     width?: string;
     height?: string;
