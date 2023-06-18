@@ -1,8 +1,8 @@
-import React, { useContext, useRef } from 'react';
-import html2canvas from 'html2canvas';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import { IconWrapper } from './Styles';
+import html2canvas from 'html2canvas';
+import React, { useContext, useRef } from 'react';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import { IconWrapper } from './Styles';
 
 interface ComponentScreenshotProps {
   content: React.ReactNode;

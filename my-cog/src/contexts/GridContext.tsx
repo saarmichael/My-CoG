@@ -1,7 +1,4 @@
-import exp from "constants";
-import React, { createContext, useState, ReactNode } from "react";
-import { FreqRange } from '../shared/GraphRelated';
-import { TimeInterval } from "../shared/GraphRelated";
+import React, { ReactNode, createContext, useState } from "react";
 
 
 export interface IGridFocusContext {

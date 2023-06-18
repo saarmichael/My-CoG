@@ -1,10 +1,9 @@
-import Graphin, { Behaviors, GraphinContext, GraphinData, IUserNode } from "@antv/graphin"
-import { useContext, useState } from "react";
-import { useEffect } from "react";
-import { GridContext, IGridFocusContext } from "../../contexts/GridContext";
 import { INode, NodeConfig } from "@antv/g6";
+import Graphin, { Behaviors, GraphinContext, GraphinData, IUserNode } from "@antv/graphin";
+import { useContext, useEffect, useState } from "react";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
-import { NODE_LABEL_FONT_SIZE } from "../../shared/DesignConsts";
+import { GridContext, IGridFocusContext } from "../../contexts/GridContext";
+import { NODE_LABEL_FONT_SIZE, GRID_CENTER_X, GRID_CENTER_Y, WHEEL_ZOOM_FACTOR, NODE_SIZE_FACTOR } from "../../shared/DesignConsts";
 
 
 export interface EditableGridProps {
@@ -79,15 +78,15 @@ const GridBehavior = (props: GridBehaviorProps) => {
             const nodes = graph.getNodes();
             nodes.forEach(node => {
                 const model = node.getModel();
-                const size = model.style?.keyshape?.size - (e.wheelDelta / 30);
-                let modelFontSize = model.style?.label?.fontSize - (e.wheelDelta / 30);
+                const size = model.style?.keyshape?.size - (e.wheelDelta / WHEEL_ZOOM_FACTOR);
+                let modelFontSize = model.style?.label?.fontSize - (e.wheelDelta / WHEEL_ZOOM_FACTOR);
 
                 if(!modelFontSize){
                     modelFontSize = NODE_LABEL_FONT_SIZE;
                 }
                 if (size) {
                     if (Array.isArray(size)) {
-                        graph.updateItem(node, { size: [size[0] + 100, size[1] + 100], fontSize: modelFontSize });
+                        graph.updateItem(node, { size: [size[0] + NODE_SIZE_FACTOR, size[1] + NODE_SIZE_FACTOR], fontSize: modelFontSize });
                     }
                     else {
                         graph.updateItem(node, { style: { keyshape: { size: size }, label: { fontSize: modelFontSize } } });
@@ -228,7 +227,7 @@ export const EditableGrid = (props: EditableGridProps) => {
                         enableOptimize: true, // enable the optimize to hide the shapes beside nodes' keyShape
                     },
                 ],
-            }} layout={{ type: 'grid', center: [275, 300], 'rows': props.N, 'cols': props.M }}
+            }} layout={{ type: 'grid', center: [GRID_CENTER_X, GRID_CENTER_Y], 'rows': props.N, 'cols': props.M }}
                 style={
                     backgroundStyle
                 }>

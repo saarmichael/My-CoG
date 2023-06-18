@@ -1,6 +1,6 @@
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { StylesConfig, GroupBase, CSSObjectWithLabel, OptionProps } from 'react-select';
 import { styled } from "@mui/system";
+import { CSSObjectWithLabel, GroupBase, OptionProps, StylesConfig } from 'react-select';
 
 export type OptionType = { label: string; value: number };
 

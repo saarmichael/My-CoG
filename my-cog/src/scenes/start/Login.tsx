@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
+import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 import { loginRequest } from '../../shared/ServerRequests';
 import './StartPage.css';
-import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 
 type LoginProps = {
   onLogin: () => void;

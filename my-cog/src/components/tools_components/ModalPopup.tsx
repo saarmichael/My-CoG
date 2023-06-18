@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+import React, { useContext, useEffect, useState } from 'react';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 
 type ModalPopupProps = {

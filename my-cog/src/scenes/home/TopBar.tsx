@@ -1,13 +1,13 @@
-import './TopBar.css';
-import React, { useContext, useEffect, useState } from 'react';
-import { apiGET, apiPOST, logoutRequest } from '../../shared/ServerRequests';
-import TreeView, { Node } from '../../components/tools_components/TreeView';
-import ModelPopup from '../../components/tools_components/ModalPopup';
-import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
-import CreateVideoModal from '../../components/tools_components/CreateVideoModal';
-import { DataOptions } from '../../components/data_components/DataOptions';
-import { Grid } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { Grid } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { DataOptions } from '../../components/data_components/DataOptions';
+import CreateVideoModal from '../../components/tools_components/CreateVideoModal';
+import ModelPopup from '../../components/tools_components/ModalPopup';
+import TreeView, { Node } from '../../components/tools_components/TreeView';
+import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import { apiGET, apiPOST, logoutRequest } from '../../shared/ServerRequests';
+import './TopBar.css';
 
 interface MenuItem {
     name: string;

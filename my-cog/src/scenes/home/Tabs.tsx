@@ -1,15 +1,14 @@
-import React, { useState } from "react";
-import { Rnd } from 'react-rnd';
-import { Box } from "../../components/tools_components/GridComponents";
-import "./Tabs.css";
-import Sidebar from "./SideBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
-import { customStyles } from "../../components/tools_components/Styles";
+import React, { useState } from "react";
 import Select from 'react-select';
-import TimeSeries from "../../components/data_components/TimeSeries";
-import { GraphContainer } from "../../components/data_components/GraphContainer";
 import { EditablesContainer } from "../../components/data_components/EditablesContainer";
+import { GraphContainer } from "../../components/data_components/GraphContainer";
+import TimeSeries from "../../components/data_components/TimeSeries";
+import { Box } from "../../components/tools_components/GridComponents";
+import { customStyles } from "../../components/tools_components/Styles";
+import Sidebar from "./SideBar";
+import "./Tabs.css";
 
 
 

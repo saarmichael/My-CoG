@@ -1,15 +1,15 @@
-import { BrowserRouter as Router, Route, Routes, useNavigate, Navigate } from 'react-router-dom';
+import { Backdrop, CircularProgress } from '@material-ui/core';
+import { useContext } from 'react';
+import { Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
+import { useStyles } from './components/tools_components/Styles';
 import { GlobalDataContext, GlobalDataProvider, IGlobalDataContext } from './contexts/ElectrodeFocusContext';
 import { VisGraphOptionsProvider } from './contexts/VisualGraphOptionsContext';
-import Login from './scenes/start/Login';
-import Register from './scenes/start/Register';
 import Tabbing from './scenes/home/Tabs';
 import { TopBar } from './scenes/home/TopBar';
+import Login from './scenes/start/Login';
+import Register from './scenes/start/Register';
 import './scenes/start/StartPage.css';
-import { useContext, useEffect } from 'react';
-import { Backdrop, Box, CircularProgress } from '@material-ui/core';
-import { useStyles } from './components/tools_components/Styles';
 
 function LoginPage() {
   const navigate = useNavigate();

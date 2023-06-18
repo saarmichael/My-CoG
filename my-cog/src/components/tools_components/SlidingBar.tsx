@@ -1,7 +1,7 @@
-import { Button, Grid, Slider, TextField, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { Button, Grid, Slider, TextField, Tooltip } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { useTextFieldsStyle } from "../../components/tools_components/Styles";
 import { TimeInterval } from "../../shared/GraphRelated";
 

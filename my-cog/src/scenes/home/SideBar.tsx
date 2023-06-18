@@ -1,13 +1,13 @@
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { CircularProgress, FormGroup } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { IVisGraphOptionsContext, VisGraphOptionsContext } from "../../contexts/VisualGraphOptionsContext";
-import { ColorPicker } from "../../components/tools_components/ColorPicker";
 import { GraphVisCheckbox } from "../../components/data_components/GraphVisCheckbox";
-import './SideBar.css';
-import { ServerSettings, getSettings, saveSettings } from "../../shared/ServerRequests";
+import { ColorPicker } from "../../components/tools_components/ColorPicker";
+import { IVisGraphOptionsContext, VisGraphOptionsContext } from "../../contexts/VisualGraphOptionsContext";
 import { reorganizeOptions } from "../../shared/RequestsService";
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import { ServerSettings, getSettings, saveSettings } from "../../shared/ServerRequests";
+import './SideBar.css';
 
 interface SidebarProps {
     isOpen: boolean;

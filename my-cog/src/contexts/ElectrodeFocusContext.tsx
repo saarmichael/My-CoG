@@ -1,8 +1,6 @@
-import exp from "constants";
-import React, { createContext, useState, ReactNode } from "react";
-import { FreqRange } from '../shared/GraphRelated';
-import { TimeInterval } from "../shared/GraphRelated";
 import { GraphinData } from "@antv/graphin";
+import React, { ReactNode, createContext, useState } from "react";
+import { FreqRange, TimeInterval } from '../shared/GraphRelated';
 
 export interface ActiveNodeProps {
     id: string;

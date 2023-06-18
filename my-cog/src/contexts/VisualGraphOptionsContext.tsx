@@ -1,6 +1,5 @@
-import { IUserEdge, IUserNode, GraphinData } from "@antv/graphin";
-import exp from "constants";
-import React, { createContext, useState, ReactNode } from "react";
+import { GraphinData } from "@antv/graphin";
+import React, { ReactNode, createContext, useState } from "react";
 import { changeEdgeWidthGraphin, changeNodeOpacity, changeNodeSize, colorCodeEdges, colorCodeEdgesDefault, colorCodeNodes, colorCodeNodesDefault, edgeWidthGraphinDefault, hideNodeLabel, nodeOpacityDefault, nodeSizeDefault, showEdgeWeight, showNodeLabel, thresholdGraph } from "../shared/GraphService";
 
 export interface IVisSettings {

@@ -1,11 +1,11 @@
-import { Box, Grid, Slider, TextField } from "@mui/material";
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
-import { useEffect, useRef, useState, useContext } from "react";
-import { IconWrapper, useTextFieldsStyle } from "../tools_components/Styles";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
+import { Grid, Slider, TextField } from "@mui/material";
+import { useContext, useEffect, useRef, useState } from "react";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { cahceInServer } from "../../shared/RequestsService";
-import StopIcon from '@mui/icons-material/Stop';
+import { IconWrapper, useTextFieldsStyle } from "../tools_components/Styles";
 
 export const GraphAnimation = () => {
     const { duration, setTimeRange, isAnimating, setIsAnimating, overlap, samplesPerSegment, connectivityType } = useContext(GlobalDataContext) as IGlobalDataContext;

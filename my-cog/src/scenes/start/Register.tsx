@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react';
-import { ServerSettings, extractOptions, registerRequest } from '../../shared/ServerRequests';
-import './StartPage.css';
-import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
+import React, { useContext, useState } from 'react';
 import DirectoryPicker from '../../components/tools_components/DirectoryPicker';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
+import { IVisGraphOption, IVisGraphOptionsContext, IVisSettings, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
+import { ServerSettings, extractOptions, registerRequest } from '../../shared/ServerRequests';
 import { loginConfig } from './Login';
+import './StartPage.css';
 
 
 interface RegisterProps {

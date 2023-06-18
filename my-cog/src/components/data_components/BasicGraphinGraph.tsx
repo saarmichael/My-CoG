@@ -3,8 +3,9 @@ import Graphin, { Behaviors, GraphinContext, GraphinData, IG6GraphEvent } from '
 import React, { useContext, useEffect } from 'react';
 import { ActiveNodeProps, GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 import { IVisGraphOptionsContext, VisGraphOptionsContext } from '../../contexts/VisualGraphOptionsContext';
-import { getDuration, getFrequencies } from '../../shared/RequestsService';
 import { getGraphBase, getGraphConnectivityMatrix, updateGraphCoherence } from '../../shared/GraphService';
+import { getDuration, getFrequencies } from '../../shared/RequestsService';
+import { GRAPH_CENTER_X, GRAPH_CENTER_Y, GRAPH_HEIGHT, GRAPH_WIDTH } from '../../shared/DesignConsts';
 
 
 const SampleBehavior = () => {
@@ -14,15 +15,13 @@ const SampleBehavior = () => {
 
     useEffect(() => {
 
-        graph.changeSize(700, 600);
-        // 初始化聚焦到`node-1`
+        graph.changeSize(GRAPH_WIDTH, GRAPH_HEIGHT);
         const handleClick = (evt: IG6GraphEvent) => {
             const node = evt.item as INode;
             const model = node.getModel() as NodeConfig;
             // set the context
             setElectrode(model.id);
         };
-        // 每次点击聚焦到点击节点上
         graph.on('node:click', handleClick);
         return () => {
             graph.off('node:click', handleClick);
@@ -112,10 +111,6 @@ const BasicGraphinGraph = () => {
         return { ...graph };
     }
 
-    useEffect(() => {
-        console.log(`test`, state);
-    }, [state]);
-
     const applyVisualizationOptions = async () => {
         // deep copy the graph
         const newNodes = state.nodes.map((node) => ({ ...node }));
@@ -155,12 +150,10 @@ const BasicGraphinGraph = () => {
 
     // change the graph data according to the user's selections
     useEffect(() => {
-        console.log(`useEffect`, `getFrequencyAndTime`)
         getFrequencyAndTime().then(({ frequencyListAsync, durationAsync }) => {
             setFreqList(frequencyListAsync);
             setDuration(durationAsync);
         });
-        console.log(`useEffect`, `createBasicGraph`)
         createBasicGraph().then((data) => {
             setActiveNodes(data.nodes.map((node) => {
                 const nodeLabel = node.style?.label?.value ? node.style.label.value : node.id;
@@ -178,7 +171,6 @@ const BasicGraphinGraph = () => {
     useEffect(() => {
         if (!state.nodes.length || !state.edges.length) return;
         setLoading(true);
-        console.log(`useEffect`, `createGraphData`)
         createGraphData().then((data) => {
             //console.log(`data:`, data);
             setLoading(false);
@@ -189,7 +181,6 @@ const BasicGraphinGraph = () => {
 
     useEffect(() => {
         if (!state.nodes.length || !state.edges.length) return;
-        console.log(`useEffect`, `createGraphData`)
         updateGraphData().then((data) => {
             //console.log(`data:`, data);
             setState(data);
@@ -210,7 +201,7 @@ const BasicGraphinGraph = () => {
     return (
         <div id="mountNode" >
             <div style={{ height: '100%', margin: 'auto', display: 'flex', alignItems: 'center', maxHeight: '600px' }}>
-                <Graphin data={data} layout={{ type: 'circular', center: [345, 300] }}>
+                <Graphin data={data} layout={{ type: 'circular', center: [GRAPH_CENTER_X, GRAPH_CENTER_Y] }}>
                     <ActivateRelations trigger="click" />
                     <SampleBehavior />
                     <ZoomCanvas disabled={true} />

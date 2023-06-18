@@ -1,9 +1,8 @@
+import { Box, CircularProgress, TextField } from "@mui/material";
 import { useContext, useState } from "react";
 import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
-import { Box, CircularProgress } from "@mui/material";
 import { exportData } from "../../shared/RequestsService";
 import ModalPopup from "../tools_components/ModalPopup";
-import { TextField } from "@mui/material";
 
 
 const ExportDataModal: React.FC = () => {
@@ -64,7 +63,6 @@ const ExportDataModal: React.FC = () => {
         </div>
     );
 }
-
 
 
 export const DataOptions = () => {

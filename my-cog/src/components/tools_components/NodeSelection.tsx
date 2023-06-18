@@ -1,9 +1,9 @@
-import { Box, Checkbox } from '@mui/material';
-import { ActiveNodeProps } from "../../contexts/ElectrodeFocusContext";
+import { GraphinData } from "@antv/graphin";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { Box, Checkbox } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { GraphinData } from "@antv/graphin";
+import { ActiveNodeProps } from "../../contexts/ElectrodeFocusContext";
 
 export interface NodeSelectionProps {
     state: GraphinData;

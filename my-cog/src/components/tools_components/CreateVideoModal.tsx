@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { apiGET } from '../../shared/ServerRequests';
 import { apiPOST } from '../../shared/ServerRequests';
 
 interface FormState {

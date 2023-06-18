@@ -1,28 +1,26 @@
 import {
     ChartXY,
-    Themes,
     Dashboard,
     LegendBox,
     LineSeries,
     Point,
     PointMarker,
+    Theme,
+    Themes,
     UIBackground,
     UIElement,
     UIOrigins,
     ZoomBandChart,
     lightningChart,
-    Theme,
 } from '@arction/lcjs';
+import { Grid } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useContext, useEffect, useState } from 'react';
+import Select from 'react-select';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
 import { getTimeSeries } from '../../shared/ElectrodeDataService';
 import { TimeInterval } from '../../shared/GraphRelated';
 import { TimeSliderComponent } from './GraphContainer';
-import CircularProgress from '@mui/material/CircularProgress';
-import { Grid } from '@mui/material';
-import { customStyles } from '../tools_components/Styles';
-import Select from 'react-select';
-import { width } from '@mui/system';
 
 interface Basic3DSpectogramProps {
     data: number[][];
@@ -30,23 +28,17 @@ interface Basic3DSpectogramProps {
 
 const TimeSeries = () => {
     const { state,
-        freqList, setFreqList,
-        setFreqRange, duration,
-        setDuration,
         setTimeRange,
-        activeNodes, setActiveNodes,
         loading,
-        setConnectivityType, connectivityType,
-        isAnimating, setIsAnimating,
-        overlap, setOverlap,
-        samplesPerSegment, setSamplesPerSegment,
+        isAnimating,
+        overlap,
+        samplesPerSegment,
         timeRange
     } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [legend, setLegend] = useState<LegendBox & UIElement | null>(null);
     const [theme, setTheme] = useState<Theme>(Themes.lightNew);
     const [seriesArray, setSeriesArray] = useState<Array<LineSeries> | null>(null);
-    const [seriesData, setSeriesData] = useState<Array<Point[]> | null>(null);
     const [sliderDuration, setSliderDuration] = useState<TimeInterval>({
         resolution: 's',
         start: 0,
@@ -191,11 +183,11 @@ const TimeSeries = () => {
                         <>Get Time Series</>
                     )}
                 </div>
-                <div style={{ position: 'absolute', right: '10px', top: '85px', width: '200px'}}>
+                <div style={{ position: 'absolute', right: '10px', top: '85px', width: '200px' }}>
                     <Select
                         options={themesMap}
                         value={themesMap.find((option) => option.theme === theme)}
-                        onChange={(selectedOption) => setTheme(selectedOption? selectedOption.theme : Themes.lightNew)}
+                        onChange={(selectedOption) => setTheme(selectedOption ? selectedOption.theme : Themes.lightNew)}
                     />
                 </div>
             </Grid>

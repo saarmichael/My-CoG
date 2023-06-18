@@ -1,19 +1,19 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { Box, Checkbox, Grid, TextField, Slider } from '@mui/material';
-import BasicGraphinGraph from "./BasicGraphinGraph";
-import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
-import { SlidingBar } from "../tools_components/SlidingBar";
-import { getConnectivityMeasuresList, getDuration, getFrequencies } from "../../shared/RequestsService";
+import { Box, Grid, TextField } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { useDropdownStyles } from "../tools_components//Styles";
-import CircularProgress from '@mui/material/CircularProgress';
+import { useContext, useEffect, useState } from "react";
 import { useTextFieldsStyle } from "../../components/tools_components/Styles";
+import { GlobalDataContext, IGlobalDataContext } from "../../contexts/ElectrodeFocusContext";
 import { TimeInterval } from "../../shared/GraphRelated";
+import { getConnectivityMeasuresList, getDuration, getFrequencies } from "../../shared/RequestsService";
+import { useDropdownStyles } from "../tools_components//Styles";
 import ComponentScreenshot from "../tools_components/ComponentScreenshot";
 import { NodeSelection } from "../tools_components/NodeSelection";
+import { SlidingBar } from "../tools_components/SlidingBar";
+import BasicGraphinGraph from "./BasicGraphinGraph";
 
 
 export interface TimeSliderProps {
@@ -50,13 +50,13 @@ export const GraphContainer = () => {
 
     const { state,
         freqList, setFreqList,
-        setFreqRange, duration,
+        setFreqRange,
         setDuration,
         setTimeRange,
         activeNodes, setActiveNodes,
         loading,
         setConnectivityType, connectivityType,
-        isAnimating, setIsAnimating,
+        isAnimating,
         overlap, setOverlap,
         samplesPerSegment, setSamplesPerSegment,
     } = useContext(GlobalDataContext) as IGlobalDataContext;
@@ -112,7 +112,6 @@ export const GraphContainer = () => {
             }
         }
     }
-
 
     const dpClasses = useDropdownStyles();
     const tfClasses = useTextFieldsStyle();
