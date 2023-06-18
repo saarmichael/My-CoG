@@ -11,6 +11,7 @@ import {
     UIOrigins,
     ZoomBandChart,
     lightningChart,
+    Theme,
 } from '@arction/lcjs';
 import { useContext, useEffect, useState } from 'react';
 import { GlobalDataContext, IGlobalDataContext } from '../../contexts/ElectrodeFocusContext';
@@ -19,6 +20,9 @@ import { TimeInterval } from '../../shared/GraphRelated';
 import { TimeSliderComponent } from './GraphContainer';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Grid } from '@mui/material';
+import { customStyles } from '../tools_components/Styles';
+import Select from 'react-select';
+import { width } from '@mui/system';
 
 interface Basic3DSpectogramProps {
     data: number[][];
@@ -40,6 +44,7 @@ const TimeSeries = () => {
     } = useContext(GlobalDataContext) as IGlobalDataContext;
     const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [legend, setLegend] = useState<LegendBox & UIElement | null>(null);
+    const [theme, setTheme] = useState<Theme>(Themes.lightNew);
     const [seriesArray, setSeriesArray] = useState<Array<LineSeries> | null>(null);
     const [seriesData, setSeriesData] = useState<Array<Point[]> | null>(null);
     const [sliderDuration, setSliderDuration] = useState<TimeInterval>({
@@ -62,17 +67,28 @@ const TimeSeries = () => {
         dashboard = lightningChart().Dashboard({
             container: 'time-series',
             numberOfColumns: 1,
-            numberOfRows: 4,
-            theme: Themes.lightNew,
-        }).setRowHeight(3, 0.3);
-        
+            numberOfRows: 2,
+            theme: theme,
+        }).setRowHeight(0, 3);
+
         chart = dashboard.createChartXY({
             columnIndex: 0,
             columnSpan: 1,
             rowIndex: 0,
-            rowSpan: 4,
-            theme: Themes.lightNew,
+            rowSpan: 1,
+            theme: theme,
         }).setTitle('');
+
+        const zoomBandChart = dashboard.createZoomBandChart({
+            columnIndex: 0,
+            columnSpan: 1,
+            rowIndex: 1,
+            rowSpan: 1,
+            // Specify the Axis for the Zoom Band Chart to follow.
+            // The Zoom Band Chart will imitate all Series present in that Axis.
+            axis: chart.getDefaultAxisX(),
+        })
+
 
         const seriesArray: Array<LineSeries> = [];
         for (const node of state.nodes) {
@@ -114,7 +130,7 @@ const TimeSeries = () => {
         if (isAnimating) return;
         console.log('createDashboard');
         createDashboard();
-    }, [timeRange]);
+    }, [timeRange, theme]);
 
     useEffect(() => {
         if (!legend) return;
@@ -132,6 +148,13 @@ const TimeSeries = () => {
         if (selectedChannels.length) return;
         setSelectedChannels([state.nodes[0].id]);
     }, [state]);
+
+
+    const themesMap = [
+        { label: 'Light', theme: Themes.lightNew },
+        { label: 'Dark Gold', theme: Themes.darkGold },
+        { label: 'Light Nature', theme: Themes.lightNature },
+    ]
 
     return (
         <Grid container style={{ height: '70vh', width: '100%', flexDirection: 'column', justifyContent: 'center', padding: 0, margin: 0 }}>
@@ -167,6 +190,13 @@ const TimeSeries = () => {
                     ) : (
                         <>Get Time Series</>
                     )}
+                </div>
+                <div style={{ position: 'absolute', right: '10px', top: '85px', width: '200px'}}>
+                    <Select
+                        options={themesMap}
+                        value={themesMap.find((option) => option.theme === theme)}
+                        onChange={(selectedOption) => setTheme(selectedOption? selectedOption.theme : Themes.lightNew)}
+                    />
                 </div>
             </Grid>
         </Grid>
