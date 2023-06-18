@@ -212,11 +212,12 @@ export const GraphAnimation = () => {
                         {buttonText}
                     </span>
                     <span
-
                         onClick={() => {
                             if (!checkError()) {
-                                setIsAnimating(true);
-                                isAnimatingRef.current = true;
+                                if (currentFrameStartRef.current > start) { // only if animation has alreadt started
+                                    setIsAnimating(true);
+                                    isAnimatingRef.current = true;
+                                }
                             }
                         }}
                     >
