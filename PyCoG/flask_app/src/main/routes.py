@@ -211,6 +211,12 @@ def brain_image():
     ele = request.args.get("elevation")
     dis = request.args.get("distance")
     print(f"{bcolors.DEBUG}azi: {azi}, ele: {ele}, dis: {dis}{bcolors.ENDC}")
+    if azi == "undefined":
+        azi = '0'
+    if ele == "undefined":
+        ele = '0'
+    if dis == "undefined":
+        dis = '300'
     # build file name
     file_name = manager.brain_image(azi=azi, ele=ele, dis=dis)
     return send_file(file_name, mimetype="image/gif")

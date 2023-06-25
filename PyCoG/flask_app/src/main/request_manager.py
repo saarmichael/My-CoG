@@ -159,9 +159,6 @@ class requestManager:
 
     def brain_image(self, azi, ele, dis):
         # the fields are azimuth, elevation, and distance
-        azi = request.args.get("azimuth")
-        ele = request.args.get("elevation")
-        dis = request.args.get("distance")
         print(f"{bcolors.DEBUG}azi: {azi}, ele: {ele}, dis: {dis}{bcolors.ENDC}")
         # build file name
         file_name = (
