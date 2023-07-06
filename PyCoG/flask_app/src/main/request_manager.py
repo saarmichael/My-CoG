@@ -161,8 +161,10 @@ class requestManager:
         # the fields are azimuth, elevation, and distance
         print(f"{bcolors.DEBUG}azi: {azi}, ele: {ele}, dis: {dis}{bcolors.ENDC}")
         # build file name
+        folder_dir = os.path.abspath((os.path.dirname(__file__)))
         file_name = (
-            "main/tools/brain_images/"
+            folder_dir
+            + "/tools/brain_images/"
             + "brain_image-azi_{}_ele_{}_dist_{}.png".format(azi, ele, dis)
         )
         return file_name
