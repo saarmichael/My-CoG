@@ -72,7 +72,7 @@ const ImageSelector = () => {
                     dist_index: imageParamsIdxs.dist_index
                 });
             }}>
-                <ThreeSixtyIcon sx={{ color: 'purple' }} />
+                <HeightIcon sx={{ color: 'purple' }} />
             </Button>
             <span>{paramsLists.azi_list[imageParamsIdxs.azi_index]}</span>
 
@@ -83,7 +83,7 @@ const ImageSelector = () => {
                     dist_index: imageParamsIdxs.dist_index
                 });
             }}>
-                <HeightIcon sx={{ color: 'purple' }} />
+                <ThreeSixtyIcon sx={{ color: 'purple' }} />
             </Button>
             <span>{paramsLists.ele_list[imageParamsIdxs.ele_index]}</span>
 

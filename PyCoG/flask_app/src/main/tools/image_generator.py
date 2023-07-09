@@ -34,7 +34,7 @@ def get_azi_ele_dist_lists():
 
 
 def generate_image(file_name, brain, azi, ele, dist):
-    brain.show_view(roll=int(azi), elevation=int(ele), distance=int(dist))
+    brain.show_view(roll=int(ele), elevation=int(azi), distance=int(dist))
     brain.save_image(file_name, mode="rgb")
 
 
@@ -58,7 +58,7 @@ def create_tons_of_images():
         "C:\\Users\\saarm\\Code Projects\\My-CoG\\PyCoG\\flask_app\\src\\main\\tools\\brain_images"
     )
     brain = get_brain_image()
-    azi_list = [0, 90, 180, 270]
+    azi_list = [0, 90, 180]
     ele_list = [0, 90, 180, 270]
     dist_list = [300, 360, 400, 450]
     for azi in azi_list:

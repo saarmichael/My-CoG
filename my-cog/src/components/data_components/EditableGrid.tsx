@@ -78,8 +78,8 @@ const GridBehavior = (props: GridBehaviorProps) => {
             const nodes = graph.getNodes();
             nodes.forEach(node => {
                 const model = node.getModel();
-                const size = model.style?.keyshape?.size - (e.wheelDelta / WHEEL_ZOOM_FACTOR);
-                let modelFontSize = model.style?.label?.fontSize - (e.wheelDelta / WHEEL_ZOOM_FACTOR);
+                let size = model.style?.keyshape?.size - (e.wheelDelta / WHEEL_ZOOM_FACTOR);
+                let modelFontSize = model.style?.label?.fontSize - (e.wheelDelta / (0.8*WHEEL_ZOOM_FACTOR));
 
                 if(!modelFontSize){
                     modelFontSize = NODE_LABEL_FONT_SIZE;
@@ -89,6 +89,9 @@ const GridBehavior = (props: GridBehaviorProps) => {
                         graph.updateItem(node, { size: [size[0] + NODE_SIZE_FACTOR, size[1] + NODE_SIZE_FACTOR], fontSize: modelFontSize });
                     }
                     else {
+                        if(size < 1) {
+                            size = 1;
+                        }
                         graph.updateItem(node, { style: { keyshape: { size: size }, label: { fontSize: modelFontSize } } });
                     }
                 }
