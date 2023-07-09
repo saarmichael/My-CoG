@@ -48,7 +48,7 @@ export const GraphVisCheckbox = (props: { label: string; checked: boolean; }) =>
                             inputProps={{
                                 step: 0.1,
                             }}
-                            defaultValue={thisOption.value}
+                            
                             inputRef={inputRef}
                             fullWidth
                         />

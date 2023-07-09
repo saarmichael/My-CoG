@@ -106,11 +106,11 @@ const Tabs: React.FC<TabsProps> = ({ tabs, onAddTab }) => {
           </div>
           <div style={{ overflow: 'auto', flexGrow: 1 }}>
             {tabs.map((tab, index) => (
-              <Grid container justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
+              <Grid container key={index} justifyContent="center" spacing={12} style={{ display: index === activeTabIndex ? '' : 'none' }}>
                 {tab.content.props.children
                 .filter((component: JSX.Element) => component.type !== React.Fragment)
                 .map((component: JSX.Element, index: number) => (
-                  <Grid item  xs={5} style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '' }}>
+                  <Grid item key={index} xs={5} style={{ display: hiddenComponentIndex.includes(index) ? 'none' : '' }}>
                     {component}
                   </Grid>
                 ))}

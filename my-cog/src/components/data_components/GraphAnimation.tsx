@@ -181,7 +181,7 @@ export const GraphAnimation = () => {
                             step: 0.1,
                         }}
                         value={windowSize}
-                        defaultValue={windowSize}
+                        
                         type="number"
                         size="small"
                         disabled={isAnimating}

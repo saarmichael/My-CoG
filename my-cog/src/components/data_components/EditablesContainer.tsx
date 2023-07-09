@@ -119,9 +119,9 @@ const ImageSelector = () => {
                     }}
                 >
 
-                    {Array.from(backImgList.keys()).map((imageName) => {
+                    {Array.from(backImgList.keys()).map((imageName, index) => {
                         return (
-                            <MenuItem value={imageName}>
+                            <MenuItem key={index} value={imageName}>
                                 {imageName}
                             </MenuItem>
                         );
