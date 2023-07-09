@@ -115,6 +115,14 @@ const ImageSelector = () => {
                     onChange={(e) => {
                         const selectedImage = e.target.value;
                         setSelectedImageName(selectedImage);
+                        const azimuth_value = selectedImage.split(",")[0].split(":")[1];
+                        const elevation_value = selectedImage.split(",")[1].split(":")[1];
+                        const distance_value = selectedImage.split(",")[2].split(":")[1];
+                        setImageParamsIdxs({
+                            azi_index: paramsLists.azi_list.indexOf(Number(azimuth_value)),
+                            ele_index: paramsLists.ele_list.indexOf(Number(elevation_value)),
+                            dist_index: paramsLists.dist_list.indexOf(Number(distance_value))
+                        });
                         setBackgroundImg(`url(${backImgList.get(selectedImage)})`);
                     }}
                 >
