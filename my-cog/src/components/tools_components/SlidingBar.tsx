@@ -252,7 +252,7 @@ export const SlidingBar = (props: SlidingBarProps) => {
                 }
                 setValue([Math.max(eventValue, array[0]), Math.min(eventValue + diff, array[array.length - 1])]);
               } else {
-                setValue([Math.max(eventValue, 0), value[1]]);
+                setValue([Math.min(value[1], Math.max(eventValue, 0)), value[1]]);
               }
             }}
             onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -281,7 +281,7 @@ export const SlidingBar = (props: SlidingBarProps) => {
                 }
                 setValue([Math.max(eventValue - diff, array[0]), Math.min(eventValue, array[array.length - 1])]);
               } else {
-                setValue([value[0], Math.min(eventValue, array[array.length - 1])]);
+                setValue([value[0], Math.max(value[0], Math.min(eventValue, array[array.length - 1]))]);
               }
             }}
             onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
