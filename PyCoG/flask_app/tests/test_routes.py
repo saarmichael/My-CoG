@@ -51,39 +51,32 @@ def _mock_user(name):
 
 
 def test_register(client):
-    with patch('src.main.tools.db_write.user_in_db') as mock_user_in_db:
+    with patch('src.main.tools.cache_check.user_in_db') as mock_user_in_db:
         mock_user = _mock_user(name)
         mock_user_in_db.return_value = None  # Ensure user does not exist
 
-        with patch('src.main.tools.db_write.write_user'):
-
-            response = client.post("/register", json={
-                "username": mock_user.username,
-                "data": mock_user.user_root_dir,
-                "settings": mock_user.settings
-            })
-
-            assert response.status_code == 200
-            assert response.get_json() == {"message": "User created successfully!"}
+        response = client.post("/register", json={
+            "username": mock_user.username,
+            "data": mock_user.user_root_dir,
+            "settings": mock_user.settings
+        })
+        print(response.get_json(), response.status_code)
+        assert response.status_code == 200
+        assert response.get_json() == {"message": "User created successfully!"}
 
 def test_login(client):
-    with patch('src.main.tools.db_write.user_in_db') as mock_user_in_db:
+    with patch('src.main.tools.cache_check.user_in_db') as mock_user_in_db:
         mock_user = _mock_user(name)
         mock_user_in_db.return_value = mock_user
+        response = client.get(f"/login?username={name}")
 
-        with patch('src.main.tools.bids_handler.find_file'):
-            with patch('src.main.tools.bids_handler.find_first_eeg_file') as mock_find_first_eeg_file:
-                mock_find_first_eeg_file.return_value = mock_user.user_root_dir
+        assert response.status_code == 200
+        assert {'user_root_dir': mock_user.user_root_dir} == {"user_root_dir": mock_user.user_root_dir.split('/')[-1]}
 
-                response = client.get(f"/login?username={name}")
-
-                assert response.status_code == 200
-                assert {'user_root_dir': mock_user.user_root_dir} == {"user_root_dir": mock_user.user_root_dir.split('/')[-1]}
-    
 
 
 def test_get_settings(client):
-    with patch('src.main.tools.db_write.user_in_db') as mock_user_in_db:
+    with patch('src.main.tools') as mock_user_in_db:
         mock_user = _mock_user(name)
         mock_user_in_db.return_value = mock_user
 
