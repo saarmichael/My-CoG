@@ -17,7 +17,7 @@ Electrocorticography (ECoG) records neural activity from electrodes placed direc
 
 ## Features
 - **Data Upload & Storage**: Users can upload ECoG data in BIDS format, process it, and store results in a session.
-- **Connectivity Graph Visualization**: The system provides interactive network graphs representing brain connectivity.
+- **Connectivity Graph Visualization**: The system provides interactive network graphs representing brain connectivity, for example: electrodes with higher connectivity measure, will be represented by specific color, node and edge size, and opacity.
 - **Brain Model Representation**: Adjustable 3D brain model with electrode placement visualization.
 - **Dynamic Analysis & Customization**: Users can filter data, adjust analysis parameters, and refine connectivity settings.
 - **Session Management**: Save analysis sessions for later review and export results in multiple formats (.mat, images, videos).
@@ -80,11 +80,6 @@ Electrocorticography (ECoG) records neural activity from electrodes placed direc
 - Support for additional neuroimaging data formats.
 - Integration with cloud storage for data access across sessions.
 - Improved real-time processing for live data analysis.
-
-## Contributors
-- **Michael Saar**  
-- **Dekel Eli**  
-- **Mentor:** Dr. Yaara Erez
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
