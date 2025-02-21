@@ -10,6 +10,8 @@ In awake brain surgery, surgeons need to determine whether to remove a brain sec
 
 Electrocorticography (ECoG) records neural activity from electrodes placed directly on the brain's surface. Analyzing ECoG data allows for a broader understanding of brain connectivity, helping surgeons and researchers make informed decisions about neurological conditions and surgical approaches.
 
+### Check it out! 👇
+
 [![Watch the demo](MyCoG_thumbnailpng.png)](https://youtu.be/nWfnXMeuaLM)
 
 
